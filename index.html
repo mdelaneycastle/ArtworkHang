@@ -1,162 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Image Overlay</title>
-<style>
-    body, html {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        overflow: hidden;
-    }
-    #container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100%;
-    }
-    #mainImageContainer {
-        position: relative;
-        width: 800px; /* Adjust this to your desired width */
-        height: 600px; /* Adjust this to your desired height */
-        overflow: hidden;
-    }
-    #mainImage {
-        max-width: 100%;
-        max-height: 100%;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    }
-    #sliderContainer {
-        position: absolute;
-        top: 0;
-        right: 10px;
-        bottom: 0;
-        display: none; /* Hide slider container initially */
-        flex-direction: column;
-        justify-content: center;
-    }
-    .slider {
-        width: 20px;
-        height: 80%;
-        margin: auto;
-        -webkit-appearance: none;
-        appearance: none;
-        outline: none;
-        border-radius: 5px;
-        background-color: #ddd;
-        /* Rotate slider to make it vertical */
-        writing-mode: bt-lr; /* IE */
-        -webkit-appearance: slider-vertical; /* WebKit */
-        transform: rotate(270deg);
-        /* Adjust slider orientation and size */
-        direction: rtl;
-        transform-origin: bottom right;
-    }
-    #overlayImages img {
-        width: 100px;
-        margin: 5px;
-        cursor: pointer;
-    }
-    .overlay {
-        position: absolute;
-        cursor: move;
-        display: none; /* Hide overlay images initially */
-    }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artwork Placement</title>
+    <style>
+        /* Style for the image container */
+        .image-container {
+            max-width: 100%;
+            max-height: 400px; /* Adjust as needed */
+            position: relative;
+            overflow: hidden; /* Prevent images from overflowing */
+        }
+        .user-image,
+        .artwork-overlay {
+            width: 100%;
+            height: auto;
+            max-height: 100%; /* Ensure images fit inside container */
+        }
+        .artwork-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none; /* Prevent overlay from blocking mouse events */
+        }
+        /* Style for the slider */
+        .slider-container {
+            margin-top: 20px;
+        }
+        .slider {
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
-<div id="container">
-    <input type="file" id="uploadInput" accept="image/*">
-    <div id="mainImageContainer">
-        <img id="mainImage" src="#" alt="Uploaded Image">
-        <div id="sliderContainer">
-            <!-- Rotate slider to make it vertical -->
-            <input type="range" class="slider" id="sizeSlider" min="10" max="100" value="50">
-        </div>
+   <h1>Artwork Placement Tool</h1>
+    <p>Upload an image of your room:</p>
+    <input type="file" accept="image/*" id="userImageInput">
+    <div class="image-container">
+        <img src="" alt="User-uploaded image" class="user-image" id="userImage">
+        <img src="image1.jpg" alt="Artwork 1" class="artwork-overlay" id="artwork1">
+        <img src="image2.jpg" alt="Artwork 2" class="artwork-overlay" id="artwork2">
+        <img src="image3.jpg" alt="Artwork 3" class="artwork-overlay" id="artwork3">
     </div>
-    <div id="overlayImages">
-        <img src="image1.jpg" alt="Overlay Image 1">
-        <img src="image2.jpg" alt="Overlay Image 2">
-        <img src="image3.jpg" alt="Overlay Image 3">
+    <div class="slider-container">
+        <label for="artworkSize">Adjust Artwork Size:</label>
+        <input type="range" min="0.5" max="2" step="0.1" value="1" class="slider" id="artworkSize">
     </div>
-</div>
 
-<script>
-    window.onload = function() {
-        const uploadInput = document.getElementById('uploadInput');
-        const mainImage = document.getElementById('mainImage');
-        const mainImageContainer = document.getElementById('mainImageContainer');
-        const overlayImages = document.querySelectorAll('#overlayImages img');
-        const sizeSlider = document.getElementById('sizeSlider');
-        const sliderContainer = document.getElementById('sliderContainer');
-        let selectedOverlay = null;
+    <script>
+        const userImageInput = document.getElementById('userImageInput');
+        const userImage = document.getElementById('userImage');
+        const artwork1 = document.getElementById('artwork1');
+        const artwork2 = document.getElementById('artwork2');
+        const artwork3 = document.getElementById('artwork3');
+        const artworkSizeSlider = document.getElementById('artworkSize');
 
-        uploadInput.addEventListener('change', function(event) {
+        // Handle user image upload
+        userImageInput.addEventListener('change', (event) => {
             const file = event.target.files[0];
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                mainImage.src = e.target.result;
-                mainImage.onload = function() {
-                    const scaleFactor = Math.min(mainImageContainer.offsetWidth / mainImage.width, mainImageContainer.offsetHeight / mainImage.height);
-                    const newWidth = mainImage.width * scaleFactor;
-                    const newHeight = mainImage.height * scaleFactor;
-                    mainImage.style.width = newWidth + 'px';
-                    mainImage.style.height = newHeight + 'px';
-                    mainImage.style.top = '50%';
-                    mainImage.style.left = '50%';
-                    mainImage.style.transform = 'translate(-50%, -50%)';
-                    sliderContainer.style.display = 'none'; // Hide slider container after image is uploaded
-                };
-            }
-            reader.readAsDataURL(file);
-        });
-
-        sizeSlider.addEventListener('input', function() {
-            if (selectedOverlay) {
-                selectedOverlay.style.width = sizeSlider.value + '%';
+            if (file) {
+                userImage.src = URL.createObjectURL(file);
             }
         });
 
-        overlayImages.forEach(function(image) {
-            image.addEventListener('click', function() {
-                const newImage = new Image();
-                newImage.src = this.src;
-                newImage.classList.add('overlay');
-                newImage.style.position = 'absolute';
-                newImage.style.width = '50%'; // Initial size is 50% of the container
-                newImage.style.top = '50%';
-                newImage.style.left = '50%';
-                newImage.style.transform = 'translate(-50%, -50%)';
-                mainImageContainer.appendChild(newImage);
-                selectedOverlay = newImage;
-                sliderContainer.style.display = 'flex'; // Show slider container after overlay image is selected
-
-                let offsetX, offsetY;
-                function moveImage(event) {
-                    newImage.style.left = (event.clientX - offsetX) + 'px';
-                    newImage.style.top = (event.clientY - offsetY) + 'px';
-                }
-
-                function stopMoving() {
-                    window.removeEventListener('mousemove', moveImage);
-                    window.removeEventListener('mouseup', stopMoving);
-                }
-
-                newImage.addEventListener('mousedown', function(event) {
-                    offsetX = event.clientX - newImage.getBoundingClientRect().left;
-                    offsetY = event.clientY - newImage.getBoundingClientRect().top;
-                    window.addEventListener('mousemove', moveImage);
-                    window.addEventListener('mouseup', stopMoving);
-                });
+        // Handle artwork selection and resizing
+        [artwork1, artwork2, artwork3].forEach((artwork) => {
+            artwork.addEventListener('click', () => {
+                artwork.style.transform = 'scale(' + artworkSizeSlider.value + ')';
             });
         });
-    }
-</script>
+
+        // Update artwork size based on slider value
+        artworkSizeSlider.addEventListener('input', () => {
+            [artwork1, artwork2, artwork3].forEach((artwork) => {
+                artwork.style.transform = 'scale(' + artworkSizeSlider.value + ')';
+            });
+        });
+    </script>
 </body>
 </html>
