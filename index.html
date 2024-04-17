@@ -38,10 +38,10 @@
     </style>
 </head>
 <body>
-    <h1>Decorate Your Room!</h1>
+    <h1>Decorate Your Room</h1>
     <input type="file" accept="image/*" id="fileInput" onchange="loadImage(event)">
     <div id="imageContainer">
-        <img id="uploadedImage" src="" alt="Uploaded Image">
+        <img id="uploadedImage" src="" alt="Uploaded Image" onclick="measureDistance(event)">
     </div>
     <div id="artworkSelector">
         <img class="artworkOption" src="image1.jpg" alt="Artwork 1" onclick="selectArtwork('image1.jpg')">
@@ -56,6 +56,8 @@
         var selectedArtwork = null;
         var maxArtworkSize = 120;
         var minArtworkSize = 80;
+        var startPoint = null;
+        var endPoint = null;
 
         function loadImage(event) {
             var image = document.getElementById('uploadedImage');
@@ -151,6 +153,52 @@
             var slider = document.getElementById('slider');
             if (selectedArtwork) {
                 var newSize = slider.value;
+                selectedArtwork.style.width = newSize + 'px';
+                selectedArtwork.style.transform = 'translate(-50%, -50%)';
+            }
+        }
+
+        function measureDistance(event) {
+            var rect = event.target.getBoundingClientRect();
+            var x = event.clientX - rect.left;
+            var y = event.clientY - rect.top;
+            var point = { x: x, y: y };
+
+            if (!startPoint) {
+                startPoint = point;
+            } else if (!endPoint) {
+                endPoint = point;
+                promptUserForMeasurement();
+            }
+        }
+
+        function promptUserForMeasurement() {
+            var measurement = prompt('Please enter the real-world measurement between the two points (in meters):');
+
+            if (measurement !== null && !isNaN(measurement) && measurement > 0) {
+                calculateDistance(parseFloat(measurement));
+            } else {
+                startPoint = null;
+                endPoint = null;
+                alert('Invalid measurement. Please enter a valid number.');
+            }
+        }
+
+        function calculateDistance(measurement) {
+            var distance = Math.sqrt(Math.pow(endPoint.x - startPoint.x, 2) + Math.pow(endPoint.y - startPoint.y, 2));
+            adjustArtworkSize(distance, measurement);
+            startPoint = null;
+            endPoint = null;
+        }
+
+        function adjustArtworkSize(distance, measurement) {
+            // Assuming the selected artwork is initially 1 meter in size
+            var selectedArtworkSize = 1; // in meters
+            var scaleFactor = selectedArtworkSize / measurement;
+            
+            if (selectedArtwork) {
+                var currentSize = parseFloat(selectedArtwork.style.width.replace('px', ''));
+                var newSize = currentSize * scaleFactor;
                 selectedArtwork.style.width = newSize + 'px';
                 selectedArtwork.style.transform = 'translate(-50%, -50%)';
             }
