@@ -95,6 +95,7 @@
         const overlayImages = document.querySelectorAll('#overlayImages img');
         const sizeSlider = document.getElementById('sizeSlider');
         const sliderContainer = document.getElementById('sliderContainer');
+        let selectedOverlay = null;
 
         uploadInput.addEventListener('change', function(event) {
             const file = event.target.files[0];
@@ -117,9 +118,9 @@
         });
 
         sizeSlider.addEventListener('input', function() {
-            overlayImages.forEach(function(image) {
-                image.style.width = sizeSlider.value + '%';
-            });
+            if (selectedOverlay) {
+                selectedOverlay.style.width = sizeSlider.value + '%';
+            }
         });
 
         overlayImages.forEach(function(image) {
@@ -133,6 +134,8 @@
                 newImage.style.left = '50%';
                 newImage.style.transform = 'translate(-50%, -50%)';
                 mainImageContainer.appendChild(newImage);
+                selectedOverlay = newImage;
+                sliderContainer.style.display = 'flex'; // Show slider container after overlay image is selected
 
                 let offsetX, offsetY;
                 function moveImage(event) {
@@ -151,7 +154,6 @@
                     window.addEventListener('mousemove', moveImage);
                     window.addEventListener('mouseup', stopMoving);
                 });
-                sliderContainer.style.display = 'flex'; // Show slider container after overlay image is selected
             });
         });
     }
