@@ -38,11 +38,11 @@
     </style>
 </head>
 <body>
-    <h1>Decorate Your Room!!</h1>
+    <h1>Decorate Your Room</h1>
     <input type="file" accept="image/*" id="fileInput" onchange="loadImage(event)">
-    <button onclick="takePicture()">Take Picture</button> <!-- Button to take a picture -->
+    <button onclick="takePicture()">Take Picture</button>
     <div id="imageContainer">
-        <img id="uploadedImage" src="#" alt="Uploaded Image">
+        <img id="uploadedImage" src="" alt="Uploaded Image">
     </div>
     <div id="artworkSelector">
         <img class="artworkOption" src="image1.jpg" alt="Artwork 1" onclick="selectArtwork('image1.jpg')">
@@ -65,7 +65,7 @@
 
         function takePicture() {
             var fileInput = document.getElementById('fileInput');
-            fileInput.click(); // Trigger click event on file input
+            fileInput.click();
         }
 
         function selectArtwork(artwork) {
