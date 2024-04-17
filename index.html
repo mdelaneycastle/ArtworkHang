@@ -20,12 +20,12 @@
             max-width: 100%;
             max-height: 100%; /* Ensure images fit inside container */
             object-fit: contain; /* Maintain aspect ratio */
-        }
-        .artwork-overlay {
             position: absolute;
             top: 0;
             left: 0;
-            pointer-events: none; /* Prevent overlay from blocking mouse events */
+        }
+        .artwork-overlay {
+            cursor: grab; /* Change cursor to indicate draggable element */
         }
         /* Style for the slider */
         .slider-container {
@@ -36,10 +36,8 @@
         }
     </style>
 </head>
-
-
 <body>
-   <h1>Artwork Placement Tool</h1>
+    <h1>Artwork Placement Tool</h1>
     <p>Upload an image of your room:</p>
     <input type="file" accept="image/*" id="userImageInput">
     <div class="image-container">
@@ -69,14 +67,29 @@
             }
         });
 
-        // Handle artwork selection and resizing
+        // Make artwork overlay draggable
+        let isDragging = false;
+        let offsetX, offsetY;
+
         [artwork1, artwork2, artwork3].forEach((artwork) => {
-            artwork.addEventListener('click', () => {
-                artwork.style.transform = 'scale(' + artworkSizeSlider.value + ')';
+            artwork.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                offsetX = e.clientX - artwork.getBoundingClientRect().left;
+                offsetY = e.clientY - artwork.getBoundingClientRect().top;
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                artwork.style.left = e.clientX - offsetX + 'px';
+                artwork.style.top = e.clientY - offsetY + 'px';
+            });
+
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
             });
         });
 
-        // Update artwork size based on slider value
+        // Handle artwork resizing
         artworkSizeSlider.addEventListener('input', () => {
             [artwork1, artwork2, artwork3].forEach((artwork) => {
                 artwork.style.transform = 'scale(' + artworkSizeSlider.value + ')';
