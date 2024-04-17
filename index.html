@@ -20,7 +20,7 @@
             overflow: hidden;
         }
         .artwork {
-            box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5); /* Add shadow to selected artwork */
+            box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);
         }
         .artworkOption {
             width: 30%;
@@ -38,10 +38,10 @@
     </style>
 </head>
 <body>
-    <h1>Decorate Your Room!!</h1>
+    <h1>Decorate Your Room</h1>
     <input type="file" accept="image/*" onchange="loadImage(event)">
     <div id="imageContainer">
-        <img id="uploadedImage" src="#" alt="Uploaded Image" onmousedown="startDrag(event)">
+        <img id="uploadedImage" src="#" alt="Uploaded Image">
     </div>
     <div id="artworkSelector">
         <img class="artworkOption" src="image1.jpg" alt="Artwork 1" onclick="selectArtwork('image1.jpg')">
@@ -54,8 +54,8 @@
 
     <script>
         var selectedArtwork = null;
-        var maxArtworkSize = 120; // Maximum size in percentage
-        var minArtworkSize = 80; // Minimum size in percentage
+        var maxArtworkSize = 120;
+        var minArtworkSize = 80;
 
         function loadImage(event) {
             var image = document.getElementById('uploadedImage');
@@ -63,7 +63,6 @@
         }
 
         function selectArtwork(artwork) {
-            // Remove previously selected artwork
             if (selectedArtwork) {
                 selectedArtwork.remove();
             }
@@ -76,8 +75,9 @@
             selectedArtwork.style.left = '50%';
             selectedArtwork.style.top = '50%';
             selectedArtwork.style.transform = 'translate(-50%, -50%)';
-            selectedArtwork.style.boxShadow = '3px 3px 5px rgba(0, 0, 0, 0.5)'; // Apply shadow to selected artwork
+            selectedArtwork.style.boxShadow = '3px 3px 5px rgba(0, 0, 0, 0.5)';
             selectedArtwork.onmousedown = startDrag;
+            selectedArtwork.ontouchstart = startDragTouch; // Add touchstart event for mobile
 
             document.getElementById('imageContainer').appendChild(selectedArtwork);
         }
@@ -94,6 +94,21 @@
             document.onmouseup = function() {
                 document.onmousemove = null;
                 document.onmouseup = null;
+            };
+        }
+
+        function startDragTouch(event) {
+            var touch = event.touches[0]; // Get the first touch
+            var offsetX = touch.clientX - selectedArtwork.getBoundingClientRect().left;
+            var offsetY = touch.clientY - selectedArtwork.getBoundingClientRect().top;
+
+            document.ontouchmove = function(event) {
+                moveArtworkTouch(event, offsetX, offsetY);
+            };
+
+            document.ontouchend = function() {
+                document.ontouchmove = null;
+                document.ontouchend = null;
             };
         }
 
@@ -114,12 +129,30 @@
             selectedArtwork.style.top = y + 'px';
         }
 
+        function moveArtworkTouch(event, offsetX, offsetY) {
+            var touch = event.touches[0];
+            var x = touch.clientX - offsetX;
+            var y = touch.clientY - offsetY;
+
+            var imageContainer = document.getElementById('imageContainer');
+            var minX = imageContainer.getBoundingClientRect().left;
+            var maxX = imageContainer.getBoundingClientRect().right - selectedArtwork.width;
+            var minY = imageContainer.getBoundingClientRect().top;
+            var maxY = imageContainer.getBoundingClientRect().bottom - selectedArtwork.height;
+
+            x = Math.max(minX, Math.min(x, maxX));
+            y = Math.max(minY, Math.min(y, maxY));
+
+            selectedArtwork.style.left = x + 'px';
+            selectedArtwork.style.top = y + 'px';
+        }
+
         function resizeArtwork() {
             var slider = document.getElementById('slider');
             if (selectedArtwork) {
                 var newSize = slider.value;
                 selectedArtwork.style.width = newSize + 'px';
-                selectedArtwork.style.transform = 'translate(-50%, -50%)'; // Recenter the image
+                selectedArtwork.style.transform = 'translate(-50%, -50%)';
             }
         }
     </script>
