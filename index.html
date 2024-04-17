@@ -19,10 +19,10 @@
         height: 100%;
     }
     #mainImageContainer {
+        position: relative;
         width: 800px; /* Adjust this to your desired width */
         height: 600px; /* Adjust this to your desired height */
         overflow: hidden;
-        position: relative;
     }
     #mainImage {
         max-width: 100%;
@@ -50,6 +50,10 @@
         outline: none;
         border-radius: 5px;
         background-color: #ddd;
+        /* Rotate slider to make it vertical */
+        writing-mode: bt-lr; /* IE */
+        -webkit-appearance: slider-vertical; /* WebKit */
+        transform: rotate(270deg);
     }
     #overlayImages img {
         width: 100px;
@@ -68,6 +72,7 @@
     <div id="mainImageContainer">
         <img id="mainImage" src="#" alt="Uploaded Image">
         <div id="sliderContainer">
+            <!-- Rotate slider to make it vertical -->
             <input type="range" class="slider" id="sizeSlider" min="10" max="80" value="50">
         </div>
     </div>
