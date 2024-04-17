@@ -22,11 +22,16 @@
         max-height: 60%;
         max-width: 100%;
         margin-bottom: 20px;
+        position: relative;
     }
     #overlayImages img {
         width: 100px;
         margin: 5px;
         cursor: pointer;
+    }
+    .overlay {
+        position: absolute;
+        cursor: move;
     }
 </style>
 </head>
@@ -61,37 +66,38 @@
                     mainImage.style.maxHeight = '100%';
                     overlayImages.forEach(function(image) {
                         image.style.width = (image.width / scaleFactor) + 'px';
+                        image.addEventListener('click', function() {
+                            const newImage = new Image();
+                            newImage.src = this.src;
+                            newImage.classList.add('overlay');
+                            newImage.style.position = 'absolute';
+                            newImage.style.top = '50%';
+                            newImage.style.left = '50%';
+                            newImage.style.transform = 'translate(-50%, -50%)';
+                            mainImageContainer.appendChild(newImage);
+
+                            let offsetX, offsetY;
+                            function moveImage(event) {
+                                newImage.style.left = (event.clientX - offsetX) + 'px';
+                                newImage.style.top = (event.clientY - offsetY) + 'px';
+                            }
+
+                            function stopMoving() {
+                                window.removeEventListener('mousemove', moveImage);
+                                window.removeEventListener('mouseup', stopMoving);
+                            }
+
+                            newImage.addEventListener('mousedown', function(event) {
+                                offsetX = event.clientX - newImage.getBoundingClientRect().left;
+                                offsetY = event.clientY - newImage.getBoundingClientRect().top;
+                                window.addEventListener('mousemove', moveImage);
+                                window.addEventListener('mouseup', stopMoving);
+                            });
+                        });
                     });
                 };
             }
             reader.readAsDataURL(file);
-        });
-
-        overlayImages.forEach(function(image) {
-            image.addEventListener('click', function() {
-                const newImage = new Image();
-                newImage.src = this.src;
-                newImage.classList.add('overlay');
-                document.body.appendChild(newImage);
-
-                let offsetX, offsetY, mouseX, mouseY;
-                function moveImage(event) {
-                    newImage.style.left = (event.clientX - offsetX) + 'px';
-                    newImage.style.top = (event.clientY - offsetY) + 'px';
-                }
-
-                function stopMoving() {
-                    window.removeEventListener('mousemove', moveImage);
-                    window.removeEventListener('mouseup', stopMoving);
-                }
-
-                newImage.addEventListener('mousedown', function(event) {
-                    offsetX = event.clientX - newImage.getBoundingClientRect().left;
-                    offsetY = event.clientY - newImage.getBoundingClientRect().top;
-                    window.addEventListener('mousemove', moveImage);
-                    window.addEventListener('mouseup', stopMoving);
-                });
-            });
         });
     }
 </script>
