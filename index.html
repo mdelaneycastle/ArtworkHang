@@ -32,6 +32,25 @@
         left: 50%;
         transform: translate(-50%, -50%);
     }
+    #sliderContainer {
+        position: absolute;
+        top: 0;
+        right: 10px;
+        bottom: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    .slider {
+        width: 20px;
+        height: 80%;
+        margin: auto;
+        -webkit-appearance: none;
+        appearance: none;
+        outline: none;
+        border-radius: 5px;
+        background-color: #ddd;
+    }
     #overlayImages img {
         width: 100px;
         margin: 5px;
@@ -48,6 +67,9 @@
     <input type="file" id="uploadInput" accept="image/*">
     <div id="mainImageContainer">
         <img id="mainImage" src="#" alt="Uploaded Image">
+        <div id="sliderContainer">
+            <input type="range" class="slider" id="sizeSlider" min="10" max="80" value="50">
+        </div>
     </div>
     <div id="overlayImages">
         <img src="image1.jpg" alt="Overlay Image 1">
@@ -62,6 +84,7 @@
         const mainImage = document.getElementById('mainImage');
         const mainImageContainer = document.getElementById('mainImageContainer');
         const overlayImages = document.querySelectorAll('#overlayImages img');
+        const sizeSlider = document.getElementById('sizeSlider');
 
         uploadInput.addEventListener('change', function(event) {
             const file = event.target.files[0];
@@ -78,12 +101,17 @@
                     mainImage.style.left = '50%';
                     mainImage.style.transform = 'translate(-50%, -50%)';
                     overlayImages.forEach(function(image) {
-                        image.style.width = (image.width / scaleFactor) + 'px';
+                        image.style.width = '50%';
+                        image.style.position = 'absolute';
+                        image.style.top = '50%';
+                        image.style.left = '50%';
+                        image.style.transform = 'translate(-50%, -50%)';
                         image.addEventListener('click', function() {
                             const newImage = new Image();
                             newImage.src = this.src;
                             newImage.classList.add('overlay');
                             newImage.style.position = 'absolute';
+                            newImage.style.width = sizeSlider.value + '%';
                             newImage.style.top = '50%';
                             newImage.style.left = '50%';
                             newImage.style.transform = 'translate(-50%, -50%)';
@@ -111,6 +139,12 @@
                 };
             }
             reader.readAsDataURL(file);
+        });
+
+        sizeSlider.addEventListener('input', function() {
+            overlayImages.forEach(function(image) {
+                image.style.width = sizeSlider.value + '%';
+            });
         });
     }
 </script>
