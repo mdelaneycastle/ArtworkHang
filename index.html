@@ -35,24 +35,13 @@
         #slider {
             width: 50%;
         }
-        .point {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background-color: red;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 1;
-        }
     </style>
 </head>
 <body>
-    <h1>Decorate Your Room!!</h1>
+    <h1>Decorate Your Room</h1>
     <input type="file" accept="image/*" id="fileInput" onchange="loadImage(event)">
     <div id="imageContainer">
         <img id="uploadedImage" src="" alt="Uploaded Image" onclick="measureDistance(event)">
-        <div id="point1" class="point"></div>
-        <div id="point2" class="point"></div>
     </div>
     <div id="artworkSelector">
         <img class="artworkOption" src="image1.jpg" alt="Artwork 1" onclick="selectArtwork('image1.jpg')">
@@ -67,8 +56,6 @@
         var selectedArtwork = null;
         var maxArtworkSize = 120;
         var minArtworkSize = 80;
-        var startPoint = null;
-        var endPoint = null;
 
         function loadImage(event) {
             var image = document.getElementById('uploadedImage');
@@ -175,50 +162,23 @@
             var y = event.clientY - rect.top;
             var point = { x: x, y: y };
 
-            if (!startPoint) {
-                startPoint = point;
-                document.getElementById('point1').style.left = x + 'px';
-                document.getElementById('point1').style.top = y + 'px';
-            } else if (!endPoint) {
-                endPoint = point;
-                document.getElementById('point2').style.left = x + 'px';
-                document.getElementById('point2').style.top = y + 'px';
-                promptUserForMeasurement();
-            }
+            promptUserForMeasurement(point);
         }
 
-        function promptUserForMeasurement() {
-            var measurement = prompt('Please enter the real-world measurement between the two points (in meters):');
+        function promptUserForMeasurement(point) {
+            var measurement = prompt('Please enter the real-world measurement between this point and the next one (in meters):');
 
             if (measurement !== null && !isNaN(measurement) && measurement > 0) {
                 calculateDistance(parseFloat(measurement));
-                document.getElementById('point1').style.display = 'none';
-                document.getElementById('point2').style.display = 'none';
             } else {
-                startPoint = null;
-                endPoint = null;
                 alert('Invalid measurement. Please enter a valid number.');
             }
         }
 
         function calculateDistance(measurement) {
-            var distance = Math.sqrt(Math.pow(endPoint.x - startPoint.x, 2) + Math.pow(endPoint.y - startPoint.y, 2));
-            adjustArtworkSize(distance);
-            startPoint = null;
-            endPoint = null;
-        }
-
-        function adjustArtworkSize(distance) {
-            // Assuming the selected artwork is initially 1 meter in size
-            var selectedArtworkSize = 1; // in meters
-            var scaleFactor = distance / document.getElementById('imageContainer').offsetWidth;
-
-            if (selectedArtwork) {
-                var currentSize = parseFloat(selectedArtwork.style.width.replace('px', ''));
-                var newSize = currentSize * scaleFactor;
-                selectedArtwork.style.width = newSize + 'px';
-                selectedArtwork.style.transform = 'translate(-50%, -50%)';
-            }
+            // Not implemented in this version
+            // You would need to calculate the distance between the two points on the image
+            // and adjust the size of the selected artwork accordingly
         }
     </script>
 </body>
