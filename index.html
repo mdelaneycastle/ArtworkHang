@@ -52,6 +52,7 @@
 
     <script>
         var selectedArtwork = null;
+        var maxArtworkSize = 200; // Maximum size in percentage
 
         function loadImage(event) {
             var image = document.getElementById('uploadedImage');
@@ -100,7 +101,8 @@
         function resizeArtwork() {
             var slider = document.getElementById('slider');
             if (selectedArtwork) {
-                selectedArtwork.style.width = slider.value + '%';
+                var newSize = Math.min(slider.value, maxArtworkSize);
+                selectedArtwork.style.width = newSize + '%';
             }
         }
     </script>
