@@ -25,6 +25,13 @@
             margin: 0 10px;
             cursor: pointer;
         }
+        #sliderContainer {
+            text-align: center;
+            margin-top: 10px;
+        }
+        #slider {
+            width: 50%;
+        }
     </style>
 </head>
 <body>
@@ -38,10 +45,14 @@
         <img class="artworkOption" src="image2.jpg" alt="Artwork 2" onclick="selectArtwork('image2.jpg')">
         <img class="artworkOption" src="image3.jpg" alt="Artwork 3" onclick="selectArtwork('image3.jpg')">
     </div>
+    <div id="sliderContainer">
+        <input type="range" min="80" max="120" value="100" id="slider" oninput="resizeArtwork()">
+    </div>
 
     <script>
         var selectedArtwork = null;
-        var maxArtworkSize = 100; // Maximum size in percentage
+        var maxArtworkSize = 120; // Maximum size in percentage
+        var minArtworkSize = 80; // Minimum size in percentage
 
         function loadImage(event) {
             var image = document.getElementById('uploadedImage');
@@ -57,7 +68,7 @@
             selectedArtwork = document.createElement('img');
             selectedArtwork.src = artwork;
             selectedArtwork.className = 'artwork';
-            selectedArtwork.style.width = '100px';
+            selectedArtwork.style.width = '80px';
             selectedArtwork.style.position = 'absolute';
             selectedArtwork.style.left = '50%';
             selectedArtwork.style.top = '50%';
@@ -97,6 +108,15 @@
 
             selectedArtwork.style.left = x + 'px';
             selectedArtwork.style.top = y + 'px';
+        }
+
+        function resizeArtwork() {
+            var slider = document.getElementById('slider');
+            if (selectedArtwork) {
+                var newSize = slider.value;
+                selectedArtwork.style.width = newSize + 'px';
+                selectedArtwork.style.transform = 'translate(-50%, -50%)'; // Recenter the image
+            }
         }
     </script>
 </body>
