@@ -22,6 +22,14 @@
             position: absolute;
             cursor: pointer;
         }
+        #artworkSelector {
+            text-align: center;
+        }
+        .artworkOption {
+            width: 30%;
+            max-width: 100px;
+            margin: 0 10px;
+        }
         #sliderContainer {
             text-align: center;
         }
@@ -31,18 +39,18 @@
     </style>
 </head>
 <body>
-    <h1>Decorate Your Room!</h1>
+    <h1>Decorate Your Room</h1>
     <input type="file" accept="image/*" onchange="loadImage(event)">
     <div id="imageContainer">
         <img id="uploadedImage" src="#" alt="Uploaded Image">
+    </div>
+    <div id="sliderContainer">
+        <input type="range" min="50" max="200" value="100" id="slider" oninput="resizeArtwork()">
     </div>
     <div id="artworkSelector">
         <img class="artworkOption" src="image1.jpg" alt="Artwork 1" onclick="selectArtwork('image1.jpg')">
         <img class="artworkOption" src="image2.jpg" alt="Artwork 2" onclick="selectArtwork('image2.jpg')">
         <img class="artworkOption" src="image3.jpg" alt="Artwork 3" onclick="selectArtwork('image3.jpg')">
-    </div>
-    <div id="sliderContainer">
-        <input type="range" min="50" max="200" value="100" id="slider" oninput="resizeArtwork()">
     </div>
 
     <script>
