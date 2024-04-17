@@ -38,9 +38,8 @@
     </style>
 </head>
 <body>
-    <h1>Decorate Your Room</h1>
+    <h1>Decorate Your Room!</h1>
     <input type="file" accept="image/*" id="fileInput" onchange="loadImage(event)">
-    <button onclick="takePicture()">Take Picture</button>
     <div id="imageContainer">
         <img id="uploadedImage" src="" alt="Uploaded Image">
     </div>
@@ -52,6 +51,7 @@
     <div id="sliderContainer">
         <input type="range" min="80" max="120" value="100" id="slider" oninput="resizeArtwork()">
     </div>
+    <button onclick="downloadImage()">Download Image</button> <!-- Button to download the image -->
 
     <script>
         var selectedArtwork = null;
@@ -61,11 +61,6 @@
         function loadImage(event) {
             var image = document.getElementById('uploadedImage');
             image.src = URL.createObjectURL(event.target.files[0]);
-        }
-
-        function takePicture() {
-            var fileInput = document.getElementById('fileInput');
-            fileInput.click();
         }
 
         function selectArtwork(artwork) {
@@ -160,6 +155,32 @@
                 selectedArtwork.style.width = newSize + 'px';
                 selectedArtwork.style.transform = 'translate(-50%, -50%)';
             }
+        }
+
+        function downloadImage() {
+            var canvas = document.createElement('canvas');
+            var ctx = canvas.getContext('2d');
+            var image = document.getElementById('uploadedImage');
+            var artwork = document.querySelector('.artwork');
+
+            canvas.width = image.width;
+            canvas.height = image.height;
+
+            ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+            var artworkX = selectedArtwork.style.left;
+            var artworkY = selectedArtwork.style.top;
+            var artworkWidth = selectedArtwork.width;
+            var artworkHeight = selectedArtwork.height;
+
+            ctx.drawImage(artwork, parseFloat(artworkX), parseFloat(artworkY), artworkWidth, artworkHeight);
+
+            var dataURL = canvas.toDataURL('image/png');
+
+            var downloadLink = document.createElement('a');
+            downloadLink.href = dataURL;
+            downloadLink.download = 'room_decoration.png';
+            downloadLink.click();
         }
     </script>
 </body>
