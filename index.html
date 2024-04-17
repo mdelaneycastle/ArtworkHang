@@ -40,6 +40,7 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
+        display: none; /* Hide slider container initially */
     }
     .slider {
         width: 20px;
@@ -94,6 +95,7 @@
         const mainImageContainer = document.getElementById('mainImageContainer');
         const overlayImages = document.querySelectorAll('#overlayImages img');
         const sizeSlider = document.getElementById('sizeSlider');
+        const sliderContainer = document.getElementById('sliderContainer');
 
         uploadInput.addEventListener('change', function(event) {
             const file = event.target.files[0];
@@ -109,6 +111,7 @@
                     mainImage.style.top = '50%';
                     mainImage.style.left = '50%';
                     mainImage.style.transform = 'translate(-50%, -50%)';
+                    sliderContainer.style.display = 'block'; // Show slider container after image is selected
                 };
             }
             reader.readAsDataURL(file);
