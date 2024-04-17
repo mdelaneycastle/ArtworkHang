@@ -37,10 +37,9 @@
         top: 0;
         right: 10px;
         bottom: 0;
-        display: flex;
+        display: none; /* Hide slider container initially */
         flex-direction: column;
         justify-content: center;
-        display: none; /* Hide slider container initially */
     }
     .slider {
         width: 20px;
@@ -111,7 +110,7 @@
                     mainImage.style.top = '50%';
                     mainImage.style.left = '50%';
                     mainImage.style.transform = 'translate(-50%, -50%)';
-                    sliderContainer.style.display = 'block'; // Show slider container after image is selected
+                    sliderContainer.style.display = 'none'; // Hide slider container after image is uploaded
                 };
             }
             reader.readAsDataURL(file);
@@ -152,6 +151,7 @@
                     window.addEventListener('mousemove', moveImage);
                     window.addEventListener('mouseup', stopMoving);
                 });
+                sliderContainer.style.display = 'flex'; // Show slider container after overlay image is selected
             });
         });
     }
