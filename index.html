@@ -19,12 +19,14 @@
             height: 400px;
             overflow: hidden;
         }
+        .artwork {
+            box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5); /* Add shadow to selected artwork */
+        }
         .artworkOption {
             width: 30%;
             max-width: 100px;
             margin: 0 10px;
             cursor: pointer;
-            box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3); /* Add shadow */
         }
         #sliderContainer {
             text-align: center;
@@ -36,7 +38,7 @@
     </style>
 </head>
 <body>
-    <h1>Decorate Your Room!</h1>
+    <h1>Decorate Your Room!!</h1>
     <input type="file" accept="image/*" onchange="loadImage(event)">
     <div id="imageContainer">
         <img id="uploadedImage" src="#" alt="Uploaded Image" onmousedown="startDrag(event)">
@@ -74,6 +76,7 @@
             selectedArtwork.style.left = '50%';
             selectedArtwork.style.top = '50%';
             selectedArtwork.style.transform = 'translate(-50%, -50%)';
+            selectedArtwork.style.boxShadow = '3px 3px 5px rgba(0, 0, 0, 0.5)'; // Apply shadow to selected artwork
             selectedArtwork.onmousedown = startDrag;
 
             document.getElementById('imageContainer').appendChild(selectedArtwork);
