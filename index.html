@@ -38,7 +38,7 @@
     </style>
 </head>
 <body>
-    <h1>Decorate Your Room</h1>
+    <h1>Decorate Your Room!</h1>
     <input type="file" accept="image/*" id="fileInput" onchange="loadImage(event)">
     <div id="imageContainer">
         <img id="uploadedImage" src="" alt="Uploaded Image">
@@ -51,7 +51,6 @@
     <div id="sliderContainer">
         <input type="range" min="80" max="120" value="100" id="slider" oninput="resizeArtwork()">
     </div>
-    <button onclick="downloadImage()">Download Image</button> <!-- Button to download the image -->
 
     <script>
         var selectedArtwork = null;
@@ -156,44 +155,6 @@
                 selectedArtwork.style.transform = 'translate(-50%, -50%)';
             }
         }
-
-        function downloadImage() {
-    var imageContainer = document.getElementById('imageContainer');
-    var uploadedImage = document.getElementById('uploadedImage');
-    var artwork = document.querySelector('.artwork');
-
-    // Create a new canvas element to capture the screenshot
-    var canvas = document.createElement('canvas');
-    var ctx = canvas.getContext('2d');
-
-    // Set canvas dimensions to match the size of the uploaded image container
-    canvas.width = imageContainer.offsetWidth;
-    canvas.height = imageContainer.offsetHeight;
-
-    // Clear the canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Draw the uploaded image onto the canvas
-    ctx.drawImage(uploadedImage, 0, 0, canvas.width, canvas.height);
-
-    // Calculate the position of the artwork relative to the uploaded image container
-    var artworkX = parseFloat(artwork.style.left);
-    var artworkY = parseFloat(artwork.style.top);
-
-    // Draw the artwork onto the canvas using the calculated position
-    ctx.drawImage(artwork, artworkX, artworkY, artwork.width, artwork.height);
-
-    // Convert the canvas to a data URL representing a PNG image
-    var dataURL = canvas.toDataURL('image/png');
-
-    // Create a temporary anchor element to download the image
-    var downloadLink = document.createElement('a');
-    downloadLink.href = dataURL;
-    downloadLink.download = 'room_decoration.png';
-    downloadLink.click();
-}
-
-
     </script>
 </body>
 </html>
