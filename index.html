@@ -24,9 +24,6 @@
             top: 0;
             left: 0;
         }
-        .artwork-overlay {
-            cursor: grab; /* Change cursor to indicate draggable element */
-        }
         /* Style for the slider */
         .slider-container {
             margin-top: 20px;
@@ -42,9 +39,9 @@
     <input type="file" accept="image/*" id="userImageInput">
     <div class="image-container">
         <img src="" alt="User-uploaded image" class="user-image" id="userImage">
-        <img src="image1.jpg" alt="Artwork 1" class="artwork-overlay" id="artwork1">
-        <img src="image2.jpg" alt="Artwork 2" class="artwork-overlay" id="artwork2">
-        <img src="image3.jpg" alt="Artwork 3" class="artwork-overlay" id="artwork3">
+        <img src="image1.jpg" alt="Artwork 1" class="artwork-overlay" id="artwork1" draggable="true">
+        <img src="image2.jpg" alt="Artwork 2" class="artwork-overlay" id="artwork2" draggable="true">
+        <img src="image3.jpg" alt="Artwork 3" class="artwork-overlay" id="artwork3" draggable="true">
     </div>
     <div class="slider-container">
         <label for="artworkSize">Adjust Artwork Size:</label>
@@ -59,6 +56,8 @@
         const artwork3 = document.getElementById('artwork3');
         const artworkSizeSlider = document.getElementById('artworkSize');
 
+        let selectedArtwork = null;
+
         // Handle user image upload
         userImageInput.addEventListener('change', (event) => {
             const file = event.target.files[0];
@@ -67,33 +66,42 @@
             }
         });
 
-        // Make artwork overlay draggable
-        let isDragging = false;
-        let offsetX, offsetY;
-
+        // Handle artwork selection and resizing
         [artwork1, artwork2, artwork3].forEach((artwork) => {
-            artwork.addEventListener('mousedown', (e) => {
-                isDragging = true;
-                offsetX = e.clientX - artwork.getBoundingClientRect().left;
-                offsetY = e.clientY - artwork.getBoundingClientRect().top;
+            artwork.addEventListener('click', (event) => {
+                selectedArtwork = event.target;
+                event.stopPropagation();
             });
 
-            document.addEventListener('mousemove', (e) => {
-                if (!isDragging) return;
-                artwork.style.left = e.clientX - offsetX + 'px';
-                artwork.style.top = e.clientY - offsetY + 'px';
+            artwork.addEventListener('dragstart', (event) => {
+                selectedArtwork = event.target;
             });
 
-            document.addEventListener('mouseup', () => {
-                isDragging = false;
+            artwork.addEventListener('dragend', () => {
+                selectedArtwork = null;
             });
         });
 
-        // Handle artwork resizing
+        // Update artwork size based on slider value
         artworkSizeSlider.addEventListener('input', () => {
-            [artwork1, artwork2, artwork3].forEach((artwork) => {
-                artwork.style.transform = 'scale(' + artworkSizeSlider.value + ')';
-            });
+            if (selectedArtwork) {
+                selectedArtwork.style.transform = 'scale(' + artworkSizeSlider.value + ')';
+            }
+        });
+
+        // Make artwork draggable
+        userImage.addEventListener('dragover', (event) => {
+            event.preventDefault();
+        });
+
+        userImage.addEventListener('drop', (event) => {
+            event.preventDefault();
+            if (selectedArtwork) {
+                const offsetX = event.clientX - userImage.getBoundingClientRect().left;
+                const offsetY = event.clientY - userImage.getBoundingClientRect().top;
+                selectedArtwork.style.left = offsetX + 'px';
+                selectedArtwork.style.top = offsetY + 'px';
+            }
         });
     </script>
 </body>
