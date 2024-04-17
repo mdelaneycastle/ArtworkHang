@@ -47,6 +47,7 @@
     window.onload = function() {
         const uploadInput = document.getElementById('uploadInput');
         const mainImage = document.getElementById('mainImage');
+        const mainImageContainer = document.getElementById('mainImageContainer');
         const overlayImages = document.querySelectorAll('#overlayImages img');
 
         uploadInput.addEventListener('change', function(event) {
@@ -54,6 +55,14 @@
             const reader = new FileReader();
             reader.onload = function(e) {
                 mainImage.src = e.target.result;
+                mainImage.onload = function() {
+                    const scaleFactor = mainImage.width / mainImageContainer.offsetWidth;
+                    mainImage.style.maxWidth = '100%';
+                    mainImage.style.maxHeight = '100%';
+                    overlayImages.forEach(function(image) {
+                        image.style.width = (image.width / scaleFactor) + 'px';
+                    });
+                };
             }
             reader.readAsDataURL(file);
         });
