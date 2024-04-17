@@ -38,7 +38,7 @@
     </style>
 </head>
 <body>
-    <h1>Decorate Your Room</h1>
+    <h1>Decorate Your Room!</h1>
     <input type="file" accept="image/*" id="fileInput" onchange="loadImage(event)">
     <div id="imageContainer">
         <img id="uploadedImage" src="" alt="Uploaded Image" onclick="measureDistance(event)">
@@ -185,24 +185,24 @@
         }
 
         function calculateDistance(measurement) {
-            var distance = Math.sqrt(Math.pow(endPoint.x - startPoint.x, 2) + Math.pow(endPoint.y - startPoint.y, 2));
-            adjustArtworkSize(distance, measurement);
-            startPoint = null;
-            endPoint = null;
-        }
+    var distance = Math.sqrt(Math.pow(endPoint.x - startPoint.x, 2) + Math.pow(endPoint.y - startPoint.y, 2));
+    adjustArtworkSize(distance);
+    startPoint = null;
+    endPoint = null;
+}
 
-        function adjustArtworkSize(distance, measurement) {
-            // Assuming the selected artwork is initially 1 meter in size
-            var selectedArtworkSize = 1.01; // in meters
-            var scaleFactor = selectedArtworkSize / measurement;
-            
-            if (selectedArtwork) {
-                var currentSize = parseFloat(selectedArtwork.style.width.replace('px', ''));
-                var newSize = currentSize * scaleFactor;
-                selectedArtwork.style.width = newSize + 'px';
-                selectedArtwork.style.transform = 'translate(-50%, -50%)';
-            }
-        }
+function adjustArtworkSize(distance) {
+    // Scale the selected artwork based on the distance between the two points
+    if (selectedArtwork) {
+        var containerWidth = document.getElementById('imageContainer').offsetWidth;
+        var selectedArtworkSize = selectedArtwork.naturalWidth; // Assuming the natural width of the artwork is in pixels
+        var scaleFactor = distance / containerWidth;
+        var newSize = selectedArtworkSize * scaleFactor;
+        selectedArtwork.style.width = newSize + 'px';
+        selectedArtwork.style.transform = 'translate(-50%, -50%)';
+    }
+}
+
     </script>
 </body>
 </html>
