@@ -63,6 +63,7 @@
     .overlay {
         position: absolute;
         cursor: move;
+        display: none; /* Hide overlay images initially */
     }
 </style>
 </head>
@@ -105,42 +106,6 @@
                     mainImage.style.top = '50%';
                     mainImage.style.left = '50%';
                     mainImage.style.transform = 'translate(-50%, -50%)';
-                    overlayImages.forEach(function(image) {
-                        image.style.width = '50%';
-                        image.style.position = 'absolute';
-                        image.style.top = '50%';
-                        image.style.left = '50%';
-                        image.style.transform = 'translate(-50%, -50%)';
-                        image.addEventListener('click', function() {
-                            const newImage = new Image();
-                            newImage.src = this.src;
-                            newImage.classList.add('overlay');
-                            newImage.style.position = 'absolute';
-                            newImage.style.width = sizeSlider.value + '%';
-                            newImage.style.top = '50%';
-                            newImage.style.left = '50%';
-                            newImage.style.transform = 'translate(-50%, -50%)';
-                            mainImageContainer.appendChild(newImage);
-
-                            let offsetX, offsetY;
-                            function moveImage(event) {
-                                newImage.style.left = (event.clientX - offsetX) + 'px';
-                                newImage.style.top = (event.clientY - offsetY) + 'px';
-                            }
-
-                            function stopMoving() {
-                                window.removeEventListener('mousemove', moveImage);
-                                window.removeEventListener('mouseup', stopMoving);
-                            }
-
-                            newImage.addEventListener('mousedown', function(event) {
-                                offsetX = event.clientX - newImage.getBoundingClientRect().left;
-                                offsetY = event.clientY - newImage.getBoundingClientRect().top;
-                                window.addEventListener('mousemove', moveImage);
-                                window.addEventListener('mouseup', stopMoving);
-                            });
-                        });
-                    });
                 };
             }
             reader.readAsDataURL(file);
@@ -149,6 +114,38 @@
         sizeSlider.addEventListener('input', function() {
             overlayImages.forEach(function(image) {
                 image.style.width = sizeSlider.value + '%';
+            });
+        });
+
+        overlayImages.forEach(function(image) {
+            image.addEventListener('click', function() {
+                const newImage = new Image();
+                newImage.src = this.src;
+                newImage.classList.add('overlay');
+                newImage.style.position = 'absolute';
+                newImage.style.width = sizeSlider.value + '%';
+                newImage.style.top = '50%';
+                newImage.style.left = '50%';
+                newImage.style.transform = 'translate(-50%, -50%)';
+                mainImageContainer.appendChild(newImage);
+
+                let offsetX, offsetY;
+                function moveImage(event) {
+                    newImage.style.left = (event.clientX - offsetX) + 'px';
+                    newImage.style.top = (event.clientY - offsetY) + 'px';
+                }
+
+                function stopMoving() {
+                    window.removeEventListener('mousemove', moveImage);
+                    window.removeEventListener('mouseup', stopMoving);
+                }
+
+                newImage.addEventListener('mousedown', function(event) {
+                    offsetX = event.clientX - newImage.getBoundingClientRect().left;
+                    offsetY = event.clientY - newImage.getBoundingClientRect().top;
+                    window.addEventListener('mousemove', moveImage);
+                    window.addEventListener('mouseup', stopMoving);
+                });
             });
         });
     }
