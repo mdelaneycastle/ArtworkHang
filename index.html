@@ -3,106 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Artwork Placement</title>
+    <title>Room Decoration</title>
     <style>
-        /* Style for the image container */
-        .image-container {
+        #uploadedImage {
             max-width: 100%;
-            max-height: 400px; /* Adjust as needed */
+            max-height: 400px;
+            display: block;
+            margin: 0 auto;
+            border: 2px solid black;
+        }
+        #artworkContainer {
             position: relative;
-            overflow: hidden; /* Prevent images from overflowing */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .user-image,
-        .artwork-overlay {
-            max-width: 100%;
-            max-height: 100%; /* Ensure images fit inside container */
-            object-fit: contain; /* Maintain aspect ratio */
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-        /* Style for the slider */
-        .slider-container {
-            margin-top: 20px;
-        }
-        .slider {
             width: 100%;
+            height: 400px;
+            overflow: hidden;
+        }
+        .artwork {
+            position: absolute;
+            cursor: pointer;
+        }
+        #sliderContainer {
+            text-align: center;
+        }
+        #slider {
+            width: 50%;
         }
     </style>
 </head>
 <body>
-    <h1>Artwork Placement Tool</h1>
-    <p>Upload an image of your room:</p>
-    <input type="file" accept="image/*" id="userImageInput">
-    <div class="image-container">
-        <img src="" alt="User-uploaded image" class="user-image" id="userImage">
-        <img src="image1.jpg" alt="Artwork 1" class="artwork-overlay" id="artwork1" draggable="true">
-        <img src="image2.jpg" alt="Artwork 2" class="artwork-overlay" id="artwork2" draggable="true">
-        <img src="image3.jpg" alt="Artwork 3" class="artwork-overlay" id="artwork3" draggable="true">
+    <h1>Decorate Your Room</h1>
+    <input type="file" accept="image/*" onchange="loadImage(event)">
+    <div id="imageContainer">
+        <img id="uploadedImage" src="#" alt="Uploaded Image">
     </div>
-    <div class="slider-container">
-        <label for="artworkSize">Adjust Artwork Size:</label>
-        <input type="range" min="0.5" max="2" step="0.1" value="1" class="slider" id="artworkSize">
+    <div id="artworkContainer">
+        <img class="artwork" src="image1.jpg" alt="Artwork 1" onclick="selectArtwork('image1.jpg')">
+        <img class="artwork" src="image2.jpg" alt="Artwork 2" onclick="selectArtwork('image2.jpg')">
+        <img class="artwork" src="image3.jpg" alt="Artwork 3" onclick="selectArtwork('image3.jpg')">
+    </div>
+    <div id="sliderContainer">
+        <input type="range" min="50" max="200" value="100" id="slider" oninput="resizeArtwork()">
     </div>
 
     <script>
-        const userImageInput = document.getElementById('userImageInput');
-        const userImage = document.getElementById('userImage');
-        const artwork1 = document.getElementById('artwork1');
-        const artwork2 = document.getElementById('artwork2');
-        const artwork3 = document.getElementById('artwork3');
-        const artworkSizeSlider = document.getElementById('artworkSize');
+        function loadImage(event) {
+            var image = document.getElementById('uploadedImage');
+            image.src = URL.createObjectURL(event.target.files[0]);
+        }
 
-        let selectedArtwork = null;
+        function selectArtwork(artwork) {
+            var selectedArtwork = document.createElement('img');
+            selectedArtwork.src = artwork;
+            selectedArtwork.className = 'artwork';
+            selectedArtwork.style.width = '100px';
+            selectedArtwork.style.position = 'absolute';
+            selectedArtwork.style.left = '50%';
+            selectedArtwork.style.top = '50%';
+            selectedArtwork.style.transform = 'translate(-50%, -50%)';
+            selectedArtwork.onmousedown = function(event) {
+                let shiftX = event.clientX - selectedArtwork.getBoundingClientRect().left;
+                let shiftY = event.clientY - selectedArtwork.getBoundingClientRect().top;
 
-        // Handle user image upload
-        userImageInput.addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            if (file) {
-                userImage.src = URL.createObjectURL(file);
+                function moveAt(pageX, pageY) {
+                    selectedArtwork.style.left = pageX - shiftX + 'px';
+                    selectedArtwork.style.top = pageY - shiftY + 'px';
+                }
+
+                function onMouseMove(event) {
+                    moveAt(event.pageX, event.pageY);
+                }
+
+                document.addEventListener('mousemove', onMouseMove);
+
+                selectedArtwork.onmouseup = function() {
+                    document.removeEventListener('mousemove', onMouseMove);
+                    selectedArtwork.onmouseup = null;
+                };
+            };
+
+            document.getElementById('artworkContainer').appendChild(selectedArtwork);
+        }
+
+        function resizeArtwork() {
+            var slider = document.getElementById('slider');
+            var artworks = document.getElementsByClassName('artwork');
+            for (var i = 0; i < artworks.length; i++) {
+                artworks[i].style.width = slider.value + '%';
             }
-        });
-
-        // Handle artwork selection and resizing
-        [artwork1, artwork2, artwork3].forEach((artwork) => {
-            artwork.addEventListener('click', (event) => {
-                selectedArtwork = event.target;
-                event.stopPropagation();
-            });
-
-            artwork.addEventListener('dragstart', (event) => {
-                selectedArtwork = event.target;
-            });
-
-            artwork.addEventListener('dragend', () => {
-                selectedArtwork = null;
-            });
-        });
-
-        // Update artwork size based on slider value
-        artworkSizeSlider.addEventListener('input', () => {
-            if (selectedArtwork) {
-                selectedArtwork.style.transform = 'scale(' + artworkSizeSlider.value + ')';
-            }
-        });
-
-        // Make artwork draggable
-        userImage.addEventListener('dragover', (event) => {
-            event.preventDefault();
-        });
-
-        userImage.addEventListener('drop', (event) => {
-            event.preventDefault();
-            if (selectedArtwork) {
-                const offsetX = event.clientX - userImage.getBoundingClientRect().left;
-                const offsetY = event.clientY - userImage.getBoundingClientRect().top;
-                selectedArtwork.style.left = offsetX + 'px';
-                selectedArtwork.style.top = offsetY + 'px';
-            }
-        });
+        }
     </script>
 </body>
 </html>
