@@ -11,6 +11,7 @@
             display: block;
             margin: 0 auto;
             border: 2px solid black;
+            position: relative;
         }
         #imageContainer {
             position: relative;
@@ -18,31 +19,19 @@
             height: 400px;
             overflow: hidden;
         }
-        #artworkSelector {
-            text-align: center;
-        }
         .artworkOption {
             width: 30%;
             max-width: 100px;
             margin: 0 10px;
             cursor: pointer;
         }
-        #sliderContainer {
-            text-align: center;
-        }
-        #slider {
-            width: 50%;
-        }
     </style>
 </head>
 <body>
-    <h1>Decorate Your Room</h1>
+    <h1>Decorate Your Room!</h1>
     <input type="file" accept="image/*" onchange="loadImage(event)">
     <div id="imageContainer">
-        <img id="uploadedImage" src="#" alt="Uploaded Image">
-    </div>
-    <div id="sliderContainer">
-        <input type="range" min="50" max="200" value="100" id="slider" oninput="resizeArtwork()">
+        <img id="uploadedImage" src="#" alt="Uploaded Image" onmousedown="startDrag(event)">
     </div>
     <div id="artworkSelector">
         <img class="artworkOption" src="image1.jpg" alt="Artwork 1" onclick="selectArtwork('image1.jpg')">
@@ -52,7 +41,7 @@
 
     <script>
         var selectedArtwork = null;
-        var maxArtworkSize = 200; // Maximum size in percentage
+        var maxArtworkSize = 100; // Maximum size in percentage
 
         function loadImage(event) {
             var image = document.getElementById('uploadedImage');
@@ -68,42 +57,46 @@
             selectedArtwork = document.createElement('img');
             selectedArtwork.src = artwork;
             selectedArtwork.className = 'artwork';
-            selectedArtwork.style.width = '80%';
+            selectedArtwork.style.width = '100px';
             selectedArtwork.style.position = 'absolute';
-            selectedArtwork.style.left = '10%';
-            selectedArtwork.style.top = '10%';
+            selectedArtwork.style.left = '50%';
+            selectedArtwork.style.top = '50%';
             selectedArtwork.style.transform = 'translate(-50%, -50%)';
-            selectedArtwork.onmousedown = function(event) {
-                let shiftX = event.clientX - selectedArtwork.getBoundingClientRect().left;
-                let shiftY = event.clientY - selectedArtwork.getBoundingClientRect().top;
-
-                function moveAt(pageX, pageY) {
-                    selectedArtwork.style.left = pageX - shiftX + 'px';
-                    selectedArtwork.style.top = pageY - shiftY + 'px';
-                }
-
-                function onMouseMove(event) {
-                    moveAt(event.pageX, event.pageY);
-                }
-
-                document.addEventListener('mousemove', onMouseMove);
-
-                selectedArtwork.onmouseup = function() {
-                    document.removeEventListener('mousemove', onMouseMove);
-                    selectedArtwork.onmouseup = null;
-                };
-            };
+            selectedArtwork.onmousedown = startDrag;
 
             document.getElementById('imageContainer').appendChild(selectedArtwork);
-            resizeArtwork();
         }
 
-        function resizeArtwork() {
-            var slider = document.getElementById('slider');
-            if (selectedArtwork) {
-                var newSize = Math.min(slider.value, maxArtworkSize);
-                selectedArtwork.style.width = newSize + '%';
-            }
+        function startDrag(event) {
+            event.preventDefault();
+            var offsetX = event.clientX - selectedArtwork.getBoundingClientRect().left;
+            var offsetY = event.clientY - selectedArtwork.getBoundingClientRect().top;
+
+            document.onmousemove = function(event) {
+                moveArtwork(event, offsetX, offsetY);
+            };
+
+            document.onmouseup = function() {
+                document.onmousemove = null;
+                document.onmouseup = null;
+            };
+        }
+
+        function moveArtwork(event, offsetX, offsetY) {
+            var x = event.clientX - offsetX;
+            var y = event.clientY - offsetY;
+
+            var imageContainer = document.getElementById('imageContainer');
+            var minX = imageContainer.getBoundingClientRect().left;
+            var maxX = imageContainer.getBoundingClientRect().right - selectedArtwork.width;
+            var minY = imageContainer.getBoundingClientRect().top;
+            var maxY = imageContainer.getBoundingClientRect().bottom - selectedArtwork.height;
+
+            x = Math.max(minX, Math.min(x, maxX));
+            y = Math.max(minY, Math.min(y, maxY));
+
+            selectedArtwork.style.left = x + 'px';
+            selectedArtwork.style.top = y + 'px';
         }
     </script>
 </body>
