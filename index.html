@@ -38,7 +38,7 @@
     </style>
 </head>
 <body>
-    <h1>Decorate Your Room!</h1>
+    <h1>Decorate Your Room</h1>
     <input type="file" accept="image/*" id="fileInput" onchange="loadImage(event)">
     <div id="imageContainer">
         <img id="uploadedImage" src="" alt="Uploaded Image">
@@ -158,25 +158,27 @@
         }
 
         function downloadImage() {
-    var canvas = document.createElement('canvas');
-    var ctx = canvas.getContext('2d');
-    var image = document.getElementById('uploadedImage');
+    var imageContainer = document.getElementById('imageContainer');
+    var uploadedImage = document.getElementById('uploadedImage');
     var artwork = document.querySelector('.artwork');
 
-    canvas.width = image.width;
-    canvas.height = image.height;
+    // Create a new canvas element to capture the screenshot
+    var canvas = document.createElement('canvas');
+    var ctx = canvas.getContext('2d');
 
-    ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+    // Set canvas dimensions to match the size of the uploaded image container
+    canvas.width = imageContainer.offsetWidth;
+    canvas.height = imageContainer.offsetHeight;
 
-    // Get the position of the image container relative to the viewport
-    var imageContainerRect = document.getElementById('imageContainer').getBoundingClientRect();
+    // Clear the canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Get the position of the artwork relative to the viewport
-    var artworkRect = artwork.getBoundingClientRect();
+    // Draw the uploaded image onto the canvas
+    ctx.drawImage(uploadedImage, 0, 0, canvas.width, canvas.height);
 
-    // Calculate the position of the artwork relative to the image container
-    var artworkX = artworkRect.left - imageContainerRect.left;
-    var artworkY = artworkRect.top - imageContainerRect.top;
+    // Calculate the position of the artwork relative to the uploaded image container
+    var artworkX = parseFloat(artwork.style.left);
+    var artworkY = parseFloat(artwork.style.top);
 
     // Draw the artwork onto the canvas using the calculated position
     ctx.drawImage(artwork, artworkX, artworkY, artwork.width, artwork.height);
@@ -190,6 +192,7 @@
     downloadLink.download = 'room_decoration.png';
     downloadLink.click();
 }
+
 
     </script>
 </body>
