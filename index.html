@@ -31,28 +31,35 @@
     </style>
 </head>
 <body>
-    <h1>Decorate Your Room</h1>
+    <h1>Decorate Your Room!</h1>
     <input type="file" accept="image/*" onchange="loadImage(event)">
     <div id="imageContainer">
         <img id="uploadedImage" src="#" alt="Uploaded Image">
     </div>
-    <div id="artworkContainer">
-        <img class="artwork" src="image1.jpg" alt="Artwork 1" onclick="selectArtwork('image1.jpg')">
-        <img class="artwork" src="image2.jpg" alt="Artwork 2" onclick="selectArtwork('image2.jpg')">
-        <img class="artwork" src="image3.jpg" alt="Artwork 3" onclick="selectArtwork('image3.jpg')">
+    <div id="artworkSelector">
+        <img class="artworkOption" src="image1.jpg" alt="Artwork 1" onclick="selectArtwork('image1.jpg')">
+        <img class="artworkOption" src="image2.jpg" alt="Artwork 2" onclick="selectArtwork('image2.jpg')">
+        <img class="artworkOption" src="image3.jpg" alt="Artwork 3" onclick="selectArtwork('image3.jpg')">
     </div>
     <div id="sliderContainer">
         <input type="range" min="50" max="200" value="100" id="slider" oninput="resizeArtwork()">
     </div>
 
     <script>
+        var selectedArtwork = null;
+
         function loadImage(event) {
             var image = document.getElementById('uploadedImage');
             image.src = URL.createObjectURL(event.target.files[0]);
         }
 
         function selectArtwork(artwork) {
-            var selectedArtwork = document.createElement('img');
+            // Remove previously selected artwork
+            if (selectedArtwork) {
+                selectedArtwork.remove();
+            }
+
+            selectedArtwork = document.createElement('img');
             selectedArtwork.src = artwork;
             selectedArtwork.className = 'artwork';
             selectedArtwork.style.width = '100px';
@@ -81,14 +88,14 @@
                 };
             };
 
-            document.getElementById('artworkContainer').appendChild(selectedArtwork);
+            document.getElementById('imageContainer').appendChild(selectedArtwork);
+            resizeArtwork();
         }
 
         function resizeArtwork() {
             var slider = document.getElementById('slider');
-            var artworks = document.getElementsByClassName('artwork');
-            for (var i = 0; i < artworks.length; i++) {
-                artworks[i].style.width = slider.value + '%';
+            if (selectedArtwork) {
+                selectedArtwork.style.width = slider.value + '%';
             }
         }
     </script>
