@@ -18,11 +18,19 @@
         justify-content: center;
         height: 100%;
     }
-    #mainImage {
-        max-height: 60%;
-        max-width: 100%;
-        margin-bottom: 20px;
+    #mainImageContainer {
+        width: 800px; /* Adjust this to your desired width */
+        height: 600px; /* Adjust this to your desired height */
+        overflow: hidden;
         position: relative;
+    }
+    #mainImage {
+        max-width: 100%;
+        max-height: 100%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
     }
     #overlayImages img {
         width: 100px;
@@ -61,9 +69,14 @@
             reader.onload = function(e) {
                 mainImage.src = e.target.result;
                 mainImage.onload = function() {
-                    const scaleFactor = mainImage.width / mainImageContainer.offsetWidth;
-                    mainImage.style.maxWidth = '100%';
-                    mainImage.style.maxHeight = '100%';
+                    const scaleFactor = Math.min(mainImageContainer.offsetWidth / mainImage.width, mainImageContainer.offsetHeight / mainImage.height);
+                    const newWidth = mainImage.width * scaleFactor;
+                    const newHeight = mainImage.height * scaleFactor;
+                    mainImage.style.width = newWidth + 'px';
+                    mainImage.style.height = newHeight + 'px';
+                    mainImage.style.top = '50%';
+                    mainImage.style.left = '50%';
+                    mainImage.style.transform = 'translate(-50%, -50%)';
                     overlayImages.forEach(function(image) {
                         image.style.width = (image.width / scaleFactor) + 'px';
                         image.addEventListener('click', function() {
