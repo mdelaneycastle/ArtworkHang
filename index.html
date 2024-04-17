@@ -38,7 +38,7 @@
     </style>
 </head>
 <body>
-    <h1>Decorate Your Room!!</h1>
+    <h1>Decorate Your Room!</h1>
     <input type="file" accept="image/*" id="fileInput" onchange="loadImage(event)">
     <div id="imageContainer">
         <img id="uploadedImage" src="" alt="Uploaded Image">
@@ -168,24 +168,29 @@
 
     ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
 
-    // Calculate the position of the artwork relative to the image container
+    // Get the position of the image container relative to the viewport
     var imageContainerRect = document.getElementById('imageContainer').getBoundingClientRect();
-    var artworkRect = selectedArtwork.getBoundingClientRect();
 
+    // Get the position of the artwork relative to the viewport
+    var artworkRect = artwork.getBoundingClientRect();
+
+    // Calculate the position of the artwork relative to the image container
     var artworkX = artworkRect.left - imageContainerRect.left;
     var artworkY = artworkRect.top - imageContainerRect.top;
-    var artworkWidth = selectedArtwork.width;
-    var artworkHeight = selectedArtwork.height;
 
-    ctx.drawImage(artwork, artworkX, artworkY, artworkWidth, artworkHeight);
+    // Draw the artwork onto the canvas using the calculated position
+    ctx.drawImage(artwork, artworkX, artworkY, artwork.width, artwork.height);
 
+    // Convert the canvas to a data URL representing a PNG image
     var dataURL = canvas.toDataURL('image/png');
 
+    // Create a temporary anchor element to download the image
     var downloadLink = document.createElement('a');
     downloadLink.href = dataURL;
     downloadLink.download = 'room_decoration.png';
     downloadLink.click();
 }
+
     </script>
 </body>
 </html>
