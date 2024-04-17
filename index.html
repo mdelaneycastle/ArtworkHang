@@ -54,6 +54,9 @@
         writing-mode: bt-lr; /* IE */
         -webkit-appearance: slider-vertical; /* WebKit */
         transform: rotate(270deg);
+        /* Adjust slider orientation and size */
+        direction: rtl;
+        transform-origin: bottom right;
     }
     #overlayImages img {
         width: 100px;
@@ -74,7 +77,7 @@
         <img id="mainImage" src="#" alt="Uploaded Image">
         <div id="sliderContainer">
             <!-- Rotate slider to make it vertical -->
-            <input type="range" class="slider" id="sizeSlider" min="10" max="80" value="50">
+            <input type="range" class="slider" id="sizeSlider" min="10" max="100" value="50">
         </div>
     </div>
     <div id="overlayImages">
@@ -123,7 +126,7 @@
                 newImage.src = this.src;
                 newImage.classList.add('overlay');
                 newImage.style.position = 'absolute';
-                newImage.style.width = sizeSlider.value + '%';
+                newImage.style.width = '50%'; // Initial size is 50% of the container
                 newImage.style.top = '50%';
                 newImage.style.left = '50%';
                 newImage.style.transform = 'translate(-50%, -50%)';
