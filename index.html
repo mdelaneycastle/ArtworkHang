@@ -12,15 +12,11 @@
             margin: 0 auto;
             border: 2px solid black;
         }
-        #artworkContainer {
+        #imageContainer {
             position: relative;
             width: 100%;
             height: 400px;
             overflow: hidden;
-        }
-        .artwork {
-            position: absolute;
-            cursor: pointer;
         }
         #artworkSelector {
             text-align: center;
@@ -29,6 +25,7 @@
             width: 30%;
             max-width: 100px;
             margin: 0 10px;
+            cursor: pointer;
         }
         #sliderContainer {
             text-align: center;
@@ -70,10 +67,10 @@
             selectedArtwork = document.createElement('img');
             selectedArtwork.src = artwork;
             selectedArtwork.className = 'artwork';
-            selectedArtwork.style.width = '100px';
+            selectedArtwork.style.width = '80%';
             selectedArtwork.style.position = 'absolute';
-            selectedArtwork.style.left = '50%';
-            selectedArtwork.style.top = '50%';
+            selectedArtwork.style.left = '10%';
+            selectedArtwork.style.top = '10%';
             selectedArtwork.style.transform = 'translate(-50%, -50%)';
             selectedArtwork.onmousedown = function(event) {
                 let shiftX = event.clientX - selectedArtwork.getBoundingClientRect().left;
