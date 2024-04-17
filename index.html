@@ -35,13 +35,24 @@
         #slider {
             width: 50%;
         }
+        .point {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: red;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+        }
     </style>
 </head>
 <body>
-    <h1>Decorate Your Room!</h1>
+    <h1>Decorate Your Room!!</h1>
     <input type="file" accept="image/*" id="fileInput" onchange="loadImage(event)">
     <div id="imageContainer">
         <img id="uploadedImage" src="" alt="Uploaded Image" onclick="measureDistance(event)">
+        <div id="point1" class="point"></div>
+        <div id="point2" class="point"></div>
     </div>
     <div id="artworkSelector">
         <img class="artworkOption" src="image1.jpg" alt="Artwork 1" onclick="selectArtwork('image1.jpg')">
@@ -166,8 +177,12 @@
 
             if (!startPoint) {
                 startPoint = point;
+                document.getElementById('point1').style.left = x + 'px';
+                document.getElementById('point1').style.top = y + 'px';
             } else if (!endPoint) {
                 endPoint = point;
+                document.getElementById('point2').style.left = x + 'px';
+                document.getElementById('point2').style.top = y + 'px';
                 promptUserForMeasurement();
             }
         }
@@ -177,6 +192,8 @@
 
             if (measurement !== null && !isNaN(measurement) && measurement > 0) {
                 calculateDistance(parseFloat(measurement));
+                document.getElementById('point1').style.display = 'none';
+                document.getElementById('point2').style.display = 'none';
             } else {
                 startPoint = null;
                 endPoint = null;
@@ -185,24 +202,24 @@
         }
 
         function calculateDistance(measurement) {
-    var distance = Math.sqrt(Math.pow(endPoint.x - startPoint.x, 2) + Math.pow(endPoint.y - startPoint.y, 2));
-    adjustArtworkSize(distance);
-    startPoint = null;
-    endPoint = null;
-}
+            var distance = Math.sqrt(Math.pow(endPoint.x - startPoint.x, 2) + Math.pow(endPoint.y - startPoint.y, 2));
+            adjustArtworkSize(distance);
+            startPoint = null;
+            endPoint = null;
+        }
 
-function adjustArtworkSize(distance) {
-    // Scale the selected artwork based on the distance between the two points
-    if (selectedArtwork) {
-        var containerWidth = document.getElementById('imageContainer').offsetWidth;
-        var selectedArtworkSize = selectedArtwork.naturalWidth; // Assuming the natural width of the artwork is in pixels
-        var scaleFactor = distance / containerWidth;
-        var newSize = selectedArtworkSize * scaleFactor;
-        selectedArtwork.style.width = newSize + 'px';
-        selectedArtwork.style.transform = 'translate(-50%, -50%)';
-    }
-}
+        function adjustArtworkSize(distance) {
+            // Assuming the selected artwork is initially 1 meter in size
+            var selectedArtworkSize = 1; // in meters
+            var scaleFactor = distance / document.getElementById('imageContainer').offsetWidth;
 
+            if (selectedArtwork) {
+                var currentSize = parseFloat(selectedArtwork.style.width.replace('px', ''));
+                var newSize = currentSize * scaleFactor;
+                selectedArtwork.style.width = newSize + 'px';
+                selectedArtwork.style.transform = 'translate(-50%, -50%)';
+            }
+        }
     </script>
 </body>
 </html>
