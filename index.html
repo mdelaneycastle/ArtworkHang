@@ -12,7 +12,6 @@
             margin: 0 auto;
             border: 2px solid black;
             position: relative;
-            visibility: hidden; /* Hide the broken image icon initially */
         }
         #imageContainer {
             position: relative;
@@ -36,10 +35,18 @@
         #slider {
             width: 50%;
         }
+        .measurement-point {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: red;
+            border-radius: 50%;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
-    <h1>Decorate Your Room</h1>
+    <h1>Decorate Your Room!!</h1>
     <input type="file" accept="image/*" id="fileInput" onchange="loadImage(event)">
     <div id="imageContainer">
         <img id="uploadedImage" src="" alt="Uploaded Image">
@@ -57,11 +64,12 @@
         var selectedArtwork = null;
         var maxArtworkSize = 120;
         var minArtworkSize = 80;
+        var firstPoint = null;
+        var secondPoint = null;
 
         function loadImage(event) {
             var image = document.getElementById('uploadedImage');
             image.src = URL.createObjectURL(event.target.files[0]);
-            image.style.visibility = 'visible'; // Show the image once uploaded
         }
 
         function selectArtwork(artwork) {
@@ -72,7 +80,7 @@
             selectedArtwork = document.createElement('img');
             selectedArtwork.src = artwork;
             selectedArtwork.className = 'artwork';
-            selectedArtwork.style.width = '80px';
+            selectedArtwork.style.width = '80px'; // Initial width, can be adjusted later
             selectedArtwork.style.position = 'absolute';
             selectedArtwork.style.left = '50%';
             selectedArtwork.style.top = '50%';
@@ -156,6 +164,65 @@
                 selectedArtwork.style.width = newSize + 'px';
                 selectedArtwork.style.transform = 'translate(-50%, -50%)';
             }
+        }
+
+        function measureDistance(event) {
+            var rect = event.target.getBoundingClientRect();
+            var x = event.clientX - rect.left;
+            var y = event.clientY - rect.top;
+            var point = { x: x, y: y };
+
+            if (!firstPoint) {
+                firstPoint = point;
+                showMeasurementPoint(firstPoint);
+            } else if (!secondPoint) {
+                secondPoint = point;
+                showMeasurementPoint(secondPoint);
+                promptUserForMeasurement();
+            }
+        }
+
+        function showMeasurementPoint(point) {
+            var measurementPoint = document.createElement('div');
+            measurementPoint.className = 'measurement-point';
+            measurementPoint.style.left = point.x + 'px';
+            measurementPoint.style.top = point.y + 'px';
+
+            document.getElementById('imageContainer').appendChild(measurementPoint);
+        }
+
+        function promptUserForMeasurement() {
+            var measurement = prompt('Please enter the real-world measurement between the two points (in centimeters):');
+
+            if (measurement !== null && !isNaN(measurement) && measurement > 0) {
+                calculateAndResizeArtwork(parseFloat(measurement));
+            } else {
+                alert('Invalid measurement. Please enter a valid number.');
+            }
+
+            // Remove measurement points
+            document.querySelectorAll('.measurement-point').forEach(function(element) {
+                element.remove();
+            });
+
+            // Reset points
+            firstPoint = null;
+            secondPoint = null;
+        }
+
+        function calculateAndResizeArtwork(measurement) {
+            // Width of the image overlay in centimeters (you can adjust this value)
+            var imageWidthInCM = 70;
+
+            // Calculate the distance between the selected points
+            var distance = Math.sqrt(Math.pow(secondPoint.x - firstPoint.x, 2) + Math.pow(secondPoint.y - firstPoint.y, 2));
+
+            // Calculate the scale factor
+            var scaleFactor = imageWidthInCM / distance;
+
+            // Apply the scale factor to the selected artwork
+            selectedArtwork.style.width = (selectedArtwork.width * scaleFactor) + 'px';
+            selectedArtwork.style.transform = 'translate(-50%, -50%)';
         }
     </script>
 </body>
