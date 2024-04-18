@@ -10,6 +10,8 @@
             width: 500px; /* Set the width and height of your container */
             height: 500px;
             border: 1px solid black;
+            background-size: cover;
+            background-position: center;
         }
         .point {
             position: absolute;
@@ -22,7 +24,7 @@
             position: absolute;
             width: 100px; /* Initial size of the square (100x100 pixels) */
             height: 100px;
-            background-color: purple; /* Set the color of the square */
+            background-color: blue; /* Set the color of the square */
         }
     </style>
 </head>
@@ -39,6 +41,8 @@
 
     <label for="realSquareSize">Real Size of the Square (cm):</label>
     <input type="number" id="realSquareSize" onchange="updateSquareSize()" step="any">
+
+    <input type="file" id="imageInput" accept="image/*" onchange="setImageBackground(event)">
 
     <button onclick="resetMeasurement()">Reset</button>
 
@@ -95,6 +99,7 @@
                 container.removeChild(container.firstChild);
             }
             document.getElementById('distance').innerText = '';
+            container.style.backgroundImage = ''; // Reset background image
         }
 
         function updateSquareSize() {
@@ -107,6 +112,16 @@
                 document.getElementById('square').style.width = `${scale}px`;
                 document.getElementById('square').style.height = `${scale}px`;
             }
+        }
+
+        function setImageBackground(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const imageData = event.target.result;
+                document.getElementById('container').style.backgroundImage = `url(${imageData})`;
+            };
+            reader.readAsDataURL(file);
         }
     </script>
 </body>
