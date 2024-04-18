@@ -43,7 +43,7 @@
     </style>
 </head>
 <body>
-    <h1>Decorate Your Room!</h1>
+    <h1>Decorate Your Room</h1>
     <input type="file" accept="image/*" id="fileInput" onchange="loadImage(event)">
     <div id="imageContainer" onmousedown="startDrawing(event)" onmousemove="drawLine(event)" onmouseup="endDrawing(event)">
         <img id="uploadedImage" src="" alt="Uploaded Image">
@@ -64,6 +64,7 @@
         var startPoint = null;
         var endPoint = null;
         var measurementLine = null;
+        var firstPointPlaced = false;
 
         function loadImage(event) {
             var image = document.getElementById('uploadedImage');
@@ -89,77 +90,56 @@
         }
 
         function startDrawing(event) {
-            if (!startPoint) {
+            if (!firstPointPlaced) {
                 startPoint = { x: event.clientX, y: event.clientY };
                 drawLine(event);
-            } else if (!endPoint) {
-                endPoint = { x: event.clientX, y: event.clientY };
+            } else {
+                if (!endPoint) {
+                    endPoint = { x: event.clientX, y: event.clientY };
 
-                // Calculate distance between points
-                var distance = Math.sqrt(Math.pow(endPoint.x - startPoint.x, 2) + Math.pow(endPoint.y - startPoint.y, 2));
+                    // Calculate distance between points
+                    var distance = Math.sqrt(Math.pow(endPoint.x - startPoint.x, 2) + Math.pow(endPoint.y - startPoint.y, 2));
 
-                // Prompt user for measurement
-                var measurement = prompt('Please enter the real-world measurement between the two points (in centimeters):');
+                    // Prompt user for measurement
+                    var measurement = prompt('Please enter the real-world measurement between the two points (in centimeters):');
 
-                if (measurement !== null && !isNaN(measurement) && measurement > 0) {
-                    // Calculate scale factor
-                    var scaleFactor = parseFloat(measurement) / distance;
+                    if (measurement !== null && !isNaN(measurement) && measurement > 0) {
+                        // Calculate scale factor
+                        var scaleFactor = parseFloat(measurement) / distance;
 
-                    // Resize artwork
-                    selectedArtwork.style.width = (selectedArtwork.width * scaleFactor) + 'px';
-                    selectedArtwork.style.transform = 'translate(-50%, -50%)';
-                } else {
-                    alert('Invalid measurement. Please enter a valid number.');
+                        // Resize artwork
+                        selectedArtwork.style.width = (selectedArtwork.width * scaleFactor) + 'px';
+                        selectedArtwork.style.transform = 'translate(-50%, -50%)';
+                    } else {
+                        alert('Invalid measurement. Please enter a valid number.');
+                    }
+
+                    // Reset points and line
+                    startPoint = null;
+                    endPoint = null;
+                    clearMeasurementLine();
+                    firstPointPlaced = false;
                 }
-
-                // Reset points and line
-                startPoint = null;
-                endPoint = null;
-                clearMeasurementLine();
             }
         }
 
         function drawLine(event) {
-            if (!startPoint) return;
-
-            clearMeasurementLine();
-            measurementLine = document.createElement('div');
-            measurementLine.className = 'measurement-line';
-            measurementLine.style.borderTop = '1px solid red';
-            measurementLine.style.width = Math.sqrt(Math.pow(event.clientX - startPoint.x, 2) + Math.pow(event.clientY - startPoint.y, 2)) + 'px';
-            measurementLine.style.transform = 'translate(' + startPoint.x + 'px, ' + startPoint.y + 'px) rotate(' + Math.atan2(event.clientY - startPoint.y, event.clientX - startPoint.x) + 'rad)';
-            document.body.appendChild(measurementLine);
+            if (!firstPointPlaced) {
+                clearMeasurementLine();
+                measurementLine = document.createElement('div');
+                measurementLine.className = 'measurement-line';
+                measurementLine.style.borderTop = '1px solid red';
+                measurementLine.style.width = Math.sqrt(Math.pow(event.clientX - startPoint.x, 2) + Math.pow(event.clientY - startPoint.y, 2)) + 'px';
+                measurementLine.style.transform = 'translate(' + startPoint.x + 'px, ' + startPoint.y + 'px) rotate(' + Math.atan2(event.clientY - startPoint.y, event.clientX - startPoint.x) + 'rad)';
+                document.body.appendChild(measurementLine);
+            }
         }
 
         function endDrawing(event) {
-            if (!startPoint) return;
-
-            endPoint = { x: event.clientX, y: event.clientY };
-
-            // Calculate distance between points
-            var distance = Math.sqrt(Math.pow(endPoint.x - startPoint.x, 2) + Math.pow(endPoint.y - startPoint.y, 2));
-
-            // Prompt user for measurement only if endPoint is set
-            if (!endPoint) return;
-
-            // Prompt user for measurement
-            var measurement = prompt('Please enter the real-world measurement between the two points (in centimeters):');
-
-            if (measurement !== null && !isNaN(measurement) && measurement > 0) {
-                // Calculate scale factor
-                var scaleFactor = parseFloat(measurement) / distance;
-
-                // Resize artwork
-                selectedArtwork.style.width = (selectedArtwork.width * scaleFactor) + 'px';
-                selectedArtwork.style.transform = 'translate(-50%, -50%)';
-            } else {
-                alert('Invalid measurement. Please enter a valid number.');
+            if (!firstPointPlaced) {
+                if (!startPoint) return;
+                firstPointPlaced = true;
             }
-
-            // Reset points and line
-            startPoint = null;
-            endPoint = null;
-            clearMeasurementLine();
         }
 
         function clearMeasurementLine() {
