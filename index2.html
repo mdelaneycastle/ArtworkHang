@@ -48,6 +48,8 @@
     <button onclick="resetMeasurement()">Reset</button>
     <button onclick="togglePoints()">Hide Points</button>
 
+    <input type="range" min="-50" max="50" value="0" id="perspectiveSlider" onchange="adjustPerspective(this.value)">
+
     <script>
         let points = [];
         const initialSquareSize = 101; // Predetermined size of the square in cm
@@ -167,6 +169,10 @@
                 points[i].style.display = points[i].style.display === 'none' ? 'block' : 'none';
             }
             pointsVisible = !pointsVisible; // Toggle points visibility flag
+        }
+
+        function adjustPerspective(value) {
+            square.style.transform = `perspective(500px) rotateY(${value}deg)`;
         }
     </script>
 </body>
