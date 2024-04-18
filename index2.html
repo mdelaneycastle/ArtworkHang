@@ -42,7 +42,7 @@
     <label for="realSize">Real Size of the Line (cm):</label>
     <input type="number" id="realSize" onchange="updateSquareSize()" step="any">
 
-    <input type="file" id="imageInput" accept="image/*" onchange="setImageBackground(event)"><br><br>
+    <input type="file" id="imageInput" accept="image/*" onchange="setImageBackground(event)">
 
     <button onclick="resetMeasurement()">Reset</button>
     <button onclick="togglePoints()">Hide Points</button>
@@ -175,8 +175,8 @@
 
         function startTouchDrag(event) {
             isDragging = true;
-            offsetX = event.touches[0].clientX - square.getBoundingClientRect().left;
-            offsetY = event.touches[0].clientY - square.getBoundingClientRect().top;
+            offsetX = event.touches[0].pageX - square.getBoundingClientRect().left;
+            offsetY = event.touches[0].pageY - square.getBoundingClientRect().top;
             document.addEventListener('touchmove', touchDrag);
         }
 
@@ -189,8 +189,8 @@
             if (isDragging) {
                 const container = document.getElementById('container');
                 const rect = container.getBoundingClientRect();
-                let newX = event.touches[0].clientX - rect.left - offsetX;
-                let newY = event.touches[0].clientY - rect.top - offsetY;
+                let newX = event.touches[0].pageX - rect.left - offsetX;
+                let newY = event.touches[0].pageY - rect.top - offsetY;
 
                 // Ensure the square stays within the container
                 newX = Math.max(0, Math.min(newX, container.clientWidth - square.offsetWidth));
