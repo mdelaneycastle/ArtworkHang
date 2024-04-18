@@ -38,10 +38,10 @@
     </style>
 </head>
 <body>
-    <h1>Decorate Your Room</h1>
+    <h1>Decorate Your Room!</h1>
     <input type="file" accept="image/*" id="fileInput" onchange="loadImage(event)">
     <div id="imageContainer">
-        <img id="uploadedImage" src="" alt="Uploaded Image" onclick="measureDistance(event)">
+        <img id="uploadedImage" src="" alt="Uploaded Image">
     </div>
     <div id="artworkSelector">
         <img class="artworkOption" src="image1.jpg" alt="Artwork 1" onclick="selectArtwork('image1.jpg')">
@@ -154,31 +154,6 @@
                 selectedArtwork.style.width = newSize + 'px';
                 selectedArtwork.style.transform = 'translate(-50%, -50%)';
             }
-        }
-
-        function measureDistance(event) {
-            var rect = event.target.getBoundingClientRect();
-            var x = event.clientX - rect.left;
-            var y = event.clientY - rect.top;
-            var point = { x: x, y: y };
-
-            promptUserForMeasurement(point);
-        }
-
-        function promptUserForMeasurement(point) {
-            var measurement = prompt('Please enter the real-world measurement between this point and the next one (in meters):');
-
-            if (measurement !== null && !isNaN(measurement) && measurement > 0) {
-                calculateDistance(parseFloat(measurement));
-            } else {
-                alert('Invalid measurement. Please enter a valid number.');
-            }
-        }
-
-        function calculateDistance(measurement) {
-            // Not implemented in this version
-            // You would need to calculate the distance between the two points on the image
-            // and adjust the size of the selected artwork accordingly
         }
     </script>
 </body>
