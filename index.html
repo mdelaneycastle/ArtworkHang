@@ -39,6 +39,7 @@
             height: auto; /* Maintain aspect ratio */
             max-width: 400px; /* Maximum width */
             max-height: 400px; /* Maximum height */
+            cursor: move; /* Default cursor for dragging */
         }
 
         .overlayButton {
@@ -76,8 +77,59 @@
         <button class="overlayButton" data-src="image3.jpg">Image 3</button>
         <p id="pixelSize">Pixel Size: </p>
         <input type="range" id="resizeSlider" min="80" max="120" value="100" step="1">
+        <button id="toggleMeasureMode" class="overlayButton">Toggle Measurement Mode</button>
     </div>
     <script>
+        // Functionality for entering measurement mode
+        let isMeasureMode = false;
+        let startPoint = null;
+        let endPoint = null;
+
+        function enterMeasureMode() {
+            isMeasureMode = true;
+            overlayImage.removeEventListener('mousedown', startDrag); // Disable dragging during measurement mode
+            overlayImage.style.cursor = 'crosshair'; // Change cursor to indicate measurement mode
+        }
+
+        function exitMeasureMode() {
+            isMeasureMode = false;
+            overlayImage.addEventListener('mousedown', startDrag); // Re-enable dragging after exiting measurement mode
+            overlayImage.style.cursor = 'move'; // Change cursor back to default
+        }
+
+        // Function to handle click events during measurement mode
+        overlayImage.addEventListener('click', function(e) {
+            if (isMeasureMode) {
+                const rect = overlayImage.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                if (!startPoint) {
+                    startPoint = { x, y };
+                } else if (!endPoint) {
+                    endPoint = { x, y };
+                    calculateDistance(startPoint, endPoint);
+                }
+            }
+        });
+
+        // Function to calculate distance between two points
+        function calculateDistance(point1, point2) {
+            const distance = Math.sqrt(Math.pow(point2.x - point1.x, 2) + Math.pow(point2.y - point1.y, 2));
+            alert('Distance: ' + distance.toFixed(2) + ' pixels'); // Display distance (can be adjusted to display in cm)
+            // Reset points after measurement
+            startPoint = null;
+            endPoint = null;
+        }
+
+        // Functionality for toggling measurement mode
+        document.getElementById('toggleMeasureMode').addEventListener('click', function() {
+            if (isMeasureMode) {
+                exitMeasureMode();
+            } else {
+                enterMeasureMode();
+            }
+        });
+
         // Function to handle image resizing
         function handleResize() {
             const scale = resizeSlider.value / 100;
@@ -145,21 +197,20 @@
             }
 
             function drag(e) {
-    if (isDragging) {
-        e.preventDefault();
-        const scale = parseFloat(overlayImage.style.transform.match(/scale\((.*?)\)/)[1]);
-        const newX = e.clientX - initialX;
-        const newY = e.clientY - initialY;
-        xOffset = newX;
-        yOffset = newY;
-        setTranslate(newX, newY, overlayImage, scale);
-    }
-}
-
+                if (isDragging) {
+                    e.preventDefault();
+                    const scale = parseFloat(overlayImage.style.transform.match(/scale\((.*?)\)/)[1]);
+                    const newX = e.clientX - initialX;
+                    const newY = e.clientY - initialY;
+                    xOffset = newX;
+                    yOffset = newY;
+                    setTranslate(newX, newY, overlayImage, scale);
+                }
+            }
 
             function setTranslate(xPos, yPos, element, scale) {
-    element.style.transform = "translate3d(" + xPos + "px, " + yPos + "px, 0) scale(" + scale + ")";
-}
+                element.style.transform = "translate3d(" + xPos + "px, " + yPos + "px, 0) scale(" + scale + ")";
+            }
         });
     </script>
 </body>
