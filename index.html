@@ -90,6 +90,11 @@
             const pixelSizeDisplay = document.getElementById('pixelSize');
             const resizeSlider = document.getElementById('resizeSlider');
 
+            let isDragging = false;
+            let initialX, initialY;
+            let xOffset = 0;
+            let yOffset = 0;
+
             // Function to handle image resizing
             function handleResize() {
                 const scale = resizeSlider.value / 100;
@@ -124,6 +129,37 @@
                 img.onload = function() {
                     pixelSizeDisplay.textContent = 'Pixel Size: ' + img.width + 'x' + img.height;
                 };
+            }
+
+            // Functionality for dragging overlay image
+            overlayImage.addEventListener('mousedown', startDrag);
+            overlayImage.addEventListener('mouseup', endDrag);
+            overlayImage.addEventListener('mouseleave', endDrag);
+            overlayImage.addEventListener('mousemove', drag);
+
+            function startDrag(e) {
+                isDragging = true;
+                initialX = e.clientX - xOffset;
+                initialY = e.clientY - yOffset;
+            }
+
+            function endDrag() {
+                isDragging = false;
+            }
+
+            function drag(e) {
+                if (isDragging) {
+                    e.preventDefault();
+                    const newX = e.clientX - initialX;
+                    const newY = e.clientY - initialY;
+                    xOffset = newX;
+                    yOffset = newY;
+                    setTranslate(newX, newY, overlayImage);
+                }
+            }
+
+            function setTranslate(xPos, yPos, element) {
+                element.style.transform = "translate3d(" + xPos + "px, " + yPos + "px, 0)";
             }
 
             resizeSlider.addEventListener('input', handleResize);
