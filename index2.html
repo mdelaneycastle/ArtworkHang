@@ -39,8 +39,6 @@
         <div id="square"></div>
     </div>
 
-    <p id="distance"></p>
-
     <label for="realSize">Real Size of the Line (cm):</label>
     <input type="number" id="realSize" onchange="updateSquareSize()" step="any">
 
@@ -74,8 +72,6 @@
                     Math.pow(points[1].y - points[0].y, 2)
                 );
 
-                document.getElementById('distance').innerText = `Distance: ${distance.toFixed(2)} pixels`;
-
                 // Calculate the size of the square based on the real size of the line and predetermined square size
                 const realSize = parseFloat(document.getElementById('realSize').value);
                 if (!isNaN(realSize) && realSize > 0) {
@@ -107,7 +103,6 @@
             while (container.firstChild) {
                 container.removeChild(container.firstChild);
             }
-            document.getElementById('distance').innerText = '';
             container.style.backgroundImage = ''; // Reset background image
         }
 
