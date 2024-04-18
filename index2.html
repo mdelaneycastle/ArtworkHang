@@ -21,15 +21,15 @@
             border-radius: 50%; /* Make the point circular */
         }
         #square {
-    position: absolute;
-    width: 100px; /* Initial size of the square (100x100 pixels) */
-    height: 100px;
-    cursor: move; /* Set cursor to indicate draggable element */
-    background-image: url('image1.jpg'); /* Set background image */
-    background-size: cover;
-    background-position: center;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Adjusted shadow properties */
-}
+            position: absolute;
+            width: 100px; /* Initial size of the square (100x100 pixels) */
+            height: 100px;
+            cursor: move; /* Set cursor to indicate draggable element */
+            background-image: url('image1.jpg'); /* Set background image */
+            background-size: cover;
+            background-position: center;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Adjusted shadow properties */
+        }
 
     </style>
 </head>
@@ -48,7 +48,7 @@
     <button onclick="togglePoints()">Hide Points</button>
 
     <input type="range" min="-50" max="50" value="0" id="perspectiveSlider" onchange="adjustPerspective(this.value)">
-<span>Perspective Warp</span>
+    <span>Perspective Warp</span>
 
     <script>
         let points = [];
@@ -110,11 +110,21 @@
             const realSize = parseFloat(document.getElementById('realSize').value);
             if (!isNaN(realSize) && realSize > 0) {
                 // Recalculate the size of the square based on the real size of the line
-                const distance = parseFloat(document.getElementById('distance').innerText.split(':')[1]);
+                const distance = calculateDistance();
                 const scale = (initialSquareSize / realSize) * distance; // Adjusted scale based on ratio
                 document.getElementById('square').style.width = `${scale}px`;
                 document.getElementById('square').style.height = `${scale}px`;
             }
+        }
+
+        function calculateDistance() {
+            if (points.length === 2) {
+                return Math.sqrt(
+                    Math.pow(points[1].x - points[0].x, 2) +
+                    Math.pow(points[1].y - points[0].y, 2)
+                );
+            }
+            return 0;
         }
 
         function setImageBackground(event) {
