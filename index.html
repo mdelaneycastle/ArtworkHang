@@ -63,6 +63,14 @@
             margin-top: 10px;
             width: 80%;
         }
+
+        .measurement-line {
+            position: absolute;
+            pointer-events: none;
+            z-index: 1000;
+            background-color: red; /* Change the color of the measurement line */
+            opacity: 0.5; /* Adjust the opacity of the measurement line */
+        }
     </style>
 </head>
 <body>
@@ -77,74 +85,123 @@
         <button class="overlayButton" data-src="image3.jpg">Image 3</button>
         <p id="pixelSize">Pixel Size: </p>
         <input type="range" id="resizeSlider" min="80" max="120" value="100" step="1">
-        <button id="toggleMeasureMode" class="overlayButton">Toggle Measurement Mode</button>
+        <button id="toggleMeasureMode" class="overlayButton" onclick="toggleMeasurementMode()">Toggle Measurement Mode</button>
     </div>
     <script>
-        // Functionality for entering measurement mode
-        let isMeasureMode = false;
-        let startPoint = null;
-        let endPoint = null;
+        var overlayImage = document.getElementById('overlayImage');
+        var measuringDistance = false; // Track whether in measurement mode
+        var startPoint = null;
+        var endPoint = null;
+        var measurementLine = null;
 
-        function enterMeasureMode() {
-            isMeasureMode = true;
-            overlayImage.removeEventListener('mousedown', startDrag); // Disable dragging during measurement mode
-            overlayImage.style.cursor = 'crosshair'; // Change cursor to indicate measurement mode
-        }
-
-        function exitMeasureMode() {
-            isMeasureMode = false;
-            overlayImage.addEventListener('mousedown', startDrag); // Re-enable dragging after exiting measurement mode
-            overlayImage.style.cursor = 'move'; // Change cursor back to default
-        }
-
-        // Function to handle click events during measurement mode
-        overlayImage.addEventListener('click', function(e) {
-            if (isMeasureMode) {
-                const rect = overlayImage.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                if (!startPoint) {
-                    startPoint = { x, y };
-                } else if (!endPoint) {
-                    endPoint = { x, y };
-                    calculateDistance(startPoint, endPoint);
-                }
+        // Function to enter/exit measurement mode
+        function toggleMeasurementMode() {
+            measuringDistance = !measuringDistance;
+            if (!measuringDistance) {
+                removeMeasurementLine();
             }
-        });
-
-        // Function to calculate distance between two points
-        function calculateDistance(point1, point2) {
-            const distance = Math.sqrt(Math.pow(point2.x - point1.x, 2) + Math.pow(point2.y - point1.y, 2));
-            alert('Distance: ' + distance.toFixed(2) + ' pixels'); // Display distance (can be adjusted to display in cm)
-            // Reset points after measurement
-            startPoint = null;
-            endPoint = null;
         }
-
-        // Functionality for toggling measurement mode
-        document.getElementById('toggleMeasureMode').addEventListener('click', function() {
-            if (isMeasureMode) {
-                exitMeasureMode();
-            } else {
-                enterMeasureMode();
-            }
-        });
 
         // Function to handle image resizing
         function handleResize() {
+            const resizeSlider = document.getElementById('resizeSlider');
             const scale = resizeSlider.value / 100;
             overlayImage.style.transform = 'scale(' + scale + ')';
         }
 
+        // Function to handle overlay image selection
+        function selectOverlayImage(src) {
+            overlayImage.src = src;
+            overlayImage.style.display = 'block'; // Ensure the overlay image is displayed
+            updatePixelSize(src);
+        }
+
+        // Function to update pixel size display
+        function updatePixelSize(src) {
+            const img = new Image();
+            img.src = src;
+            img.onload = function() {
+                const pixelSizeDisplay = document.getElementById('pixelSize');
+                pixelSizeDisplay.textContent = 'Pixel Size: ' + img.width + 'x' + img.height;
+            };
+        }
+
+        // Functionality for dragging overlay image
+        function startDrag(e) {
+            isDragging = true;
+            initialX = e.clientX - xOffset;
+            initialY = e.clientY - yOffset;
+        }
+
+        function endDrag() {
+            isDragging = false;
+        }
+
+        function drag(e) {
+            if (isDragging) {
+                e.preventDefault();
+                const scale = parseFloat(overlayImage.style.transform.match(/scale\((.*?)\)/)[1]);
+                const newX = e.clientX - initialX;
+                const newY = e.clientY - initialY;
+                xOffset = newX;
+                yOffset = newY;
+                setTranslate(newX, newY, overlayImage, scale);
+            }
+        }
+
+        function setTranslate(xPos, yPos, element, scale) {
+            element.style.transform = "translate3d(" + xPos + "px, " + yPos + "px, 0) scale(" + scale + ")";
+        }
+
+        // Functionality for drawing measurement line
+        function handleMouseDown(event) {
+            if (measuringDistance) {
+                if (!startPoint) {
+                    startPoint = { x: event.clientX, y: event.clientY };
+                } else if (!endPoint) {
+                    endPoint = { x: event.clientX, y: event.clientY };
+                    drawMeasurementLine();
+                }
+            } else {
+                startDrag(event);
+            }
+        }
+
+        function drawMeasurementLine() {
+            const deltaX = endPoint.x - startPoint.x;
+            const deltaY = endPoint.y - startPoint.y;
+            const length = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+            const angle = Math.atan2(deltaY, deltaX) * 180 / Math.PI;
+
+            removeMeasurementLine();
+
+            measurementLine = document.createElement('div');
+            measurementLine.className = 'measurement-line';
+            measurementLine.style.position = 'absolute';
+            measurementLine.style.left = startPoint.x + 'px';
+            measurementLine.style.top = startPoint.y + 'px';
+            measurementLine.style.width = length + 'px';
+            measurementLine.style.height = '2px'; // Set line thickness here
+            measurementLine.style.transform = 'rotate(' + angle + 'deg)';
+            
+            document.body.appendChild(measurementLine);
+        }
+
+        function removeMeasurementLine() {
+            if (measurementLine) {
+                measurementLine.parentNode.removeChild(measurementLine);
+                measurementLine = null;
+            }
+        }
+
+        // Add event listeners
         document.addEventListener('DOMContentLoaded', function() {
             const uploadInput = document.getElementById('uploadInput');
             const uploadedImage = document.getElementById('uploadedImage');
-            const overlayImage = document.getElementById('overlayImage');
             const overlayButtons = document.querySelectorAll('.overlayButton');
-            const pixelSizeDisplay = document.getElementById('pixelSize');
             const resizeSlider = document.getElementById('resizeSlider');
 
-            // Function to display uploaded image
+            // Event listener for file input
             uploadInput.addEventListener('change', function(e) {
                 const file = e.target.files[0];
                 const reader = new FileReader();
@@ -154,28 +211,18 @@
                 reader.readAsDataURL(file);
             });
 
-            // Function to handle overlay image selection
+            // Event listeners for overlay image buttons
             overlayButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     const src = this.getAttribute('data-src');
-                    overlayImage.src = src;
-                    overlayImage.style.display = 'block'; // Ensure the overlay image is displayed
-                    updatePixelSize(src);
+                    selectOverlayImage(src);
                 });
             });
 
-            // Function to update pixel size display
-            function updatePixelSize(src) {
-                const img = new Image();
-                img.src = src;
-                img.onload = function() {
-                    pixelSizeDisplay.textContent = 'Pixel Size: ' + img.width + 'x' + img.height;
-                };
-            }
-
+            // Event listener for resize slider
             resizeSlider.addEventListener('input', handleResize);
 
-            // Functionality for dragging overlay image
+            // Event listeners for dragging overlay image
             let isDragging = false;
             let initialX, initialY;
             let xOffset = 0;
@@ -186,31 +233,9 @@
             overlayImage.addEventListener('mouseleave', endDrag);
             overlayImage.addEventListener('mousemove', drag);
 
-            function startDrag(e) {
-                isDragging = true;
-                initialX = e.clientX - xOffset;
-                initialY = e.clientY - yOffset;
-            }
-
-            function endDrag() {
-                isDragging = false;
-            }
-
-            function drag(e) {
-                if (isDragging) {
-                    e.preventDefault();
-                    const scale = parseFloat(overlayImage.style.transform.match(/scale\((.*?)\)/)[1]);
-                    const newX = e.clientX - initialX;
-                    const newY = e.clientY - initialY;
-                    xOffset = newX;
-                    yOffset = newY;
-                    setTranslate(newX, newY, overlayImage, scale);
-                }
-            }
-
-            function setTranslate(xPos, yPos, element, scale) {
-                element.style.transform = "translate3d(" + xPos + "px, " + yPos + "px, 0) scale(" + scale + ")";
-            }
+            // Event listener for measurement mode
+            document.getElementById('toggleMeasureMode').addEventListener('click', toggleMeasurementMode);
+            document.addEventListener('mousedown', handleMouseDown);
         });
     </script>
 </body>
