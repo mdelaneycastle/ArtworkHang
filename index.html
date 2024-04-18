@@ -43,10 +43,10 @@
     </style>
 </head>
 <body>
-    <h1>Decorate Your Room!</h1>
+    <h1>Decorate Your Room</h1>
     <input type="file" accept="image/*" id="fileInput" onchange="loadImage(event)">
-    <div id="imageContainer">
-        <img id="uploadedImage" src="" alt="Uploaded Image" onmousedown="startDrawingLine(event)" onmousemove="drawLine(event)" onmouseup="endDrawingLine(event)">
+    <div id="imageContainer" onmousedown="startDrawing(event)" onmousemove="drawLine(event)" onmouseup="endDrawing(event)">
+        <img id="uploadedImage" src="" alt="Uploaded Image">
     </div>
     <div id="artworkSelector">
         <img class="artworkOption" src="image1.jpg" alt="Artwork 1" onclick="selectArtwork('image1.jpg')">
@@ -88,8 +88,9 @@
             document.getElementById('imageContainer').appendChild(selectedArtwork);
         }
 
-        function startDrawingLine(event) {
+        function startDrawing(event) {
             startPoint = { x: event.clientX, y: event.clientY };
+            drawLine(event);
         }
 
         function drawLine(event) {
@@ -104,7 +105,7 @@
             document.body.appendChild(measurementLine);
         }
 
-        function endDrawingLine(event) {
+        function endDrawing(event) {
             if (!startPoint) return;
 
             endPoint = { x: event.clientX, y: event.clientY };
