@@ -24,7 +24,7 @@
             position: absolute;
             width: 100px; /* Initial size of the square (100x100 pixels) */
             height: 100px;
-            background-color: blue; /* Set the color of the square */
+            background-color: green; /* Set the color of the square */
             cursor: move; /* Set cursor to indicate draggable element */
         }
     </style>
@@ -53,8 +53,10 @@
         const initialSquareSize = 100; // Initial size of the square in cm
         let isDragging = false;
         let offsetX, offsetY;
+        let pointsVisible = true;
 
         function handleClick(event) {
+            if (!pointsVisible) return; // Don't add points if points are hidden
             const container = document.getElementById('container');
             const rect = container.getBoundingClientRect();
             const x = event.clientX - rect.left;
@@ -166,6 +168,7 @@
             for (let i = 0; i < points.length; i++) {
                 points[i].style.display = points[i].style.display === 'none' ? 'block' : 'none';
             }
+            pointsVisible = !pointsVisible; // Toggle points visibility flag
         }
     </script>
 </body>
