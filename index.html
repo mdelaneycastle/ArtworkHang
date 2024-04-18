@@ -124,10 +124,11 @@
 
 
         function handleMouseUp(event) {
-            if (!measuringDistance) {
-                handleMouseUp(event);
-            }
-        }
+    if (!measuringDistance) {
+        // Call the appropriate function for handling mouse up events when not in measurement mode
+        moveArtwork(event);
+    }
+}
 
         function calculateDistance() {
             if (startPoint && endPoint) {
