@@ -43,19 +43,22 @@
     </style>
 </head>
 <body>
-    <h1>Decorate Your Room!</h1>
+    <h1>Decorate Your Room</h1>
     <input type="file" accept="image/*" id="fileInput" onchange="loadImage(event)">
     <div id="imageContainer" onmousedown="startDrawing(event)" onmousemove="drawLine(event)" onmouseup="endDrawing(event)">
         <img id="uploadedImage" src="" alt="Uploaded Image">
     </div>
+    <div id="sliderContainer">
+        <input type="range" min="80" max="120" value="100" id="slider" oninput="resizeArtwork()">
+    </div>
+     <div id="artworkSize"></div>
     <div id="artworkSelector">
         <img class="artworkOption" src="image1.jpg" alt="Artwork 1" onclick="selectArtwork('image1.jpg')">
         <img class="artworkOption" src="image2.jpg" alt="Artwork 2" onclick="selectArtwork('image2.jpg')">
         <img class="artworkOption" src="image3.jpg" alt="Artwork 3" onclick="selectArtwork('image3.jpg')">
     </div>
-    <div id="sliderContainer">
-        <input type="range" min="80" max="120" value="100" id="slider" oninput="resizeArtwork()">
-    </div>
+    
+   
 
     <script>
         var selectedArtwork = null;
@@ -87,6 +90,7 @@
             selectedArtwork.style.boxShadow = '3px 3px 5px rgba(0, 0, 0, 0.5)';
 
             document.getElementById('imageContainer').appendChild(selectedArtwork);
+            displaySize();
         }
 
         function startDrawing(event) {
@@ -110,6 +114,7 @@
                         // Resize artwork
                         selectedArtwork.style.width = (selectedArtwork.width * scaleFactor) + 'px';
                         selectedArtwork.style.transform = 'translate(-50%, -50%)';
+                        displaySize();
                     } else {
                         alert('Invalid measurement. Please enter a valid number.');
                     }
@@ -124,19 +129,16 @@
         }
 
         function drawLine(event) {
-    if (!firstPointPlaced) {
-        // Create a simple red line from start point to current mouse position
-        if (!startPoint) return;
-        clearMeasurementLine();
-
-        measurementLine = document.createElement('div');
-        measurementLine.className = 'measurement-line';
-        measurementLine.style.borderTop = '1px solid red';
-        measurementLine.style.width = Math.sqrt(Math.pow(event.clientX - startPoint.x, 2) + Math.pow(event.clientY - startPoint.y, 2)) + 'px';
-        measurementLine.style.transform = `translate(${startPoint.x}px, ${startPoint.y}px) rotate(${Math.atan2(event.clientY - startPoint.y, event.clientX - startPoint.x)}rad)`;
-        document.body.appendChild(measurementLine);
-    }
-}
+            if (!firstPointPlaced) {
+                clearMeasurementLine();
+                measurementLine = document.createElement('div');
+                measurementLine.className = 'measurement-line';
+                measurementLine.style.borderTop = '1px solid red';
+                measurementLine.style.width = Math.sqrt(Math.pow(event.clientX - startPoint.x, 2) + Math.pow(event.clientY - startPoint.y, 2)) + 'px';
+                measurementLine.style.transform = 'translate(' + startPoint.x + 'px, ' + startPoint.y + 'px) rotate(' + Math.atan2(event.clientY - startPoint.y, event.clientX - startPoint.x) + 'rad)';
+                document.body.appendChild(measurementLine);
+            }
+        }
 
         function endDrawing(event) {
             if (!firstPointPlaced) {
@@ -158,6 +160,14 @@
                 var newSize = slider.value;
                 selectedArtwork.style.width = newSize + 'px';
                 selectedArtwork.style.transform = 'translate(-50%, -50%)';
+                displaySize();
+            }
+        }
+
+        function displaySize() {
+            if (selectedArtwork) {
+                var sizeDisplay = document.getElementById('artworkSize');
+                sizeDisplay.textContent = 'Artwork Size: ' + selectedArtwork.width + 'px x ' + selectedArtwork.height + 'px';
             }
         }
     </script>
