@@ -43,7 +43,7 @@
     </style>
 </head>
 <body>
-    <h1>Decorate Your Room!!</h1>
+    <h1>Decorate Your Room!</h1>
     <input type="file" accept="image/*" id="fileInput" onchange="loadImage(event)">
     <div id="imageContainer" onmousedown="handleMouseDown(event)" onmousemove="drawLine(event)" onmouseup="handleMouseUp(event)">
         <img id="uploadedImage" src="" alt="Uploaded Image">
@@ -101,6 +101,7 @@
                 } else {
                     if (!endPoint) {
                         endPoint = { x: event.clientX, y: event.clientY };
+                        drawLine(event); // Draw line to second point
 
                         // Calculate distance between points
                         var distance = Math.sqrt(Math.pow(endPoint.x - startPoint.x, 2) + Math.pow(endPoint.y - startPoint.y, 2));
@@ -165,7 +166,7 @@
             if (selectedArtwork) {
                 var newSize = slider.value;
                 selectedArtwork.style.width = newSize + 'px';
-                selectedArtwork.style.transform = 'translate(-50%, -50%)';
+                selectedArtwork.style.transform = 'translate(-50%, -50)';
                 displaySize();
             }
         }
