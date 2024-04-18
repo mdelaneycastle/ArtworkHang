@@ -29,39 +29,54 @@
 
     <script>
         let points = [];
+        let distanceCalculated = false;
 
-function handleClick(event) {
-    const container = document.getElementById('container');
-    const rect = container.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
+        function handleClick(event) {
+            const container = document.getElementById('container');
+            const rect = container.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
 
-    points.push({ x, y });
+            points.push({ x, y });
 
-    if (points.length === 2) {
-        const distance = Math.sqrt(
-            Math.pow(points[1].x - points[0].x, 2) +
-            Math.pow(points[1].y - points[0].y, 2)
-        );
+            if (points.length === 2 && !distanceCalculated) {
+                const distance = Math.sqrt(
+                    Math.pow(points[1].x - points[0].x, 2) +
+                    Math.pow(points[1].y - points[0].y, 2)
+                );
 
-        document.getElementById('distance').innerText = `Distance: ${distance.toFixed(2)} pixels`;
-    }
+                document.getElementById('distance').innerText = `Distance: ${distance.toFixed(2)} pixels`;
 
-    if (points.length > 2) {
-        points = points.slice(1); // Reset points array after the second click
-    }
+                distanceCalculated = true;
+            }
 
-    drawPoint(x, y);
-}
+            if (points.length > 2) {
+                points = points.slice(1); // Reset points array after the second click
+            }
 
-function drawPoint(x, y) {
-    const container = document.getElementById('container');
-    const point = document.createElement('div');
-    point.className = 'point';
-    point.style.left = `${x}px`;
-    point.style.top = `${y}px`;
-    container.appendChild(point);
-}
+            drawPoint(x, y);
+
+            if (distanceCalculated && points.length === 2) {
+                clearPoints();
+                distanceCalculated = false;
+            }
+        }
+
+        function drawPoint(x, y) {
+            const container = document.getElementById('container');
+            const point = document.createElement('div');
+            point.className = 'point';
+            point.style.left = `${x}px`;
+            point.style.top = `${y}px`;
+            container.appendChild(point);
+        }
+
+        function clearPoints() {
+            const container = document.getElementById('container');
+            while (container.firstChild) {
+                container.removeChild(container.firstChild);
+            }
+        }
     </script>
 </body>
 </html>
