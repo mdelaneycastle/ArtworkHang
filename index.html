@@ -43,10 +43,10 @@
     </style>
 </head>
 <body>
-    <h1>Decorate Your Room</h1>
+    <h1>Decorate Your Room!</h1>
     <input type="file" accept="image/*" id="fileInput" onchange="loadImage(event)">
     <div id="imageContainer">
-        <img id="uploadedImage" src="" alt="Uploaded Image">
+        <img id="uploadedImage" src="" alt="Uploaded Image" onmousedown="startDrawingLine(event)" onmousemove="drawLine(event)" onmouseup="endDrawingLine(event)">
     </div>
     <div id="artworkSelector">
         <img class="artworkOption" src="image1.jpg" alt="Artwork 1" onclick="selectArtwork('image1.jpg')">
@@ -84,75 +84,59 @@
             selectedArtwork.style.top = '50%';
             selectedArtwork.style.transform = 'translate(-50%, -50%)';
             selectedArtwork.style.boxShadow = '3px 3px 5px rgba(0, 0, 0, 0.5)';
-            selectedArtwork.onmousedown = startDrag;
-            selectedArtwork.ontouchstart = startDragTouch;
 
             document.getElementById('imageContainer').appendChild(selectedArtwork);
         }
 
-        function startDrag(event) {
-            event.preventDefault();
-            var offsetX = event.clientX - selectedArtwork.getBoundingClientRect().left;
-            var offsetY = event.clientY - selectedArtwork.getBoundingClientRect().top;
-
-            document.onmousemove = function(event) {
-                moveArtwork(event, offsetX, offsetY);
-            };
-
-            document.onmouseup = function() {
-                document.onmousemove = null;
-                document.onmouseup = null;
-            };
+        function startDrawingLine(event) {
+            startPoint = { x: event.clientX, y: event.clientY };
         }
 
-        function startDragTouch(event) {
-            var touch = event.touches[0];
-            var offsetX = touch.clientX - selectedArtwork.getBoundingClientRect().left;
-            var offsetY = touch.clientY - selectedArtwork.getBoundingClientRect().top;
+        function drawLine(event) {
+            if (!startPoint) return;
 
-            document.ontouchmove = function(event) {
-                moveArtworkTouch(event, offsetX, offsetY);
-            };
-
-            document.ontouchend = function() {
-                document.ontouchmove = null;
-                document.ontouchend = null;
-            };
+            clearMeasurementLine();
+            measurementLine = document.createElement('div');
+            measurementLine.className = 'measurement-line';
+            measurementLine.style.borderTop = '1px solid red';
+            measurementLine.style.width = Math.sqrt(Math.pow(event.clientX - startPoint.x, 2) + Math.pow(event.clientY - startPoint.y, 2)) + 'px';
+            measurementLine.style.transform = 'translate(' + startPoint.x + 'px, ' + startPoint.y + 'px) rotate(' + Math.atan2(event.clientY - startPoint.y, event.clientX - startPoint.x) + 'rad)';
+            document.body.appendChild(measurementLine);
         }
 
-        function moveArtwork(event, offsetX, offsetY) {
-            var x = event.clientX - offsetX;
-            var y = event.clientY - offsetY;
+        function endDrawingLine(event) {
+            if (!startPoint) return;
 
-            var imageContainer = document.getElementById('imageContainer');
-            var minX = imageContainer.getBoundingClientRect().left;
-            var maxX = imageContainer.getBoundingClientRect().right - selectedArtwork.width;
-            var minY = imageContainer.getBoundingClientRect().top;
-            var maxY = imageContainer.getBoundingClientRect().bottom - selectedArtwork.height;
+            endPoint = { x: event.clientX, y: event.clientY };
 
-            x = Math.max(minX, Math.min(x, maxX));
-            y = Math.max(minY, Math.min(y, maxY));
+            // Calculate distance between points
+            var distance = Math.sqrt(Math.pow(endPoint.x - startPoint.x, 2) + Math.pow(endPoint.y - startPoint.y, 2));
 
-            selectedArtwork.style.left = x + 'px';
-            selectedArtwork.style.top = y + 'px';
+            // Prompt user for measurement
+            var measurement = prompt('Please enter the real-world measurement between the two points (in centimeters):');
+
+            if (measurement !== null && !isNaN(measurement) && measurement > 0) {
+                // Calculate scale factor
+                var scaleFactor = parseFloat(measurement) / distance;
+
+                // Resize artwork
+                selectedArtwork.style.width = (selectedArtwork.width * scaleFactor) + 'px';
+                selectedArtwork.style.transform = 'translate(-50%, -50%)';
+            } else {
+                alert('Invalid measurement. Please enter a valid number.');
+            }
+
+            // Reset points and line
+            startPoint = null;
+            endPoint = null;
+            clearMeasurementLine();
         }
 
-        function moveArtworkTouch(event, offsetX, offsetY) {
-            var touch = event.touches[0];
-            var x = touch.clientX - offsetX;
-            var y = touch.clientY - offsetY;
-
-            var imageContainer = document.getElementById('imageContainer');
-            var minX = imageContainer.getBoundingClientRect().left;
-            var maxX = imageContainer.getBoundingClientRect().right - selectedArtwork.width;
-            var minY = imageContainer.getBoundingClientRect().top;
-            var maxY = imageContainer.getBoundingClientRect().bottom - selectedArtwork.height;
-
-            x = Math.max(minX, Math.min(x, maxX));
-            y = Math.max(minY, Math.min(y, maxY));
-
-            selectedArtwork.style.left = x + 'px';
-            selectedArtwork.style.top = y + 'px';
+        function clearMeasurementLine() {
+            if (measurementLine) {
+                measurementLine.remove();
+                measurementLine = null;
+            }
         }
 
         function resizeArtwork() {
@@ -163,61 +147,6 @@
                 selectedArtwork.style.transform = 'translate(-50%, -50%)';
             }
         }
-
-        function measureDistance(event) {
-            if (!startPoint) {
-                startPoint = { x: event.clientX, y: event.clientY };
-            } else if (!endPoint) {
-                endPoint = { x: event.clientX, y: event.clientY };
-
-                // Calculate distance between points
-                var distance = Math.sqrt(Math.pow(endPoint.x - startPoint.x, 2) + Math.pow(endPoint.y - startPoint.y, 2));
-
-                // Prompt user for measurement
-                var measurement = prompt('Please enter the real-world measurement between the two points (in centimeters):');
-
-                if (measurement !== null && !isNaN(measurement) && measurement > 0) {
-                    // Calculate scale factor
-                    var scaleFactor = parseFloat(measurement) / distance;
-
-                    // Resize artwork
-                    selectedArtwork.style.width = (selectedArtwork.width * scaleFactor) + 'px';
-                    selectedArtwork.style.transform = 'translate(-50%, -50%)';
-                } else {
-                    alert('Invalid measurement. Please enter a valid number.');
-                }
-
-                // Reset points
-                startPoint = null;
-                endPoint = null;
-            }
-        }
-
-        function clearMeasurementLine() {
-            if (measurementLine) {
-                measurementLine.remove();
-                measurementLine = null;
-            }
-        }
-
-        document.addEventListener('mousemove', function(event) {
-            if (startPoint && !endPoint) {
-                // Draw line between points
-                clearMeasurementLine();
-                measurementLine = document.createElement('div');
-                measurementLine.className = 'measurement-line';
-                measurementLine.style.borderTop = '1px solid red';
-                measurementLine.style.width = Math.sqrt(Math.pow(event.clientX - startPoint.x, 2) + Math.pow(event.clientY - startPoint.y, 2)) + 'px';
-                measurementLine.style.transform = 'translate(' + startPoint.x + 'px, ' + startPoint.y + 'px) rotate(' + Math.atan2(event.clientY - startPoint.y, event.clientX - startPoint.x) + 'rad)';
-                document.body.appendChild(measurementLine);
-            } else {
-                clearMeasurementLine();
-            }
-        });
-
-        document.addEventListener('mouseup', function() {
-            clearMeasurementLine();
-        });
     </script>
 </body>
 </html>
