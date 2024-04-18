@@ -43,7 +43,7 @@
     </style>
 </head>
 <body>
-    <h1>Decorate Your Room!</h1>
+    <h1>Decorate Your Room!!</h1>
     <input type="file" accept="image/*" id="fileInput" onchange="loadImage(event)">
     <div id="imageContainer" onmousedown="handleMouseDown(event)" onmousemove="drawLine(event)" onmouseup="handleMouseUp(event)">
         <img id="uploadedImage" src="" alt="Uploaded Image">
@@ -57,6 +57,7 @@
         <input type="range" min="80" max="120" value="100" id="slider" oninput="resizeArtwork()">
     </div>
     <div id="artworkSize"></div>
+    <button onclick="enterMeasurementMode()">Enter Measurement Mode</button>
 
     <script>
         var selectedArtwork = null;
@@ -133,6 +134,7 @@
         }
 
         function startDrag(event) {
+            if (!selectedArtwork) return;
             event.preventDefault();
             startPoint = { x: event.clientX, y: event.clientY };
 
@@ -200,6 +202,10 @@
                     firstPointPlaced = true;
                 }
             }
+        }
+
+        function enterMeasurementMode() {
+            measuringDistance = true;
         }
     </script>
 </body>
