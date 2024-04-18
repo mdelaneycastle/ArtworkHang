@@ -27,9 +27,10 @@
 
     <p id="distance"></p>
 
+    <button onclick="resetMeasurement()">Reset</button>
+
     <script>
         let points = [];
-        let distanceCalculated = false;
 
         function handleClick(event) {
             const container = document.getElementById('container');
@@ -46,9 +47,6 @@
                 );
 
                 document.getElementById('distance').innerText = `Distance: ${distance.toFixed(2)} pixels`;
-
-                distanceCalculated = true;
-                clearPoints();
             }
 
             if (points.length > 2) {
@@ -67,11 +65,13 @@
             container.appendChild(point);
         }
 
-        function clearPoints() {
+        function resetMeasurement() {
+            points = [];
             const container = document.getElementById('container');
             while (container.firstChild) {
                 container.removeChild(container.firstChild);
             }
+            document.getElementById('distance').innerText = '';
         }
     </script>
 </body>
