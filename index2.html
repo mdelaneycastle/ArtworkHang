@@ -15,7 +15,7 @@
             position: absolute;
             width: 10px; /* Set the size of your point */
             height: 10px;
-            background-color: blue; /* Set the color of your point */
+            background-color: red; /* Set the color of your point */
             border-radius: 50%; /* Make the point circular */
         }
     </style>
@@ -39,7 +39,7 @@
 
             points.push({ x, y });
 
-            if (points.length === 2 && !distanceCalculated) {
+            if (points.length === 2) {
                 const distance = Math.sqrt(
                     Math.pow(points[1].x - points[0].x, 2) +
                     Math.pow(points[1].y - points[0].y, 2)
