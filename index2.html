@@ -19,13 +19,12 @@
             height: 10px;
             background-color: red; /* Set the color of your point */
             border-radius: 50%; /* Make the point circular */
-            opacity:0.5;
         }
         #square {
             position: absolute;
             width: 100px; /* Initial size of the square (100x100 pixels) */
             height: 100px;
-            background-color: green; /* Set the color of the square */
+            background-color: blue; /* Set the color of the square */
             cursor: move; /* Set cursor to indicate draggable element */
         }
     </style>
@@ -47,6 +46,7 @@
     <input type="file" id="imageInput" accept="image/*" onchange="setImageBackground(event)">
 
     <button onclick="resetMeasurement()">Reset</button>
+    <button onclick="togglePoints()">Hide Points</button>
 
     <script>
         let points = [];
@@ -158,6 +158,13 @@
 
                 square.style.left = `${newX}px`;
                 square.style.top = `${newY}px`;
+            }
+        }
+
+        function togglePoints() {
+            const points = document.getElementsByClassName('point');
+            for (let i = 0; i < points.length; i++) {
+                points[i].style.display = points[i].style.display === 'none' ? 'block' : 'none';
             }
         }
     </script>
