@@ -15,7 +15,7 @@
             position: absolute;
             width: 10px; /* Set the size of your point */
             height: 10px;
-            background-color: red; /* Set the color of your point */
+            background-color: blue; /* Set the color of your point */
             border-radius: 50%; /* Make the point circular */
         }
     </style>
@@ -48,6 +48,7 @@
                 document.getElementById('distance').innerText = `Distance: ${distance.toFixed(2)} pixels`;
 
                 distanceCalculated = true;
+                clearPoints();
             }
 
             if (points.length > 2) {
@@ -55,11 +56,6 @@
             }
 
             drawPoint(x, y);
-
-            if (distanceCalculated && points.length === 2) {
-                clearPoints();
-                distanceCalculated = false;
-            }
         }
 
         function drawPoint(x, y) {
