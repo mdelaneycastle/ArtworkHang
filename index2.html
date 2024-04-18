@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel Distance Measurement</title>
+    <style>
+        #container {
+            position: relative;
+            width: 500px; /* Set the width and height of your container */
+            height: 500px;
+            border: 1px solid black;
+        }
+        .point {
+            position: absolute;
+            width: 10px; /* Set the size of your point */
+            height: 10px;
+            background-color: red; /* Set the color of your point */
+            border-radius: 50%; /* Make the point circular */
+        }
+    </style>
+</head>
+<body>
+    <div id="container" onclick="handleClick(event)">
+        <!-- Points will be dynamically added here -->
+    </div>
+
+    <p id="distance"></p>
+
+    <script>
+        let points = [];
+
+function handleClick(event) {
+    const container = document.getElementById('container');
+    const rect = container.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+
+    points.push({ x, y });
+
+    if (points.length === 2) {
+        const distance = Math.sqrt(
+            Math.pow(points[1].x - points[0].x, 2) +
+            Math.pow(points[1].y - points[0].y, 2)
+        );
+
+        document.getElementById('distance').innerText = `Distance: ${distance.toFixed(2)} pixels`;
+    }
+
+    if (points.length > 2) {
+        points = points.slice(1); // Reset points array after the second click
+    }
+
+    drawPoint(x, y);
+}
+
+function drawPoint(x, y) {
+    const container = document.getElementById('container');
+    const point = document.createElement('div');
+    point.className = 'point';
+    point.style.left = `${x}px`;
+    point.style.top = `${y}px`;
+    container.appendChild(point);
+}
+    </script>
+</body>
+</html>
