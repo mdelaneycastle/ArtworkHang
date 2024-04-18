@@ -59,18 +59,12 @@
         }
 
         #overlayImage {
+            display: none;
             position: absolute;
             max-width: 100%; /* Adjust the maximum width */
             max-height: 100%; /* Adjust the maximum height */
             /* Add shadow */
             box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5); /* Adjust the values for your desired shadow effect */
-        }
-
-        #drawingCanvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            pointer-events: none; /* Make canvas transparent to mouse events */
         }
     </style>
 </head>
@@ -79,7 +73,6 @@
     <div id="imageContainer">
         <img id="overlayImage" src="#" alt="Overlay Image">
         <img id="uploadedImage" src="#" alt="Uploaded Image">
-        <canvas id="drawingCanvas"></canvas> <!-- Canvas for drawing -->
     </div>
     <div id="overlayOptions">
         <button class="overlayButton" data-src="image1.jpg"><img src="image1.jpg" alt="Image 1"></button>
@@ -93,61 +86,9 @@
             const uploadInput = document.getElementById('uploadInput');
             const uploadedImage = document.getElementById('uploadedImage');
             const overlayImage = document.getElementById('overlayImage');
-            const drawingCanvas = document.getElementById('drawingCanvas');
             const overlayButtons = document.querySelectorAll('.overlayButton');
             const pixelSizeDisplay = document.getElementById('pixelSize');
             const resizeSlider = document.getElementById('resizeSlider');
-
-            let startPoint = null;
-            let isDrawing = false;
-            let isDragging = false;
-            let initialX, initialY;
-            let xOffset = 0;
-            let yOffset = 0;
-
-            function startDrawing(e) {
-                if (!startPoint) {
-                    startPoint = { x: e.offsetX, y: e.offsetY };
-                } else {
-                    isDrawing = true;
-                    const endPoint = { x: e.offsetX, y: e.offsetY };
-                    const length = calculateLength(startPoint, endPoint);
-                    alert('Length of the line: ' + length.toFixed(2) + ' pixels');
-                    startPoint = null; // Reset start point
-                }
-            }
-
-            function calculateLength(start, end) {
-                const dx = end.x - start.x;
-                const dy = end.y - start.y;
-                return Math.sqrt(dx * dx + dy * dy);
-            }
-
-            function startDrag(e) {
-                isDragging = true;
-                initialX = e.clientX - xOffset;
-                initialY = e.clientY - yOffset;
-            }
-
-            function endDrag() {
-                isDragging = false;
-            }
-
-            function drag(e) {
-                if (isDragging) {
-                    e.preventDefault();
-                    const scale = parseFloat(overlayImage.style.transform.match(/scale\((.*?)\)/)[1]);
-                    const newX = e.clientX - initialX;
-                    const newY = e.clientY - initialY;
-                    xOffset = newX;
-                    yOffset = newY;
-                    setTranslate(newX, newY, overlayImage, scale);
-                }
-            }
-
-            function setTranslate(xPos, yPos, element, scale) {
-                element.style.transform = "translate3d(" + xPos + "px, " + yPos + "px, 0) scale(" + scale + ")";
-            }
 
             // Function to handle image resizing
             function handleResize() {
@@ -186,13 +127,6 @@
             }
 
             resizeSlider.addEventListener('input', handleResize);
-
-            overlayImage.addEventListener('mousedown', startDrag);
-            overlayImage.addEventListener('mouseup', endDrag);
-            overlayImage.addEventListener('mouseleave', endDrag);
-            overlayImage.addEventListener('mousemove', drag);
-
-            drawingCanvas.addEventListener('click', startDrawing);
         });
     </script>
 </body>
