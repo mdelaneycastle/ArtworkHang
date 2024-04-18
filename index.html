@@ -45,9 +45,9 @@
     </style>
 </head>
 <body>
-    <h1>Decorate Your Room!</h1>
+    <h1>Decorate Your Room</h1>
     <input type="file" accept="image/*" id="fileInput" onchange="loadImage(event)">
-    <div id="imageContainer" onmousedown="handleMouseDown(event)" onmousemove="drawLine(event)" onmouseup="handleMouseUp(event)">
+    <div id="imageContainer" ontouchstart="handleTouchStart(event)" ontouchmove="handleTouchMove(event)" ontouchend="handleTouchEnd(event)">
         <img id="uploadedImage" src="" alt="Uploaded Image">
     </div>
     <div id="artworkSelector">
@@ -71,65 +71,68 @@
         var firstPointPlaced = false;
         var measuringDistance = false; // Track whether in measurement mode
 
-        // Function to enter or exit measurement mode
+        // Function to toggle measurement mode
         function toggleMeasurementMode() {
             measuringDistance = !measuringDistance;
-            firstPointPlaced = false;
-            startPoint = null;
-            endPoint = null;
-            removeMeasurementLine();
-        }
-
-        // Mouse event handler to handle both measurement and image movement
-        function handleMouseDown(event) {
             if (!measuringDistance) {
-                startDrag(event);
-            } else {
-                if (!firstPointPlaced) {
-                    startPoint = { x: event.clientX, y: event.clientY };
-                    firstPointPlaced = true;
-                } else {
-                    endPoint = { x: event.clientX, y: event.clientY };
-                    calculateDistance();
-                    firstPointPlaced = false;
-                    startPoint = null;
-                    endPoint = null;
-                    removeMeasurementLine();
-                }
+                removeMeasurementLine();
+                firstPointPlaced = false;
+                startPoint = null;
+                endPoint = null;
             }
         }
 
-        // Mouse event handler to handle mouse up when not in measurement mode
+        // Mouse event handlers
+        function handleMouseDown(event) {
+            if (!measuringDistance) {
+                startDrag(event);
+            }
+        }
+
         function handleMouseUp(event) {
             if (!measuringDistance) {
                 moveArtwork(event);
             }
         }
 
-        // Function to draw a line for measurement
         function drawLine(event) {
             if (measuringDistance && firstPointPlaced) {
-                removeMeasurementLine();
-                measurementLine = document.createElement('div');
-                measurementLine.className = 'measurement-line';
-                measurementLine.style.position = 'absolute';
-
-                var deltaX = event.clientX - startPoint.x;
-                var deltaY = event.clientY - startPoint.y;
-                var length = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-                var angle = Math.atan2(deltaY, deltaX) * 180 / Math.PI;
-
-                measurementLine.style.left = startPoint.x + 'px';
-                measurementLine.style.top = startPoint.y + 'px';
-                measurementLine.style.width = length + 'px';
-                measurementLine.style.height = '2px'; // Set line thickness here
-                measurementLine.style.transform = 'rotate(' + angle + 'deg)';
-                
-                document.body.appendChild(measurementLine);
+                drawMeasurementLine(event.clientX, event.clientY);
             }
         }
 
-        // Function to calculate the distance between two points
+        // Touch event handlers
+        function handleTouchStart(event) {
+            if (!measuringDistance) {
+                startDrag(event.touches[0]);
+            }
+        }
+
+        function handleTouchEnd(event) {
+            if (measuringDistance && firstPointPlaced) {
+                drawMeasurementLine(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
+            }
+        }
+
+        function handleTouchMove(event) {
+            if (measuringDistance && firstPointPlaced) {
+                drawMeasurementLine(event.touches[0].clientX, event.touches[0].clientY);
+            }
+        }
+
+        // Common functions
+        function startDrag(event) {
+            // Implement your drag functionality here
+        }
+
+        function moveArtwork(event) {
+            // Implement your artwork movement functionality here
+        }
+
+        function drawMeasurementLine(x, y) {
+            // Implement drawing of measurement line
+        }
+
         function calculateDistance() {
             if (startPoint && endPoint) {
                 var distance = Math.sqrt(Math.pow(endPoint.x - startPoint.x, 2) + Math.pow(endPoint.y - startPoint.y, 2));
@@ -137,13 +140,15 @@
             }
         }
 
-        // Function to remove the measurement line from the DOM
         function removeMeasurementLine() {
             if (measurementLine) {
                 measurementLine.parentNode.removeChild(measurementLine);
                 measurementLine = null;
             }
         }
+
+    
+
 
         // Function to load uploaded image
         function loadImage(event) {
