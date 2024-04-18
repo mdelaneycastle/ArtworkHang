@@ -81,12 +81,7 @@
         // Function to handle image resizing
         function handleResize() {
             const scale = resizeSlider.value / 100;
-            const clientRect = overlayImage.getBoundingClientRect();
-            const offsetX = clientRect.left + (clientRect.width / 2);
-            const offsetY = clientRect.top + (clientRect.height / 2);
-            const newX = offsetX - (clientRect.width / 2) * (scale - 1);
-            const newY = offsetY - (clientRect.height / 2) * (scale - 1);
-            overlayImage.style.transform = 'translate(' + newX + 'px, ' + newY + 'px) scale(' + scale + ')';
+            overlayImage.style.transform = 'scale(' + scale + ')';
         }
 
         document.addEventListener('DOMContentLoaded', function() {
