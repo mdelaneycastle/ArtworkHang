@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pixel Distance Measurement</title>
     <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
         #container {
             position: relative;
             width: 500px; /* Set the width and height of your container */
@@ -21,16 +28,23 @@
             border-radius: 50%; /* Make the point circular */
         }
         #square {
-    position: absolute;
-    width: 100px; /* Initial size of the square (100x100 pixels) */
-    height: 100px;
-    cursor: move; /* Set cursor to indicate draggable element */
-    background-image: url('image1.jpg'); /* Set background image */
-    background-size: cover;
-    background-position: center;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Adjusted shadow properties */
-}
-
+            position: absolute;
+            width: 100px; /* Initial size of the square (100x100 pixels) */
+            height: 100px;
+            cursor: move; /* Set cursor to indicate draggable element */
+            background-image: url('image1.jpg'); /* Set background image */
+            background-size: cover;
+            background-position: center;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Adjusted shadow properties */
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        .controls button {
+            margin: 0 5px;
+        }
     </style>
 </head>
 <body>
@@ -41,16 +55,18 @@
 
     <p id="distance"></p>
 
-    <label for="realSize">Real Size of the Line (cm):</label>
-    <input type="number" id="realSize" onchange="updateSquareSize()" step="any">
+    <div class="controls">
+        <label for="realSize">Real Size of the Line (cm):</label>
+        <input type="number" id="realSize" onchange="updateSquareSize()" step="any">
+        <input type="file" id="imageInput" accept="image/*" onchange="setImageBackground(event)">
+        <button onclick="resetMeasurement()">Reset</button>
+        <button onclick="togglePoints()">Hide Points</button>
+    </div>
 
-    <input type="file" id="imageInput" accept="image/*" onchange="setImageBackground(event)">
-
-    <button onclick="resetMeasurement()">Reset</button>
-    <button onclick="togglePoints()">Hide Points</button>
-
-    <input type="range" min="-50" max="50" value="0" id="perspectiveSlider" onchange="adjustPerspective(this.value)">
-<span>Perspective Warp</span>
+    <div class="controls">
+        <input type="range" min="-50" max="50" value="0" id="perspectiveSlider" onchange="adjustPerspective(this.value)">
+        <span>Perspective Warp</span>
+    </div>
 
     <script>
         let points = [];
