@@ -12,6 +12,7 @@
             height: 100vh;
             margin: 0;
             font-family: Arial, sans-serif;
+            position: relative; /* Added for positioning canvas */
         }
 
         #imageContainer {
@@ -32,32 +33,20 @@
             margin-top: 20px;
         }
 
-        #overlayImage {
-    display: none;
-    position: absolute;
-    width: 10%;
-    height: auto;
-    max-width: 400px;
-    max-height: 400px;
-    /* Add shadow */
-    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5); /* Adjust the values for your desired shadow effect */
-}
-
         .overlayButton {
-    width: 150px;
-    height: 150px;
-    margin: 10px;
-    padding: 0; /* Remove padding */
-    border: none; /* Remove border */
-    background: none; /* Remove background */
-}
+            width: 150px;
+            height: 150px;
+            margin: 10px;
+            padding: 0;
+            border: none;
+            background: none;
+        }
 
-.overlayButton img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Ensure image covers entire button */
-}
-
+        .overlayButton img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
         #pixelSize {
             margin-top: 10px;
@@ -68,6 +57,13 @@
             margin-top: 10px;
             width: 80%;
         }
+
+        #drawingCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none; /* Make canvas transparent to mouse events */
+        }
     </style>
 </head>
 <body>
@@ -75,28 +71,81 @@
     <div id="imageContainer">
         <img id="overlayImage" src="#" alt="Overlay Image">
         <img id="uploadedImage" src="#" alt="Uploaded Image">
+        <canvas id="drawingCanvas"></canvas> <!-- Canvas for drawing -->
     </div>
     <div id="overlayOptions">
-    <button class="overlayButton" data-src="image1.jpg"><img src="image1.jpg" alt="Image 1"></button>
-    <button class="overlayButton" data-src="image2.jpg"><img src="image2.jpg" alt="Image 2"></button>
-    <button class="overlayButton" data-src="image3.jpg"><img src="image3.jpg" alt="Image 3"></button>
-    <p id="pixelSize">Pixel Size: </p>
-    <input type="range" id="resizeSlider" min="80" max="120" value="100" step="1">
-</div>
+        <button class="overlayButton" data-src="image1.jpg"><img src="image1.jpg" alt="Image 1"></button>
+        <button class="overlayButton" data-src="image2.jpg"><img src="image2.jpg" alt="Image 2"></button>
+        <button class="overlayButton" data-src="image3.jpg"><img src="image3.jpg" alt="Image 3"></button>
+        <p id="pixelSize">Pixel Size: </p>
+        <input type="range" id="resizeSlider" min="80" max="120" value="100" step="1">
+    </div>
     <script>
-        // Function to handle image resizing
-        function handleResize() {
-            const scale = resizeSlider.value / 100;
-            overlayImage.style.transform = 'scale(' + scale + ')';
-        }
-
         document.addEventListener('DOMContentLoaded', function() {
             const uploadInput = document.getElementById('uploadInput');
             const uploadedImage = document.getElementById('uploadedImage');
             const overlayImage = document.getElementById('overlayImage');
+            const drawingCanvas = document.getElementById('drawingCanvas');
             const overlayButtons = document.querySelectorAll('.overlayButton');
             const pixelSizeDisplay = document.getElementById('pixelSize');
             const resizeSlider = document.getElementById('resizeSlider');
+
+            let isDragging = false;
+            let initialX, initialY;
+            let xOffset = 0;
+            let yOffset = 0;
+
+            function startDrag(e) {
+                isDragging = true;
+                initialX = e.clientX - xOffset;
+                initialY = e.clientY - yOffset;
+            }
+
+            function endDrag() {
+                isDragging = false;
+            }
+
+            function drag(e) {
+                if (isDragging) {
+                    e.preventDefault();
+                    const scale = parseFloat(overlayImage.style.transform.match(/scale\((.*?)\)/)[1]);
+                    const newX = e.clientX - initialX;
+                    const newY = e.clientY - initialY;
+                    xOffset = newX;
+                    yOffset = newY;
+                    setTranslate(newX, newY, overlayImage, scale);
+                }
+            }
+
+            function setTranslate(xPos, yPos, element, scale) {
+                element.style.transform = "translate3d(" + xPos + "px, " + yPos + "px, 0) scale(" + scale + ")";
+            }
+
+            function startDrawing(e) {
+                isDrawing = true;
+                startPoint = { x: e.offsetX, y: e.offsetY };
+            }
+
+            function endDrawing(e) {
+                if (isDrawing) {
+                    isDrawing = false;
+                    const endPoint = { x: e.offsetX, y: e.offsetY };
+                    const length = calculateLength(startPoint, endPoint);
+                    alert('Length of the line: ' + length.toFixed(2) + ' pixels');
+                }
+            }
+
+            function calculateLength(start, end) {
+                const dx = end.x - start.x;
+                const dy = end.y - start.y;
+                return Math.sqrt(dx * dx + dy * dy);
+            }
+
+            // Function to handle image resizing
+            function handleResize() {
+                const scale = resizeSlider.value / 100;
+                overlayImage.style.transform = 'scale(' + scale + ')';
+            }
 
             // Function to display uploaded image
             uploadInput.addEventListener('change', function(e) {
@@ -129,43 +178,14 @@
 
             resizeSlider.addEventListener('input', handleResize);
 
-            // Functionality for dragging overlay image
-            let isDragging = false;
-            let initialX, initialY;
-            let xOffset = 0;
-            let yOffset = 0;
-
             overlayImage.addEventListener('mousedown', startDrag);
             overlayImage.addEventListener('mouseup', endDrag);
             overlayImage.addEventListener('mouseleave', endDrag);
             overlayImage.addEventListener('mousemove', drag);
 
-            function startDrag(e) {
-                isDragging = true;
-                initialX = e.clientX - xOffset;
-                initialY = e.clientY - yOffset;
-            }
-
-            function endDrag() {
-                isDragging = false;
-            }
-
-            function drag(e) {
-    if (isDragging) {
-        e.preventDefault();
-        const scale = parseFloat(overlayImage.style.transform.match(/scale\((.*?)\)/)[1]);
-        const newX = e.clientX - initialX;
-        const newY = e.clientY - initialY;
-        xOffset = newX;
-        yOffset = newY;
-        setTranslate(newX, newY, overlayImage, scale);
-    }
-}
-
-
-            function setTranslate(xPos, yPos, element, scale) {
-    element.style.transform = "translate3d(" + xPos + "px, " + yPos + "px, 0) scale(" + scale + ")";
-}
+            drawingCanvas.addEventListener('mousedown', startDrawing);
+            drawingCanvas.addEventListener('mouseup', endDrawing);
+            drawingCanvas.addEventListener('mouseleave', endDrawing);
         });
     </script>
 </body>
