@@ -48,9 +48,9 @@
 <body>
     <h1>Decorate Your Room!!</h1>
     <input type="file" accept="image/*" id="fileInput" onchange="loadImage(event)">
-    <div id="imageContainer">
-        <img id="uploadedImage" src="" alt="Uploaded Image">
-    </div>
+    <div id="imageContainer" onclick="measureDistance(event)">
+    <img id="uploadedImage" src="" alt="Uploaded Image">
+</div>
     <div id="artworkSelector">
         <img class="artworkOption" src="image1.jpg" alt="Artwork 1" onclick="selectArtwork('image1.jpg')">
         <img class="artworkOption" src="image2.jpg" alt="Artwork 2" onclick="selectArtwork('image2.jpg')">
