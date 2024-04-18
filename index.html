@@ -61,9 +61,9 @@
     </style>
 </head>
 <body>
-    <h1>Decorate Your Room</h1>
+    <h1>Decorate Your Room!</h1>
     <input type="file" accept="image/*" id="fileInput" onchange="loadImage(event)">
-    <div id="imageContainer" ontouchstart="handleTouchStart(event)" ontouchmove="handleTouchMove(event)" ontouchend="handleTouchEnd(event)">
+    <div id="imageContainer" onmousedown="handleMouseDown(event)" onmousemove="drawLine(event)" onmouseup="handleMouseUp(event)" ontouchstart="handleTouchStart(event)" ontouchmove="handleTouchMove(event)" ontouchend="handleTouchEnd(event)">
         <img id="uploadedImage" src="" alt="Uploaded Image">
     </div>
     <div id="artworkSelector">
@@ -152,8 +152,17 @@
                     selectedArtwork.style.top = y + 'px';
                 };
 
+                document.ontouchmove = function (event) {
+                    var x = event.touches[0].clientX - offsetX;
+                    var y = event.touches[0].clientY - offsetY;
+
+                    selectedArtwork.style.left = x + 'px';
+                    selectedArtwork.style.top = y + 'px';
+                };
+
                 document.onmouseup = function () {
                     document.onmousemove = null;
+                    document.ontouchmove = null;
                     document.onmouseup = null;
                 };
             }
