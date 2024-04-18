@@ -44,16 +44,20 @@
 }
 
         .overlayButton {
-            margin: 10px;
-            padding: 5px 10px;
-            font-size: 16px;
-            cursor: pointer;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            outline: none;
-        }
+    width: 150px;
+    height: 150px;
+    margin: 10px;
+    padding: 0; /* Remove padding */
+    border: none; /* Remove border */
+    background: none; /* Remove background */
+}
+
+.overlayButton img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensure image covers entire button */
+}
+
 
         #pixelSize {
             margin-top: 10px;
