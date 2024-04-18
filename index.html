@@ -12,6 +12,7 @@
             margin: 0 auto;
             border: 2px solid black;
             position: relative;
+            visibility: hidden; /* Hide the broken image icon initially */
         }
         #imageContainer {
             position: relative;
@@ -38,7 +39,7 @@
     </style>
 </head>
 <body>
-    <h1>Decorate Your Room!</h1>
+    <h1>Decorate Your Room</h1>
     <input type="file" accept="image/*" id="fileInput" onchange="loadImage(event)">
     <div id="imageContainer">
         <img id="uploadedImage" src="" alt="Uploaded Image">
@@ -60,6 +61,7 @@
         function loadImage(event) {
             var image = document.getElementById('uploadedImage');
             image.src = URL.createObjectURL(event.target.files[0]);
+            image.style.visibility = 'visible'; // Show the image once uploaded
         }
 
         function selectArtwork(artwork) {
