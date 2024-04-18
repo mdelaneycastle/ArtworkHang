@@ -39,7 +39,6 @@
             height: auto; /* Maintain aspect ratio */
             max-width: 400px; /* Maximum width */
             max-height: 400px; /* Maximum height */
-            cursor: move; /* Default cursor for dragging */
         }
 
         .overlayButton {
@@ -63,14 +62,6 @@
             margin-top: 10px;
             width: 80%;
         }
-
-        .measurement-line {
-            position: absolute;
-            pointer-events: none;
-            z-index: 1000;
-            background-color: red; /* Change the color of the measurement line */
-            opacity: 0.5; /* Adjust the opacity of the measurement line */
-        }
     </style>
 </head>
 <body>
@@ -85,121 +76,23 @@
         <button class="overlayButton" data-src="image3.jpg">Image 3</button>
         <p id="pixelSize">Pixel Size: </p>
         <input type="range" id="resizeSlider" min="80" max="120" value="100" step="1">
-        <button id="toggleMeasureMode" class="overlayButton" onclick="toggleMeasurementMode()">Toggle Measurement Mode</button>
     </div>
     <script>
-        var overlayImage = document.getElementById('overlayImage');
-        var measuringDistance = false; // Track whether in measurement mode
-        var startPoint = null;
-        var endPoint = null;
-        var measurementLine = null;
-
-        // Function to enter/exit measurement mode
-        function toggleMeasurementMode() {
-            measuringDistance = !measuringDistance;
-            if (!measuringDistance) {
-                removeMeasurementLine();
-            }
-        }
-
-        // Functionality for drawing measurement line
-        function handleMouseDown(event) {
-            if (measuringDistance) {
-                if (!startPoint) {
-                    startPoint = { x: event.clientX, y: event.clientY };
-                } else if (!endPoint) {
-                    endPoint = { x: event.clientX, y: event.clientY };
-                    drawMeasurementLine();
-                }
-            }
-        }
-
-        function drawMeasurementLine() {
-            const deltaX = endPoint.x - startPoint.x;
-            const deltaY = endPoint.y - startPoint.y;
-            const length = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-            const angle = Math.atan2(deltaY, deltaX) * 180 / Math.PI;
-
-            removeMeasurementLine();
-
-            measurementLine = document.createElement('div');
-            measurementLine.className = 'measurement-line';
-            measurementLine.style.position = 'absolute';
-            measurementLine.style.left = startPoint.x + 'px';
-            measurementLine.style.top = startPoint.y + 'px';
-            measurementLine.style.width = length + 'px';
-            measurementLine.style.height = '2px'; // Set line thickness here
-            measurementLine.style.transform = 'rotate(' + angle + 'deg)';
-            
-            document.body.appendChild(measurementLine);
-        }
-
-        function removeMeasurementLine() {
-            if (measurementLine) {
-                measurementLine.parentNode.removeChild(measurementLine);
-                measurementLine = null;
-            }
-        }
-
-        // Functionality for dragging overlay image
-        function startDrag(e) {
-            isDragging = true;
-            initialX = e.clientX - xOffset;
-            initialY = e.clientY - yOffset;
-        }
-
-        function endDrag() {
-            isDragging = false;
-        }
-
-        function drag(e) {
-            if (isDragging) {
-                e.preventDefault();
-                const scale = parseFloat(overlayImage.style.transform.match(/scale\((.*?)\)/)[1]);
-                const newX = e.clientX - initialX;
-                const newY = e.clientY - initialY;
-                xOffset = newX;
-                yOffset = newY;
-                setTranslate(newX, newY, overlayImage, scale);
-            }
-        }
-
-        function setTranslate(xPos, yPos, element, scale) {
-            element.style.transform = "translate3d(" + xPos + "px, " + yPos + "px, 0) scale(" + scale + ")";
-        }
-
         // Function to handle image resizing
         function handleResize() {
-            const resizeSlider = document.getElementById('resizeSlider');
             const scale = resizeSlider.value / 100;
             overlayImage.style.transform = 'scale(' + scale + ')';
         }
 
-        // Function to handle overlay image selection
-        function selectOverlayImage(src) {
-            overlayImage.src = src;
-            overlayImage.style.display = 'block'; // Ensure the overlay image is displayed
-            updatePixelSize(src);
-        }
-
-        // Function to update pixel size display
-        function updatePixelSize(src) {
-            const img = new Image();
-            img.src = src;
-            img.onload = function() {
-                const pixelSizeDisplay = document.getElementById('pixelSize');
-                pixelSizeDisplay.textContent = 'Pixel Size: ' + img.width + 'x' + img.height;
-            };
-        }
-
-        // Add event listeners
         document.addEventListener('DOMContentLoaded', function() {
             const uploadInput = document.getElementById('uploadInput');
             const uploadedImage = document.getElementById('uploadedImage');
+            const overlayImage = document.getElementById('overlayImage');
             const overlayButtons = document.querySelectorAll('.overlayButton');
+            const pixelSizeDisplay = document.getElementById('pixelSize');
             const resizeSlider = document.getElementById('resizeSlider');
 
-            // Event listener for file input
+            // Function to display uploaded image
             uploadInput.addEventListener('change', function(e) {
                 const file = e.target.files[0];
                 const reader = new FileReader();
@@ -209,18 +102,28 @@
                 reader.readAsDataURL(file);
             });
 
-            // Event listeners for overlay image buttons
+            // Function to handle overlay image selection
             overlayButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     const src = this.getAttribute('data-src');
-                    selectOverlayImage(src);
+                    overlayImage.src = src;
+                    overlayImage.style.display = 'block'; // Ensure the overlay image is displayed
+                    updatePixelSize(src);
                 });
             });
 
-            // Event listener for resize slider
+            // Function to update pixel size display
+            function updatePixelSize(src) {
+                const img = new Image();
+                img.src = src;
+                img.onload = function() {
+                    pixelSizeDisplay.textContent = 'Pixel Size: ' + img.width + 'x' + img.height;
+                };
+            }
+
             resizeSlider.addEventListener('input', handleResize);
 
-            // Event listeners for dragging overlay image
+            // Functionality for dragging overlay image
             let isDragging = false;
             let initialX, initialY;
             let xOffset = 0;
@@ -231,9 +134,32 @@
             overlayImage.addEventListener('mouseleave', endDrag);
             overlayImage.addEventListener('mousemove', drag);
 
-            // Event listener for measurement mode
-            document.getElementById('toggleMeasureMode').addEventListener('click', toggleMeasurementMode);
-            document.addEventListener('mousedown', handleMouseDown);
+            function startDrag(e) {
+                isDragging = true;
+                initialX = e.clientX - xOffset;
+                initialY = e.clientY - yOffset;
+            }
+
+            function endDrag() {
+                isDragging = false;
+            }
+
+            function drag(e) {
+    if (isDragging) {
+        e.preventDefault();
+        const scale = parseFloat(overlayImage.style.transform.match(/scale\((.*?)\)/)[1]);
+        const newX = e.clientX - initialX;
+        const newY = e.clientY - initialY;
+        xOffset = newX;
+        yOffset = newY;
+        setTranslate(newX, newY, overlayImage, scale);
+    }
+}
+
+
+            function setTranslate(xPos, yPos, element, scale) {
+    element.style.transform = "translate3d(" + xPos + "px, " + yPos + "px, 0) scale(" + scale + ")";
+}
         });
     </script>
 </body>
