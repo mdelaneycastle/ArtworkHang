@@ -43,22 +43,20 @@
     </style>
 </head>
 <body>
-    <h1>Decorate Your Room</h1>
+    <h1>Decorate Your Room!!</h1>
     <input type="file" accept="image/*" id="fileInput" onchange="loadImage(event)">
-    <div id="imageContainer" onmousedown="startDrawing(event)" onmousemove="drawLine(event)" onmouseup="endDrawing(event)">
+    <div id="imageContainer">
         <img id="uploadedImage" src="" alt="Uploaded Image">
     </div>
-    <div id="sliderContainer">
-        <input type="range" min="80" max="120" value="100" id="slider" oninput="resizeArtwork()">
-    </div>
-     <div id="artworkSize"></div>
     <div id="artworkSelector">
         <img class="artworkOption" src="image1.jpg" alt="Artwork 1" onclick="selectArtwork('image1.jpg')">
         <img class="artworkOption" src="image2.jpg" alt="Artwork 2" onclick="selectArtwork('image2.jpg')">
         <img class="artworkOption" src="image3.jpg" alt="Artwork 3" onclick="selectArtwork('image3.jpg')">
     </div>
-    
-   
+    <div id="sliderContainer">
+        <input type="range" min="80" max="120" value="100" id="slider" oninput="resizeArtwork()">
+    </div>
+    <div id="artworkSize"></div>
 
     <script>
         var selectedArtwork = null;
@@ -88,70 +86,36 @@
             selectedArtwork.style.top = '50%';
             selectedArtwork.style.transform = 'translate(-50%, -50%)';
             selectedArtwork.style.boxShadow = '3px 3px 5px rgba(0, 0, 0, 0.5)';
+            selectedArtwork.onmousedown = startDrag; // Add event listener for dragging
 
             document.getElementById('imageContainer').appendChild(selectedArtwork);
             displaySize();
         }
 
-        function startDrawing(event) {
-            if (!firstPointPlaced) {
-                startPoint = { x: event.clientX, y: event.clientY };
-                drawLine(event);
-            } else {
-                if (!endPoint) {
-                    endPoint = { x: event.clientX, y: event.clientY };
+        function startDrag(event) {
+            event.preventDefault();
+            startPoint = { x: event.clientX, y: event.clientY };
 
-                    // Calculate distance between points
-                    var distance = Math.sqrt(Math.pow(endPoint.x - startPoint.x, 2) + Math.pow(endPoint.y - startPoint.y, 2));
+            document.onmousemove = function(event) {
+                moveArtwork(event);
+            };
 
-                    // Prompt user for measurement
-                    var measurement = prompt('Please enter the real-world measurement between the two points (in centimeters):');
-
-                    if (measurement !== null && !isNaN(measurement) && measurement > 0) {
-                        // Calculate scale factor
-                        var scaleFactor = parseFloat(measurement) / distance;
-
-                        // Resize artwork
-                        selectedArtwork.style.width = (selectedArtwork.width * scaleFactor) + 'px';
-                        selectedArtwork.style.transform = 'translate(-50%, -50%)';
-                        displaySize();
-                    } else {
-                        alert('Invalid measurement. Please enter a valid number.');
-                    }
-
-                    // Reset points and line
-                    startPoint = null;
-                    endPoint = null;
-                    clearMeasurementLine();
-                    firstPointPlaced = false;
-                }
-            }
+            document.onmouseup = function() {
+                document.onmousemove = null;
+                document.onmouseup = null;
+            };
         }
 
-        function drawLine(event) {
-            if (!firstPointPlaced) {
-                clearMeasurementLine();
-                measurementLine = document.createElement('div');
-                measurementLine.className = 'measurement-line';
-                measurementLine.style.borderTop = '1px solid red';
-                measurementLine.style.width = Math.sqrt(Math.pow(event.clientX - startPoint.x, 2) + Math.pow(event.clientY - startPoint.y, 2)) + 'px';
-                measurementLine.style.transform = 'translate(' + startPoint.x + 'px, ' + startPoint.y + 'px) rotate(' + Math.atan2(event.clientY - startPoint.y, event.clientX - startPoint.x) + 'rad)';
-                document.body.appendChild(measurementLine);
-            }
-        }
+        function moveArtwork(event) {
+            if (!startPoint || !selectedArtwork) return;
 
-        function endDrawing(event) {
-            if (!firstPointPlaced) {
-                if (!startPoint) return;
-                firstPointPlaced = true;
-            }
-        }
+            var offsetX = event.clientX - startPoint.x;
+            var offsetY = event.clientY - startPoint.y;
 
-        function clearMeasurementLine() {
-            if (measurementLine) {
-                measurementLine.remove();
-                measurementLine = null;
-            }
+            selectedArtwork.style.left = selectedArtwork.offsetLeft + offsetX + 'px';
+            selectedArtwork.style.top = selectedArtwork.offsetTop + offsetY + 'px';
+
+            startPoint = { x: event.clientX, y: event.clientY };
         }
 
         function resizeArtwork() {
