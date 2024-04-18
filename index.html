@@ -31,14 +31,16 @@
             text-align: center;
             margin-top: 20px;
         }
-#overlayImage {
-    display: none; /* Hide the overlay image initially */
-    position: absolute;
-    width: 20%; /* Set width to 20% of original */
-    height: auto; /* Maintain aspect ratio */
-    max-width: 400px; /* Maximum width */
-    max-height: 400px; /* Maximum height */
-}
+
+        #overlayImage {
+            display: none; /* Hide the overlay image initially */
+            position: absolute;
+            width: 20%; /* Set width to 20% of original */
+            height: auto; /* Maintain aspect ratio */
+            max-width: 400px; /* Maximum width */
+            max-height: 400px; /* Maximum height */
+        }
+
         .overlayButton {
             margin: 10px;
             padding: 5px 10px;
@@ -65,7 +67,7 @@
 <body>
     <input type="file" id="uploadInput">
     <div id="imageContainer">
-                <img id="overlayImage" src="#" alt="Overlay Image">
+        <img id="overlayImage" src="#" alt="Overlay Image">
         <img id="uploadedImage" src="#" alt="Uploaded Image">
     </div>
     <div id="overlayOptions">
@@ -75,94 +77,93 @@
         <p id="pixelSize">Pixel Size: </p>
         <input type="range" id="resizeSlider" min="80" max="120" value="100" step="1">
     </div>
-   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const uploadInput = document.getElementById('uploadInput');
-        const uploadedImage = document.getElementById('uploadedImage');
-        const overlayImage = document.getElementById('overlayImage');
-        const overlayButtons = document.querySelectorAll('.overlayButton');
-        const pixelSizeDisplay = document.getElementById('pixelSize');
-        const resizeSlider = document.getElementById('resizeSlider');
-
-        // Function to display uploaded image
-        uploadInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                uploadedImage.src = event.target.result;
-            };
-            reader.readAsDataURL(file);
-        });
-
-        // Function to handle overlay image selection
-        overlayButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const src = this.getAttribute('data-src');
-                overlayImage.src = src;
-                overlayImage.style.display = 'block'; // Ensure the overlay image is displayed
-                updatePixelSize(src);
-            });
-        });
-
-        // Function to update pixel size display
-        function updatePixelSize(src) {
-            const img = new Image();
-            img.src = src;
-            img.onload = function() {
-                pixelSizeDisplay.textContent = 'Pixel Size: ' + img.width + 'x' + img.height;
-            };
+    <script>
+        // Function to handle image resizing
+        function handleResize() {
+            const scale = resizeSlider.value / 100;
+            const clientRect = overlayImage.getBoundingClientRect();
+            const offsetX = clientRect.left + (clientRect.width / 2);
+            const offsetY = clientRect.top + (clientRect.height / 2);
+            const newX = offsetX - (clientRect.width / 2) * (scale - 1);
+            const newY = offsetY - (clientRect.height / 2) * (scale - 1);
+            overlayImage.style.transform = 'translate(' + newX + 'px, ' + newY + 'px) scale(' + scale + ')';
         }
 
-        // Function to handle image resizing
-        // Function to handle image resizing
-resizeSlider.addEventListener('input', function() {
-    const scale = this.value / 100;
-    const clientRect = overlayImage.getBoundingClientRect();
-    const offsetX = clientRect.left + clientRect.width / 2;
-    const offsetY = clientRect.top + clientRect.height / 2;
-    const newX = offsetX - (clientRect.width / 2) * scale;
-    const newY = offsetY - (clientRect.height / 2) * scale;
-    overlayImage.style.transform = 'translate(' + newX + 'px, ' + newY + 'px) scale(' + scale + ')';
-});
+        document.addEventListener('DOMContentLoaded', function() {
+            const uploadInput = document.getElementById('uploadInput');
+            const uploadedImage = document.getElementById('uploadedImage');
+            const overlayImage = document.getElementById('overlayImage');
+            const overlayButtons = document.querySelectorAll('.overlayButton');
+            const pixelSizeDisplay = document.getElementById('pixelSize');
+            const resizeSlider = document.getElementById('resizeSlider');
 
-        // Functionality for dragging overlay image
-let isDragging = false;
-let initialX, initialY;
-let xOffset = 0;
-let yOffset = 0;
+            // Function to display uploaded image
+            uploadInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    uploadedImage.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
 
-overlayImage.addEventListener('mousedown', startDrag);
-overlayImage.addEventListener('mouseup', endDrag);
-overlayImage.addEventListener('mouseleave', endDrag);
-overlayImage.addEventListener('mousemove', drag);
+            // Function to handle overlay image selection
+            overlayButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const src = this.getAttribute('data-src');
+                    overlayImage.src = src;
+                    overlayImage.style.display = 'block'; // Ensure the overlay image is displayed
+                    updatePixelSize(src);
+                });
+            });
 
-function startDrag(e) {
-    isDragging = true;
-    initialX = e.clientX - xOffset;
-    initialY = e.clientY - yOffset;
-}
+            // Function to update pixel size display
+            function updatePixelSize(src) {
+                const img = new Image();
+                img.src = src;
+                img.onload = function() {
+                    pixelSizeDisplay.textContent = 'Pixel Size: ' + img.width + 'x' + img.height;
+                };
+            }
 
-function endDrag() {
-    isDragging = false;
-}
+            resizeSlider.addEventListener('input', handleResize);
 
-function drag(e) {
-    if (isDragging) {
-        e.preventDefault();
-        const newX = e.clientX - initialX;
-        const newY = e.clientY - initialY;
-        xOffset = newX;
-        yOffset = newY;
-        setTranslate(newX, newY, overlayImage);
-    }
-}
+            // Functionality for dragging overlay image
+            let isDragging = false;
+            let initialX, initialY;
+            let xOffset = 0;
+            let yOffset = 0;
 
-function setTranslate(xPos, yPos, element) {
-    element.style.transform = "translate3d(" + xPos + "px, " + yPos + "px, 0)";
-}
-    });
-</script>
+            overlayImage.addEventListener('mousedown', startDrag);
+            overlayImage.addEventListener('mouseup', endDrag);
+            overlayImage.addEventListener('mouseleave', endDrag);
+            overlayImage.addEventListener('mousemove', drag);
 
+            function startDrag(e) {
+                isDragging = true;
+                initialX = e.clientX - xOffset;
+                initialY = e.clientY - yOffset;
+            }
 
+            function endDrag() {
+                isDragging = false;
+            }
+
+            function drag(e) {
+                if (isDragging) {
+                    e.preventDefault();
+                    const newX = e.clientX - initialX;
+                    const newY = e.clientY - initialY;
+                    xOffset = newX;
+                    yOffset = newY;
+                    setTranslate(newX, newY, overlayImage);
+                }
+            }
+
+            function setTranslate(xPos, yPos, element) {
+                element.style.transform = "translate3d(" + xPos + "px, " + yPos + "px, 0)";
+            }
+        });
+    </script>
 </body>
 </html>
