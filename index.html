@@ -58,6 +58,15 @@
             width: 80%;
         }
 
+        #overlayImage {
+            display: none;
+            position: absolute;
+            max-width: 100%; /* Adjust the maximum width */
+            max-height: 100%; /* Adjust the maximum height */
+            /* Add shadow */
+            box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5); /* Adjust the values for your desired shadow effect */
+        }
+
         #drawingCanvas {
             position: absolute;
             top: 0;
@@ -90,10 +99,30 @@
             const pixelSizeDisplay = document.getElementById('pixelSize');
             const resizeSlider = document.getElementById('resizeSlider');
 
+            let startPoint = null;
+            let isDrawing = false;
             let isDragging = false;
             let initialX, initialY;
             let xOffset = 0;
             let yOffset = 0;
+
+            function startDrawing(e) {
+                if (!startPoint) {
+                    startPoint = { x: e.offsetX, y: e.offsetY };
+                } else {
+                    isDrawing = true;
+                    const endPoint = { x: e.offsetX, y: e.offsetY };
+                    const length = calculateLength(startPoint, endPoint);
+                    alert('Length of the line: ' + length.toFixed(2) + ' pixels');
+                    startPoint = null; // Reset start point
+                }
+            }
+
+            function calculateLength(start, end) {
+                const dx = end.x - start.x;
+                const dy = end.y - start.y;
+                return Math.sqrt(dx * dx + dy * dy);
+            }
 
             function startDrag(e) {
                 isDragging = true;
@@ -121,26 +150,6 @@
                 element.style.transform = "translate3d(" + xPos + "px, " + yPos + "px, 0) scale(" + scale + ")";
             }
 
-            function startDrawing(e) {
-                isDrawing = true;
-                startPoint = { x: e.offsetX, y: e.offsetY };
-            }
-
-            function endDrawing(e) {
-                if (isDrawing) {
-                    isDrawing = false;
-                    const endPoint = { x: e.offsetX, y: e.offsetY };
-                    const length = calculateLength(startPoint, endPoint);
-                    alert('Length of the line: ' + length.toFixed(2) + ' pixels');
-                }
-            }
-
-            function calculateLength(start, end) {
-                const dx = end.x - start.x;
-                const dy = end.y - start.y;
-                return Math.sqrt(dx * dx + dy * dy);
-            }
-
             // Function to handle image resizing
             function handleResize() {
                 const scale = resizeSlider.value / 100;
@@ -163,6 +172,7 @@
                     const src = this.getAttribute('data-src');
                     overlayImage.src = src;
                     overlayImage.style.display = 'block'; // Ensure the overlay image is displayed
+                    uploadedImage.style.display = 'none'; // Hide the uploaded image
                     updatePixelSize(src);
                 });
             });
@@ -183,9 +193,7 @@
             overlayImage.addEventListener('mouseleave', endDrag);
             overlayImage.addEventListener('mousemove', drag);
 
-            drawingCanvas.addEventListener('mousedown', startDrawing);
-            drawingCanvas.addEventListener('mouseup', endDrawing);
-            drawingCanvas.addEventListener('mouseleave', endDrawing);
+            drawingCanvas.addEventListener('click', startDrawing);
         });
     </script>
 </body>
