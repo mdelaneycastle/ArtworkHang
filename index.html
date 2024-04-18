@@ -120,31 +120,40 @@
         });
 
         // Functionality for dragging overlay image
-        let isDragging = false;
-        let offsetX, offsetY;
-        overlayImage.addEventListener('mousedown', startDrag);
-        overlayImage.addEventListener('mouseup', endDrag);
-        overlayImage.addEventListener('mouseleave', endDrag);
-        overlayImage.addEventListener('mousemove', drag);
+let isDragging = false;
+let initialX, initialY;
+let xOffset = 0;
+let yOffset = 0;
 
-        function startDrag(e) {
-            isDragging = true;
-            offsetX = e.offsetX;
-            offsetY = e.offsetY;
-        }
+overlayImage.addEventListener('mousedown', startDrag);
+overlayImage.addEventListener('mouseup', endDrag);
+overlayImage.addEventListener('mouseleave', endDrag);
+overlayImage.addEventListener('mousemove', drag);
 
-        function endDrag() {
-            isDragging = false;
-        }
+function startDrag(e) {
+    isDragging = true;
+    initialX = e.clientX - xOffset;
+    initialY = e.clientY - yOffset;
+}
 
-        function drag(e) {
-            if (isDragging) {
-                const x = e.clientX - offsetX;
-                const y = e.clientY - offsetY;
-                overlayImage.style.left = x + 'px';
-                overlayImage.style.top = y + 'px';
-            }
-        }
+function endDrag() {
+    isDragging = false;
+}
+
+function drag(e) {
+    if (isDragging) {
+        e.preventDefault();
+        const newX = e.clientX - initialX;
+        const newY = e.clientY - initialY;
+        xOffset = newX;
+        yOffset = newY;
+        setTranslate(newX, newY, overlayImage);
+    }
+}
+
+function setTranslate(xPos, yPos, element) {
+    element.style.transform = "translate3d(" + xPos + "px, " + yPos + "px, 0)";
+}
     });
 </script>
 
