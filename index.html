@@ -70,18 +70,28 @@
     </div>
    <script>
     document.addEventListener('DOMContentLoaded', function() {
+        const uploadInput = document.getElementById('uploadInput');
         const uploadedImage = document.getElementById('uploadedImage');
         const overlayImage = document.getElementById('overlayImage');
         const overlayButtons = document.querySelectorAll('.overlayButton');
         const pixelSizeDisplay = document.getElementById('pixelSize');
         const resizeSlider = document.getElementById('resizeSlider');
 
+        // Function to display uploaded image
+        uploadInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                uploadedImage.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
         // Function to handle overlay image selection
         overlayButtons.forEach(button => {
             button.addEventListener('click', function() {
                 const src = this.getAttribute('data-src');
-                console.log('Selected overlay image:', src);
-                overlayImage.src = src; // Set the correct src attribute
+                overlayImage.src = src;
                 overlayImage.style.display = 'block'; // Ensure the overlay image is displayed
                 updatePixelSize(src);
             });
@@ -130,6 +140,7 @@
         }
     });
 </script>
+
 
 </body>
 </html>
