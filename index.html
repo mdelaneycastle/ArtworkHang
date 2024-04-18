@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Room Decoration!</title>
+    <title>Room Decoration</title>
     <style>
         #uploadedImage {
             max-width: 100%;
@@ -35,22 +35,19 @@
         #slider {
             width: 50%;
         }
-        .measurement-point {
+        .measurement-line {
             position: absolute;
-            width: 10px;
-            height: 10px;
-            background-color: red;
-            border-radius: 50%;
             pointer-events: none;
+            z-index: 1000;
         }
     </style>
 </head>
 <body>
-    <h1>Decorate Your Room!!</h1>
+    <h1>Decorate Your Room</h1>
     <input type="file" accept="image/*" id="fileInput" onchange="loadImage(event)">
-    <div id="imageContainer" onclick="measureDistance(event)">
-    <img id="uploadedImage" src="" alt="Uploaded Image">
-</div>
+    <div id="imageContainer">
+        <img id="uploadedImage" src="" alt="Uploaded Image">
+    </div>
     <div id="artworkSelector">
         <img class="artworkOption" src="image1.jpg" alt="Artwork 1" onclick="selectArtwork('image1.jpg')">
         <img class="artworkOption" src="image2.jpg" alt="Artwork 2" onclick="selectArtwork('image2.jpg')">
@@ -64,8 +61,9 @@
         var selectedArtwork = null;
         var maxArtworkSize = 120;
         var minArtworkSize = 80;
-        var firstPoint = null;
-        var secondPoint = null;
+        var startPoint = null;
+        var endPoint = null;
+        var measurementLine = null;
 
         function loadImage(event) {
             var image = document.getElementById('uploadedImage');
@@ -167,63 +165,59 @@
         }
 
         function measureDistance(event) {
-            var rect = event.target.getBoundingClientRect();
-            var x = event.clientX - rect.left;
-            var y = event.clientY - rect.top;
-            var point = { x: x, y: y };
+            if (!startPoint) {
+                startPoint = { x: event.clientX, y: event.clientY };
+            } else if (!endPoint) {
+                endPoint = { x: event.clientX, y: event.clientY };
 
-            if (!firstPoint) {
-                firstPoint = point;
-                showMeasurementPoint(firstPoint);
-            } else if (!secondPoint) {
-                secondPoint = point;
-                showMeasurementPoint(secondPoint);
-                promptUserForMeasurement();
+                // Calculate distance between points
+                var distance = Math.sqrt(Math.pow(endPoint.x - startPoint.x, 2) + Math.pow(endPoint.y - startPoint.y, 2));
+
+                // Prompt user for measurement
+                var measurement = prompt('Please enter the real-world measurement between the two points (in centimeters):');
+
+                if (measurement !== null && !isNaN(measurement) && measurement > 0) {
+                    // Calculate scale factor
+                    var scaleFactor = parseFloat(measurement) / distance;
+
+                    // Resize artwork
+                    selectedArtwork.style.width = (selectedArtwork.width * scaleFactor) + 'px';
+                    selectedArtwork.style.transform = 'translate(-50%, -50%)';
+                } else {
+                    alert('Invalid measurement. Please enter a valid number.');
+                }
+
+                // Reset points
+                startPoint = null;
+                endPoint = null;
             }
         }
 
-        function showMeasurementPoint(point) {
-            var measurementPoint = document.createElement('div');
-            measurementPoint.className = 'measurement-point';
-            measurementPoint.style.left = point.x + 'px';
-            measurementPoint.style.top = point.y + 'px';
-
-            document.getElementById('imageContainer').appendChild(measurementPoint);
+        function clearMeasurementLine() {
+            if (measurementLine) {
+                measurementLine.remove();
+                measurementLine = null;
+            }
         }
 
-        function promptUserForMeasurement() {
-            var measurement = prompt('Please enter the real-world measurement between the two points (in centimeters):');
-
-            if (measurement !== null && !isNaN(measurement) && measurement > 0) {
-                calculateAndResizeArtwork(parseFloat(measurement));
+        document.addEventListener('mousemove', function(event) {
+            if (startPoint && !endPoint) {
+                // Draw line between points
+                clearMeasurementLine();
+                measurementLine = document.createElement('div');
+                measurementLine.className = 'measurement-line';
+                measurementLine.style.borderTop = '1px solid red';
+                measurementLine.style.width = Math.sqrt(Math.pow(event.clientX - startPoint.x, 2) + Math.pow(event.clientY - startPoint.y, 2)) + 'px';
+                measurementLine.style.transform = 'translate(' + startPoint.x + 'px, ' + startPoint.y + 'px) rotate(' + Math.atan2(event.clientY - startPoint.y, event.clientX - startPoint.x) + 'rad)';
+                document.body.appendChild(measurementLine);
             } else {
-                alert('Invalid measurement. Please enter a valid number.');
+                clearMeasurementLine();
             }
+        });
 
-            // Remove measurement points
-            document.querySelectorAll('.measurement-point').forEach(function(element) {
-                element.remove();
-            });
-
-            // Reset points
-            firstPoint = null;
-            secondPoint = null;
-        }
-
-        function calculateAndResizeArtwork(measurement) {
-            // Width of the image overlay in centimeters (you can adjust this value)
-            var imageWidthInCM = 70;
-
-            // Calculate the distance between the selected points
-            var distance = Math.sqrt(Math.pow(secondPoint.x - firstPoint.x, 2) + Math.pow(secondPoint.y - firstPoint.y, 2));
-
-            // Calculate the scale factor
-            var scaleFactor = imageWidthInCM / distance;
-
-            // Apply the scale factor to the selected artwork
-            selectedArtwork.style.width = (selectedArtwork.width * scaleFactor) + 'px';
-            selectedArtwork.style.transform = 'translate(-50%, -50%)';
-        }
+        document.addEventListener('mouseup', function() {
+            clearMeasurementLine();
+        });
     </script>
 </body>
 </html>
