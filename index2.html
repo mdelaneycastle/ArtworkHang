@@ -22,7 +22,7 @@
             position: absolute;
             width: 100px; /* Initial size of the square (100x100 pixels) */
             height: 100px;
-            background-color: green; /* Set the color of the square */
+            background-color: blue; /* Set the color of the square */
         }
     </style>
 </head>
@@ -62,14 +62,13 @@
 
                 document.getElementById('distance').innerText = `Distance: ${distance.toFixed(2)} pixels`;
 
-                // Calculate the size of the square based on the real size of the line
+                // Calculate the size of the square based on the real size of the line and square
                 const realSize = parseFloat(document.getElementById('realSize').value);
                 const realSquareSize = parseFloat(document.getElementById('realSquareSize').value);
                 if (!isNaN(realSize) && realSize > 0 && !isNaN(realSquareSize) && realSquareSize > 0) {
-                    const scale = realSquareSize / realSize; // Adjusted scale based on ratio
-                    const squareSize = initialSquareSize * scale;
-                    document.getElementById('square').style.width = `${squareSize}px`;
-                    document.getElementById('square').style.height = `${squareSize}px`;
+                    const scale = (realSquareSize / realSize) * distance; // Adjusted scale based on ratio
+                    document.getElementById('square').style.width = `${scale}px`;
+                    document.getElementById('square').style.height = `${scale}px`;
                 }
             }
 
@@ -103,10 +102,10 @@
             const realSquareSize = parseFloat(document.getElementById('realSquareSize').value);
             if (!isNaN(realSize) && realSize > 0 && !isNaN(realSquareSize) && realSquareSize > 0) {
                 // Recalculate the size of the square based on the real size of the line
-                const scale = realSquareSize / realSize; // Adjusted scale based on ratio
-                const squareSize = initialSquareSize * scale;
-                document.getElementById('square').style.width = `${squareSize}px`;
-                document.getElementById('square').style.height = `${squareSize}px`;
+                const distance = parseFloat(document.getElementById('distance').innerText.split(':')[1]);
+                const scale = (realSquareSize / realSize) * distance; // Adjusted scale based on ratio
+                document.getElementById('square').style.width = `${scale}px`;
+                document.getElementById('square').style.height = `${scale}px`;
             }
         }
     </script>
