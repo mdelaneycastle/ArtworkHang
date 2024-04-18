@@ -64,8 +64,9 @@
 
                 // Calculate the size of the square based on the real size of the line
                 const realSize = parseFloat(document.getElementById('realSize').value);
-                if (!isNaN(realSize) && realSize > 0) {
-                    const scale = realSize / distance;
+                const realSquareSize = parseFloat(document.getElementById('realSquareSize').value);
+                if (!isNaN(realSize) && realSize > 0 && !isNaN(realSquareSize) && realSquareSize > 0) {
+                    const scale = realSquareSize / realSize; // Adjusted scale based on ratio
                     const squareSize = initialSquareSize * scale;
                     document.getElementById('square').style.width = `${squareSize}px`;
                     document.getElementById('square').style.height = `${squareSize}px`;
@@ -102,9 +103,8 @@
             const realSquareSize = parseFloat(document.getElementById('realSquareSize').value);
             if (!isNaN(realSize) && realSize > 0 && !isNaN(realSquareSize) && realSquareSize > 0) {
                 // Recalculate the size of the square based on the real size of the line
-                const distance = parseFloat(document.getElementById('distance').innerText.split(':')[1]);
-                const scale = realSize / distance;
-                const squareSize = realSquareSize * scale;
+                const scale = realSquareSize / realSize; // Adjusted scale based on ratio
+                const squareSize = initialSquareSize * scale;
                 document.getElementById('square').style.width = `${squareSize}px`;
                 document.getElementById('square').style.height = `${squareSize}px`;
             }
