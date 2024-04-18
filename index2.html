@@ -19,18 +19,14 @@
             height: 10px;
             background-color: red; /* Set the color of your point */
             border-radius: 50%; /* Make the point circular */
-            opacity: 0.5; /* Set transparency to 50% */
-        }
-        .line {
-            position: absolute;
-            border-bottom: 2px solid red; /* Set the color and width of the line */
-            opacity: 0.5; /* Set transparency to 50% */
+            opacity:0.5;
         }
         #square {
             position: absolute;
             width: 100px; /* Initial size of the square (100x100 pixels) */
             height: 100px;
-            background-color: blue; /* Set the color of the square */
+            background-color: green; /* Set the color of the square */
+            cursor: move; /* Set cursor to indicate draggable element */
         }
     </style>
 </head>
@@ -55,6 +51,8 @@
     <script>
         let points = [];
         const initialSquareSize = 100; // Initial size of the square in cm
+        let isDragging = false;
+        let offsetX, offsetY;
 
         function handleClick(event) {
             const container = document.getElementById('container');
@@ -79,9 +77,6 @@
                     const scale = (realSquareSize / realSize) * distance; // Adjusted scale based on ratio
                     document.getElementById('square').style.width = `${scale}px`;
                     document.getElementById('square').style.height = `${scale}px`;
-
-                    // Draw line
-                    drawLine(points[0].x, points[0].y, points[1].x, points[1].y);
                 }
             }
 
@@ -99,19 +94,6 @@
             point.style.left = `${x}px`;
             point.style.top = `${y}px`;
             container.appendChild(point);
-        }
-
-        function drawLine(x1, y1, x2, y2) {
-            const container = document.getElementById('container');
-            const line = document.createElement('div');
-            line.className = 'line';
-            const length = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
-            const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
-            line.style.width = `${length}px`;
-            line.style.left = `${x1}px`;
-            line.style.top = `${y1}px`;
-            line.style.transform = `rotate(${angle}deg)`;
-            container.appendChild(line);
         }
 
         function resetMeasurement() {
@@ -144,6 +126,39 @@
                 document.getElementById('container').style.backgroundImage = `url(${imageData})`;
             };
             reader.readAsDataURL(file);
+        }
+
+        const square = document.getElementById('square');
+
+        square.addEventListener('mousedown', startDrag);
+        square.addEventListener('mouseup', endDrag);
+
+        function startDrag(event) {
+            isDragging = true;
+            offsetX = event.clientX - square.getBoundingClientRect().left;
+            offsetY = event.clientY - square.getBoundingClientRect().top;
+            document.addEventListener('mousemove', drag);
+        }
+
+        function endDrag() {
+            isDragging = false;
+            document.removeEventListener('mousemove', drag);
+        }
+
+        function drag(event) {
+            if (isDragging) {
+                const container = document.getElementById('container');
+                const rect = container.getBoundingClientRect();
+                let newX = event.clientX - rect.left - offsetX;
+                let newY = event.clientY - rect.top - offsetY;
+
+                // Ensure the square stays within the container
+                newX = Math.max(0, Math.min(newX, container.clientWidth - square.offsetWidth));
+                newY = Math.max(0, Math.min(newY, container.clientHeight - square.offsetHeight));
+
+                square.style.left = `${newX}px`;
+                square.style.top = `${newY}px`;
+            }
         }
     </script>
 </body>
