@@ -61,7 +61,7 @@
     </style>
 </head>
 <body>
-    <h1>Decorate Your Room!</h1>
+    <h1>Decorate Your Room</h1>
     <input type="file" accept="image/*" id="fileInput" onchange="loadImage(event)">
     <div id="imageContainer" ontouchstart="handleTouchStart(event)" ontouchmove="handleTouchMove(event)" ontouchend="handleTouchEnd(event)">
         <img id="uploadedImage" src="" alt="Uploaded Image">
@@ -140,7 +140,23 @@
 
         // Common functions
         function startDrag(event) {
-            // Implement your drag functionality here
+            if (selectedArtwork) {
+                var offsetX = event.clientX - selectedArtwork.getBoundingClientRect().left;
+                var offsetY = event.clientY - selectedArtwork.getBoundingClientRect().top;
+
+                document.onmousemove = function (event) {
+                    var x = event.clientX - offsetX;
+                    var y = event.clientY - offsetY;
+
+                    selectedArtwork.style.left = x + 'px';
+                    selectedArtwork.style.top = y + 'px';
+                };
+
+                document.onmouseup = function () {
+                    document.onmousemove = null;
+                    document.onmouseup = null;
+                };
+            }
         }
 
         function moveArtwork(event) {
@@ -164,8 +180,6 @@
                 measurementLine = null;
             }
         }
-  
-
 
         // Function to load uploaded image
         function loadImage(event) {
@@ -209,27 +223,6 @@
             if (selectedArtwork) {
                 var sizeDisplay = document.getElementById('artworkSize');
                 sizeDisplay.textContent = 'Artwork Size: ' + selectedArtwork.width + 'px x ' + selectedArtwork.height + 'px';
-            }
-        }
-
-        // Function to handle dragging the image
-        function startDrag(event) {
-            if (selectedArtwork) {
-                var offsetX = event.clientX - selectedArtwork.getBoundingClientRect().left;
-                var offsetY = event.clientY - selectedArtwork.getBoundingClientRect().top;
-
-                document.onmousemove = function (event) {
-                    var x = event.clientX - offsetX;
-                    var y = event.clientY - offsetY;
-
-                    selectedArtwork.style.left = x + 'px';
-                    selectedArtwork.style.top = y + 'px';
-                };
-
-                document.onmouseup = function () {
-                    document.onmousemove = null;
-                    document.onmouseup = null;
-                };
             }
         }
     </script>
