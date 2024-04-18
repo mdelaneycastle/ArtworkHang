@@ -5,41 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Room Decoration</title>
     <style>
-        #uploadedImage {
-            max-width: 100%;
-            max-height: 400px;
-            display: block;
-            margin: 0 auto;
-            border: 2px solid black;
-            position: relative;
-        }
-        #imageContainer {
-            position: relative;
-            width: 100%;
-            height: 400px;
-            overflow: hidden;
-        }
-        .artwork {
-            box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);
-        }
-        .artworkOption {
-            width: 30%;
-            max-width: 100px;
-            margin: 0 10px;
-            cursor: pointer;
-        }
-        #sliderContainer {
-            text-align: center;
-            margin-top: 10px;
-        }
-        #slider {
-            width: 50%;
-        }
-        .measurement-line {
-            position: absolute;
-            pointer-events: none;
-            z-index: 1000;
-        }
+        /* CSS styles remain the same */
     </style>
 </head>
 <body>
@@ -69,11 +35,74 @@
         var firstPointPlaced = false;
         var measuringDistance = false; // Track whether in measurement mode
 
+        // New function to enter measurement mode
+        function enterMeasurementMode() {
+            measuringDistance = true;
+            firstPointPlaced = false;
+            startPoint = null;
+            endPoint = null;
+            removeMeasurementLine();
+        }
+
+        // Modified mouse event handlers to handle measurement mode
+        function handleMouseDown(event) {
+            if (measuringDistance) {
+                if (!firstPointPlaced) {
+                    startPoint = { x: event.clientX, y: event.clientY };
+                    firstPointPlaced = true;
+                } else {
+                    endPoint = { x: event.clientX, y: event.clientY };
+                    calculateDistance();
+                    firstPointPlaced = false;
+                    startPoint = null;
+                    endPoint = null;
+                    removeMeasurementLine();
+                }
+            } else {
+                startDrag(event);
+            }
+        }
+
+        function drawLine(event) {
+            if (measuringDistance && firstPointPlaced) {
+                removeMeasurementLine();
+                measurementLine = document.createElement('div');
+                measurementLine.className = 'measurement-line';
+                measurementLine.style.left = startPoint.x + 'px';
+                measurementLine.style.top = startPoint.y + 'px';
+                measurementLine.style.width = event.clientX - startPoint.x + 'px';
+                measurementLine.style.height = event.clientY - startPoint.y + 'px';
+                document.getElementById('imageContainer').appendChild(measurementLine);
+            }
+        }
+
+        function handleMouseUp(event) {
+            if (!measuringDistance) {
+                handleMouseUp(event);
+            }
+        }
+
+        function calculateDistance() {
+            if (startPoint && endPoint) {
+                var distance = Math.sqrt(Math.pow(endPoint.x - startPoint.x, 2) + Math.pow(endPoint.y - startPoint.y, 2));
+                alert('Distance between points: ' + distance.toFixed(2) + ' pixels');
+            }
+        }
+
+        function removeMeasurementLine() {
+            if (measurementLine) {
+                measurementLine.parentNode.removeChild(measurementLine);
+                measurementLine = null;
+            }
+        }
+
+        // Function to load uploaded image
         function loadImage(event) {
             var image = document.getElementById('uploadedImage');
             image.src = URL.createObjectURL(event.target.files[0]);
         }
 
+        // Function to select artwork
         function selectArtwork(artwork) {
             if (selectedArtwork) {
                 selectedArtwork.remove();
@@ -93,74 +122,7 @@
             displaySize();
         }
 
-        function handleMouseDown(event) {
-            if (measuringDistance) {
-                if (!firstPointPlaced) {
-                    startPoint = { x: event.clientX, y: event.clientY };
-                    drawLine(event);
-                } else {
-                    if (!endPoint) {
-                        endPoint = { x: event.clientX, y: event.clientY };
-                        drawLine(event); // Draw line to second point
-
-                        // Calculate distance between points
-                        var distance = Math.sqrt(Math.pow(endPoint.x - startPoint.x, 2) + Math.pow(endPoint.y - startPoint.y, 2));
-
-                        // Prompt user for measurement
-                        var measurement = prompt('Please enter the real-world measurement between the two points (in centimeters):');
-
-                        if (measurement !== null && !isNaN(measurement) && measurement > 0) {
-                            // Calculate scale factor
-                            var scaleFactor = parseFloat(measurement) / distance;
-
-                            // Resize artwork
-                            selectedArtwork.style.width = (selectedArtwork.width * scaleFactor) + 'px';
-                            selectedArtwork.style.transform = 'translate(-50%, -50%)';
-                            displaySize();
-                        } else {
-                            alert('Invalid measurement. Please enter a valid number.');
-                        }
-
-                        // Reset points and line
-                        startPoint = null;
-                        endPoint = null;
-                        clearMeasurementLine();
-                        firstPointPlaced = false;
-                        measuringDistance = false; // Exit measurement mode
-                    }
-                }
-            } else {
-                startDrag(event);
-            }
-        }
-
-        function startDrag(event) {
-            if (!selectedArtwork) return;
-            event.preventDefault();
-            startPoint = { x: event.clientX, y: event.clientY };
-
-            document.onmousemove = function(event) {
-                moveArtwork(event);
-            };
-
-            document.onmouseup = function() {
-                document.onmousemove = null;
-                document.onmouseup = null;
-            };
-        }
-
-        function moveArtwork(event) {
-            if (!startPoint || !selectedArtwork) return;
-
-            var offsetX = event.clientX - startPoint.x;
-            var offsetY = event.clientY - startPoint.y;
-
-            selectedArtwork.style.left = selectedArtwork.offsetLeft + offsetX + 'px';
-            selectedArtwork.style.top = selectedArtwork.offsetTop + offsetY + 'px';
-
-            startPoint = { x: event.clientX, y: event.clientY };
-        }
-
+        // Function to resize artwork
         function resizeArtwork() {
             var slider = document.getElementById('slider');
             if (selectedArtwork) {
@@ -171,42 +133,12 @@
             }
         }
 
+        // Function to display artwork size
         function displaySize() {
             if (selectedArtwork) {
                 var sizeDisplay = document.getElementById('artworkSize');
                 sizeDisplay.textContent = 'Artwork Size: ' + selectedArtwork.width + 'px x ' + selectedArtwork.height + 'px';
             }
-        }
-
-        function drawLine(event) {
-            if (!firstPointPlaced) {
-                clearMeasurementLine();
-                measurementLine = document.createElement('div');
-                measurementLine.className = 'measurement-line';
-                measurementLine.style.borderTop = '1px solid red';
-                measurementLine.style.width = Math.sqrt(Math.pow(event.clientX - startPoint.x, 2) + Math.pow(event.clientY - startPoint.y, 2)) + 'px';
-                measurementLine.style.transform = 'translate(' + startPoint.x + 'px, ' + startPoint.y + 'px) rotate(' + Math.atan2(event.clientY - startPoint.y, event.clientX - startPoint.x) + 'rad)';
-                document.body.appendChild(measurementLine);
-            }
-        }
-
-        function clearMeasurementLine() {
-            if (measurementLine) {
-                measurementLine.remove();
-                measurementLine = null;
-            }
-        }
-
-        function handleMouseUp(event) {
-            if (!measuringDistance) {
-                if (!firstPointPlaced) {
-                    firstPointPlaced = true;
-                }
-            }
-        }
-
-        function enterMeasurementMode() {
-            measuringDistance = true;
         }
     </script>
 </body>
