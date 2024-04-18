@@ -145,19 +145,21 @@
             }
 
             function drag(e) {
-                if (isDragging) {
-                    e.preventDefault();
-                    const newX = e.clientX - initialX;
-                    const newY = e.clientY - initialY;
-                    xOffset = newX;
-                    yOffset = newY;
-                    setTranslate(newX, newY, overlayImage);
-                }
-            }
+    if (isDragging) {
+        e.preventDefault();
+        const scale = parseFloat(overlayImage.style.transform.match(/scale\((.*?)\)/)[1]);
+        const newX = e.clientX - initialX;
+        const newY = e.clientY - initialY;
+        xOffset = newX;
+        yOffset = newY;
+        setTranslate(newX, newY, overlayImage, scale);
+    }
+}
 
-            function setTranslate(xPos, yPos, element) {
-                element.style.transform = "translate3d(" + xPos + "px, " + yPos + "px, 0)";
-            }
+
+            function setTranslate(xPos, yPos, element, scale) {
+    element.style.transform = "translate3d(" + xPos + "px, " + yPos + "px, 0) scale(" + scale + ")";
+}
         });
     </script>
 </body>
