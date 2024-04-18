@@ -45,7 +45,7 @@
     </style>
 </head>
 <body>
-    <h1>Decorate Your Room!</h1>
+    <h1>Decorate Your Room</h1>
     <input type="file" accept="image/*" id="fileInput" onchange="loadImage(event)">
     <div id="imageContainer" onmousedown="handleMouseDown(event)" onmousemove="drawLine(event)" onmouseup="handleMouseUp(event)">
         <img id="uploadedImage" src="" alt="Uploaded Image">
@@ -80,11 +80,32 @@
             removeMeasurementLine();
         }
 
+function enterMeasurementMode() {
+    measuringDistance = true;
+    firstPointPlaced = false;
+    startPoint = null;
+    endPoint = null;
+    removeMeasurementLine();
+    // Disable image movement events
+    document.getElementById('imageContainer').removeEventListener('mousedown', startDrag);
+    document.getElementById('imageContainer').removeEventListener('mousemove', moveArtwork);
+    document.getElementById('imageContainer').removeEventListener('mouseup', handleMouseUp);
+}
+
+function exitMeasurementMode() {
+    measuringDistance = false;
+    // Enable image movement events
+    document.getElementById('imageContainer').addEventListener('mousedown', startDrag);
+    document.getElementById('imageContainer').addEventListener('mousemove', moveArtwork);
+    document.getElementById('imageContainer').addEventListener('mouseup', handleMouseUp);
+}
+
         // Modified mouse event handlers to handle measurement mode
        function handleMouseDown(event) {
     if (!measuringDistance) {
         startDrag(event);
     } else {
+        // Measurement mode logic
         if (!firstPointPlaced) {
             startPoint = { x: event.clientX, y: event.clientY };
             firstPointPlaced = true;
@@ -98,10 +119,11 @@
         }
     }
 }
-
 function handleMouseUp(event) {
     if (!measuringDistance) {
         moveArtwork(event);
+    } else {
+        exitMeasurementMode();
     }
 }
 
