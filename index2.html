@@ -10,7 +10,6 @@
             width: 500px; /* Set the width and height of your container */
             height: 500px;
             border: 1px solid black;
-            margin-bottom: 20px;
         }
         .point {
             position: absolute;
@@ -21,7 +20,7 @@
         }
         #square {
             position: absolute;
-            width: 100px; /* Initial size of the square */
+            width: 100px; /* Initial size of the square (100x100 pixels) */
             height: 100px;
             background-color: blue; /* Set the color of the square */
         }
@@ -38,11 +37,14 @@
     <label for="realSize">Real Size of the Line (cm):</label>
     <input type="number" id="realSize" onchange="updateSquareSize()" step="any">
 
+    <label for="realSquareSize">Real Size of the Square (cm):</label>
+    <input type="number" id="realSquareSize" onchange="updateSquareSize()" step="any">
+
     <button onclick="resetMeasurement()">Reset</button>
 
     <script>
         let points = [];
-        let squareSize = 100; // Initial size of the square (100x100 pixels)
+        const initialSquareSize = 100; // Initial size of the square in cm
 
         function handleClick(event) {
             const container = document.getElementById('container');
@@ -63,7 +65,8 @@
                 // Calculate the size of the square based on the real size of the line
                 const realSize = parseFloat(document.getElementById('realSize').value);
                 if (!isNaN(realSize) && realSize > 0) {
-                    squareSize = (realSize / distance) * 100; // Convert from cm to pixels
+                    const scale = realSize / distance;
+                    const squareSize = initialSquareSize * scale;
                     document.getElementById('square').style.width = `${squareSize}px`;
                     document.getElementById('square').style.height = `${squareSize}px`;
                 }
@@ -96,10 +99,12 @@
 
         function updateSquareSize() {
             const realSize = parseFloat(document.getElementById('realSize').value);
-            if (!isNaN(realSize) && realSize > 0) {
+            const realSquareSize = parseFloat(document.getElementById('realSquareSize').value);
+            if (!isNaN(realSize) && realSize > 0 && !isNaN(realSquareSize) && realSquareSize > 0) {
                 // Recalculate the size of the square based on the real size of the line
                 const distance = parseFloat(document.getElementById('distance').innerText.split(':')[1]);
-                squareSize = (realSize / distance) * 100; // Convert from cm to pixels
+                const scale = realSize / distance;
+                const squareSize = realSquareSize * scale;
                 document.getElementById('square').style.width = `${squareSize}px`;
                 document.getElementById('square').style.height = `${squareSize}px`;
             }
