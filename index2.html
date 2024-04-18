@@ -19,6 +19,7 @@
             border: 1px solid black;
             background-size: cover;
             background-position: center;
+            margin-bottom: 20px; /* Add margin to create space between container and controls */
         }
         .point {
             position: absolute;
@@ -40,10 +41,11 @@
         .controls {
             display: flex;
             justify-content: center;
-            margin-top: 10px;
+            align-items: center;
+            flex-direction: column; /* Change flex direction to column */
         }
         .controls button {
-            margin: 0 5px;
+            margin: 5px; /* Add margin to create space between buttons */
         }
     </style>
 </head>
@@ -61,11 +63,10 @@
         <input type="file" id="imageInput" accept="image/*" onchange="setImageBackground(event)">
         <button onclick="resetMeasurement()">Reset</button>
         <button onclick="togglePoints()">Hide Points</button>
-    </div>
-
-    <div class="controls">
-        <input type="range" min="-50" max="50" value="0" id="perspectiveSlider" onchange="adjustPerspective(this.value)">
-        <span>Perspective Warp</span>
+        <div>
+            <input type="range" min="-50" max="50" value="0" id="perspectiveSlider" onchange="adjustPerspective(this.value)">
+            <span>Perspective Warp</span>
+        </div>
     </div>
 
     <script>
