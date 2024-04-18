@@ -81,23 +81,29 @@
         }
 
         // Modified mouse event handlers to handle measurement mode
-        function handleMouseDown(event) {
-            if (measuringDistance) {
-                if (!firstPointPlaced) {
-                    startPoint = { x: event.clientX, y: event.clientY };
-                    firstPointPlaced = true;
-                } else {
-                    endPoint = { x: event.clientX, y: event.clientY };
-                    calculateDistance();
-                    firstPointPlaced = false;
-                    startPoint = null;
-                    endPoint = null;
-                    removeMeasurementLine();
-                }
-            } else {
-                startDrag(event);
-            }
+       function handleMouseDown(event) {
+    if (!measuringDistance) {
+        startDrag(event);
+    } else {
+        if (!firstPointPlaced) {
+            startPoint = { x: event.clientX, y: event.clientY };
+            firstPointPlaced = true;
+        } else {
+            endPoint = { x: event.clientX, y: event.clientY };
+            calculateDistance();
+            firstPointPlaced = false;
+            startPoint = null;
+            endPoint = null;
+            removeMeasurementLine();
         }
+    }
+}
+
+function handleMouseUp(event) {
+    if (!measuringDistance) {
+        moveArtwork(event);
+    }
+}
 
        function drawLine(event) {
     if (measuringDistance && firstPointPlaced) {
@@ -123,12 +129,6 @@
 
 
 
-        function handleMouseUp(event) {
-    if (!measuringDistance) {
-        // Call the appropriate function for handling mouse up events when not in measurement mode
-        moveArtwork(event);
-    }
-}
 
         function calculateDistance() {
             if (startPoint && endPoint) {
