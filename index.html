@@ -43,7 +43,7 @@
     </style>
 </head>
 <body>
-    <h1>Decorate Your Room</h1>
+    <h1>Decorate Your Room!</h1>
     <input type="file" accept="image/*" id="fileInput" onchange="loadImage(event)">
     <div id="imageContainer" onmousedown="startDrawing(event)" onmousemove="drawLine(event)" onmouseup="endDrawing(event)">
         <img id="uploadedImage" src="" alt="Uploaded Image">
@@ -89,8 +89,34 @@
         }
 
         function startDrawing(event) {
-            startPoint = { x: event.clientX, y: event.clientY };
-            drawLine(event);
+            if (!startPoint) {
+                startPoint = { x: event.clientX, y: event.clientY };
+                drawLine(event);
+            } else if (!endPoint) {
+                endPoint = { x: event.clientX, y: event.clientY };
+
+                // Calculate distance between points
+                var distance = Math.sqrt(Math.pow(endPoint.x - startPoint.x, 2) + Math.pow(endPoint.y - startPoint.y, 2));
+
+                // Prompt user for measurement
+                var measurement = prompt('Please enter the real-world measurement between the two points (in centimeters):');
+
+                if (measurement !== null && !isNaN(measurement) && measurement > 0) {
+                    // Calculate scale factor
+                    var scaleFactor = parseFloat(measurement) / distance;
+
+                    // Resize artwork
+                    selectedArtwork.style.width = (selectedArtwork.width * scaleFactor) + 'px';
+                    selectedArtwork.style.transform = 'translate(-50%, -50%)';
+                } else {
+                    alert('Invalid measurement. Please enter a valid number.');
+                }
+
+                // Reset points and line
+                startPoint = null;
+                endPoint = null;
+                clearMeasurementLine();
+            }
         }
 
         function drawLine(event) {
@@ -112,6 +138,9 @@
 
             // Calculate distance between points
             var distance = Math.sqrt(Math.pow(endPoint.x - startPoint.x, 2) + Math.pow(endPoint.y - startPoint.y, 2));
+
+            // Prompt user for measurement only if endPoint is set
+            if (!endPoint) return;
 
             // Prompt user for measurement
             var measurement = prompt('Please enter the real-world measurement between the two points (in centimeters):');
