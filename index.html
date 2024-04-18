@@ -102,28 +102,43 @@
             }
         }
 
-        // Function to handle image resizing
-        function handleResize() {
-            const resizeSlider = document.getElementById('resizeSlider');
-            const scale = resizeSlider.value / 100;
-            overlayImage.style.transform = 'scale(' + scale + ')';
+        // Functionality for drawing measurement line
+        function handleMouseDown(event) {
+            if (measuringDistance) {
+                if (!startPoint) {
+                    startPoint = { x: event.clientX, y: event.clientY };
+                } else if (!endPoint) {
+                    endPoint = { x: event.clientX, y: event.clientY };
+                    drawMeasurementLine();
+                }
+            }
         }
 
-        // Function to handle overlay image selection
-        function selectOverlayImage(src) {
-            overlayImage.src = src;
-            overlayImage.style.display = 'block'; // Ensure the overlay image is displayed
-            updatePixelSize(src);
+        function drawMeasurementLine() {
+            const deltaX = endPoint.x - startPoint.x;
+            const deltaY = endPoint.y - startPoint.y;
+            const length = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+            const angle = Math.atan2(deltaY, deltaX) * 180 / Math.PI;
+
+            removeMeasurementLine();
+
+            measurementLine = document.createElement('div');
+            measurementLine.className = 'measurement-line';
+            measurementLine.style.position = 'absolute';
+            measurementLine.style.left = startPoint.x + 'px';
+            measurementLine.style.top = startPoint.y + 'px';
+            measurementLine.style.width = length + 'px';
+            measurementLine.style.height = '2px'; // Set line thickness here
+            measurementLine.style.transform = 'rotate(' + angle + 'deg)';
+            
+            document.body.appendChild(measurementLine);
         }
 
-        // Function to update pixel size display
-        function updatePixelSize(src) {
-            const img = new Image();
-            img.src = src;
-            img.onload = function() {
-                const pixelSizeDisplay = document.getElementById('pixelSize');
-                pixelSizeDisplay.textContent = 'Pixel Size: ' + img.width + 'x' + img.height;
-            };
+        function removeMeasurementLine() {
+            if (measurementLine) {
+                measurementLine.parentNode.removeChild(measurementLine);
+                measurementLine = null;
+            }
         }
 
         // Functionality for dragging overlay image
@@ -153,45 +168,28 @@
             element.style.transform = "translate3d(" + xPos + "px, " + yPos + "px, 0) scale(" + scale + ")";
         }
 
-        // Functionality for drawing measurement line
-        function handleMouseDown(event) {
-            if (measuringDistance) {
-                if (!startPoint) {
-                    startPoint = { x: event.clientX, y: event.clientY };
-                } else if (!endPoint) {
-                    endPoint = { x: event.clientX, y: event.clientY };
-                    drawMeasurementLine();
-                }
-            } else {
-                startDrag(event);
-            }
+        // Function to handle image resizing
+        function handleResize() {
+            const resizeSlider = document.getElementById('resizeSlider');
+            const scale = resizeSlider.value / 100;
+            overlayImage.style.transform = 'scale(' + scale + ')';
         }
 
-        function drawMeasurementLine() {
-            const deltaX = endPoint.x - startPoint.x;
-            const deltaY = endPoint.y - startPoint.y;
-            const length = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-            const angle = Math.atan2(deltaY, deltaX) * 180 / Math.PI;
-
-            removeMeasurementLine();
-
-            measurementLine = document.createElement('div');
-            measurementLine.className = 'measurement-line';
-            measurementLine.style.position = 'absolute';
-            measurementLine.style.left = startPoint.x + 'px';
-            measurementLine.style.top = startPoint.y + 'px';
-            measurementLine.style.width = length + 'px';
-            measurementLine.style.height = '2px'; // Set line thickness here
-            measurementLine.style.transform = 'rotate(' + angle + 'deg)';
-            
-            document.body.appendChild(measurementLine);
+        // Function to handle overlay image selection
+        function selectOverlayImage(src) {
+            overlayImage.src = src;
+            overlayImage.style.display = 'block'; // Ensure the overlay image is displayed
+            updatePixelSize(src);
         }
 
-        function removeMeasurementLine() {
-            if (measurementLine) {
-                measurementLine.parentNode.removeChild(measurementLine);
-                measurementLine = null;
-            }
+        // Function to update pixel size display
+        function updatePixelSize(src) {
+            const img = new Image();
+            img.src = src;
+            img.onload = function() {
+                const pixelSizeDisplay = document.getElementById('pixelSize');
+                pixelSizeDisplay.textContent = 'Pixel Size: ' + img.width + 'x' + img.height;
+            };
         }
 
         // Add event listeners
