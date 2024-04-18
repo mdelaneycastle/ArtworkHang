@@ -99,23 +99,28 @@
             }
         }
 
-        function drawLine(event) {
+       function drawLine(event) {
     if (measuringDistance && firstPointPlaced) {
         removeMeasurementLine();
         measurementLine = document.createElement('div');
         measurementLine.className = 'measurement-line';
-        measurementLine.style.left = startPoint.x + 'px';
-        measurementLine.style.top = startPoint.y + 'px';
+        measurementLine.style.position = 'absolute';
+
         var deltaX = event.clientX - startPoint.x;
         var deltaY = event.clientY - startPoint.y;
         var length = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
         var angle = Math.atan2(deltaY, deltaX) * 180 / Math.PI;
+
+        measurementLine.style.left = startPoint.x + 'px';
+        measurementLine.style.top = startPoint.y + 'px';
         measurementLine.style.width = length + 'px';
         measurementLine.style.height = '2px'; // Set line thickness here
         measurementLine.style.transform = 'rotate(' + angle + 'deg)';
-        document.getElementById('imageContainer').appendChild(measurementLine);
+        
+        document.body.appendChild(measurementLine);
     }
 }
+
 
 
         function handleMouseUp(event) {
