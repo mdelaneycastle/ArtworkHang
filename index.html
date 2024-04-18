@@ -42,10 +42,26 @@
             background-color: red; /* Change the color of the measurement line */
             opacity: 0.5; /* Adjust the opacity of the measurement line */
         }
+        .measurement-mode-button {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 10px 24px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 12px;
+        }
+        .measurement-mode-button.active {
+            background-color: #f44336; /* Red */
+        }
     </style>
 </head>
 <body>
-    <h1>Decorate Your Room</h1>
+    <h1>Decorate Your Room!</h1>
     <input type="file" accept="image/*" id="fileInput" onchange="loadImage(event)">
     <div id="imageContainer" ontouchstart="handleTouchStart(event)" ontouchmove="handleTouchMove(event)" ontouchend="handleTouchEnd(event)">
         <img id="uploadedImage" src="" alt="Uploaded Image">
@@ -59,7 +75,7 @@
         <input type="range" min="80" max="120" value="100" id="slider" oninput="resizeArtwork()">
     </div>
     <div id="artworkSize"></div>
-    <button onclick="toggleMeasurementMode()">Toggle Measurement Mode</button>
+    <button id="measurementModeButton" class="measurement-mode-button" onclick="toggleMeasurementMode()">Enter Measurement Mode</button>
 
     <script>
         var selectedArtwork = null;
@@ -74,6 +90,8 @@
         // Function to toggle measurement mode
         function toggleMeasurementMode() {
             measuringDistance = !measuringDistance;
+            var measurementModeButton = document.getElementById('measurementModeButton');
+            measurementModeButton.classList.toggle('active', measuringDistance);
             if (!measuringDistance) {
                 removeMeasurementLine();
                 firstPointPlaced = false;
@@ -146,8 +164,7 @@
                 measurementLine = null;
             }
         }
-
-    
+  
 
 
         // Function to load uploaded image
