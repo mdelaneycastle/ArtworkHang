@@ -43,7 +43,7 @@
     </style>
 </head>
 <body>
-    <h1>Decorate Your Room</h1>
+    <h1>Decorate Your Room!</h1>
     <input type="file" accept="image/*" id="fileInput" onchange="loadImage(event)">
     <div id="imageContainer" onmousedown="startDrawing(event)" onmousemove="drawLine(event)" onmouseup="endDrawing(event)">
         <img id="uploadedImage" src="" alt="Uploaded Image">
@@ -124,16 +124,19 @@
         }
 
         function drawLine(event) {
-            if (!firstPointPlaced) {
-                clearMeasurementLine();
-                measurementLine = document.createElement('div');
-                measurementLine.className = 'measurement-line';
-                measurementLine.style.borderTop = '1px solid red';
-                measurementLine.style.width = Math.sqrt(Math.pow(event.clientX - startPoint.x, 2) + Math.pow(event.clientY - startPoint.y, 2)) + 'px';
-                measurementLine.style.transform = 'translate(' + startPoint.x + 'px, ' + startPoint.y + 'px) rotate(' + Math.atan2(event.clientY - startPoint.y, event.clientX - startPoint.x) + 'rad)';
-                document.body.appendChild(measurementLine);
-            }
-        }
+    if (!firstPointPlaced) {
+        // Create a simple red line from start point to current mouse position
+        if (!startPoint) return;
+        clearMeasurementLine();
+
+        measurementLine = document.createElement('div');
+        measurementLine.className = 'measurement-line';
+        measurementLine.style.borderTop = '1px solid red';
+        measurementLine.style.width = Math.sqrt(Math.pow(event.clientX - startPoint.x, 2) + Math.pow(event.clientY - startPoint.y, 2)) + 'px';
+        measurementLine.style.transform = `translate(${startPoint.x}px, ${startPoint.y}px) rotate(${Math.atan2(event.clientY - startPoint.y, event.clientX - startPoint.x)}rad)`;
+        document.body.appendChild(measurementLine);
+    }
+}
 
         function endDrawing(event) {
             if (!firstPointPlaced) {
