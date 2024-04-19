@@ -159,12 +159,14 @@
         square.addEventListener('mousedown', startDrag);
 
         function startDrag(event) {
-            isDragging = true;
-            offsetX = event.clientX - square.getBoundingClientRect().left;
-            offsetY = event.clientY - square.getBoundingClientRect().top;
-            document.addEventListener('mousemove', drag);
-            document.addEventListener('mouseup', endDrag);
-        }
+    isDragging = true;
+    const squareRect = square.getBoundingClientRect();
+    offsetX = event.clientX - (squareRect.left + squareRect.width / 2);
+    offsetY = event.clientY - (squareRect.top + squareRect.height / 2);
+    document.addEventListener('mousemove', drag);
+    document.addEventListener('mouseup', endDrag);
+}
+
 
         function endDrag() {
             isDragging = false;
