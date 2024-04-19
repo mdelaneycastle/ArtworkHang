@@ -44,7 +44,7 @@
 
     <input type="file" id="imageInput" accept="image/*" onchange="setImageBackground(event)"><br><br>
 
-    <button onclick="resetMeasurement()">Reset</button>
+    <button onclick="resetMeasurement()">Reset.</button>
     <button onclick="togglePoints()">Hide Points</button>
 
     <input type="range" min="-50" max="50" value="0" id="perspectiveSlider" onchange="adjustPerspective(this.value)">
@@ -179,8 +179,20 @@
         }
 
         function adjustPerspective(value) {
-            square.style.transform = `perspective(500px) rotateY(${value}deg)`;
-        }
+    const square = document.getElementById('square');
+    const container = document.getElementById('container');
+    const rect = container.getBoundingClientRect();
+    const centerX = rect.left + container.offsetWidth / 2;
+    const distanceFromCenter = square.offsetLeft + square.offsetWidth / 2 - centerX;
+    const maxPerspective = 500; // Maximum perspective value
+
+    // Calculate the perspective based on the slider value and the distance from the center
+    const perspective = maxPerspective * value / 50;
+    const rotateY = value * distanceFromCenter / (container.offsetWidth / 2);
+
+    square.style.transform = `perspective(${perspective}px) rotateY(${rotateY}deg)`;
+}
+
     </script>
 </body>
 </html>
