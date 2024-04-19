@@ -181,9 +181,6 @@
 
     <!-- Define the adjustPerspective function outside of the existing script block -->
     <script>
-        // Initial call to adjustPerspective to apply perspective transformation when the page loads
-        adjustPerspective(document.getElementById('perspectiveSlider').value);
-
         // Function to adjust perspective dynamically as the slider value changes
         function adjustPerspective(value) {
             const square = document.getElementById('square');
@@ -199,6 +196,11 @@
 
             square.style.transform = `perspective(${perspective}px) rotateY(${rotateY}deg)`;
         }
+
+        // Initial call to adjustPerspective to apply perspective transformation when the page loads
+        window.onload = function() {
+            adjustPerspective(document.getElementById('perspectiveSlider').value);
+        };
     </script>
 </body>
 </html>
