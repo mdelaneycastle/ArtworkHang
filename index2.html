@@ -25,7 +25,7 @@
         justify-content: center;
         align-items: center;
         text-align: center;
-        cursor: pointer;
+        cursor: default;
     }
 
     #container.dragging {
@@ -33,7 +33,7 @@
     }
 
     #container::before {
-        content: "Click here or drag and drop to upload";
+        content: "Click here to place points or drag and drop to upload";
         position: absolute;
         font-size: 18px;
         color: #555;
@@ -151,7 +151,7 @@
     </style>
 </head>
 <body>
-    <div id="container" onclick="document.getElementById('imageInput').click()" ondragover="handleDragOver(event)" ondrop="handleDrop(event)" ondragenter="handleDragEnter(event)" ondragleave="handleDragLeave(event)">
+    <div id="container" onclick="handleClick(event)" ondragover="handleDragOver(event)" ondrop="handleDrop(event)" ondragenter="handleDragEnter(event)" ondragleave="handleDragLeave(event)">
         <div id="square"></div>
     </div>
 
@@ -180,33 +180,34 @@
         let pointsVisible = true;
 
         function handleClick(event) {
-            if (!pointsVisible) return;
             const container = document.getElementById('container');
-            const rect = container.getBoundingClientRect();
-            const x = event.clientX - rect.left;
-            const y = event.clientY - rect.top;
+            if (!pointsVisible && event.target === container) {
+                const rect = container.getBoundingClientRect();
+                const x = event.clientX - rect.left;
+                const y = event.clientY - rect.top;
 
-            points.push({ x, y });
+                points.push({ x, y });
 
-            if (points.length === 2) {
-                const distance = Math.sqrt(
-                    Math.pow(points[1].x - points[0].x, 2) +
-                    Math.pow(points[1].y - points[0].y, 2)
-                );
+                if (points.length === 2) {
+                    const distance = Math.sqrt(
+                        Math.pow(points[1].x - points[0].x, 2) +
+                        Math.pow(points[1].y - points[0].y, 2)
+                    );
 
-                const realSize = parseFloat(document.getElementById('realSize').value);
-                if (!isNaN(realSize) && realSize > 0) {
-                    const scale = (initialSquareSize / realSize) * distance;
-                    document.getElementById('square').style.width = `${scale}px`;
-                    document.getElementById('square').style.height = `${scale}px`;
+                    const realSize = parseFloat(document.getElementById('realSize').value);
+                    if (!isNaN(realSize) && realSize > 0) {
+                        const scale = (initialSquareSize / realSize) * distance;
+                        document.getElementById('square').style.width = `${scale}px`;
+                        document.getElementById('square').style.height = `${scale}px`;
+                    }
                 }
-            }
 
-            if (points.length > 2) {
-                points = points.slice(1);
-            }
+                if (points.length > 2) {
+                    points = points.slice(1);
+                }
 
-            drawPoint(x, y);
+                drawPoint(x, y);
+            }
         }
 
         function drawPoint(x, y) {
