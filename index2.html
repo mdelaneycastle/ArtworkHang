@@ -274,25 +274,27 @@
         }
 
         function endDrag() {
-            isDragging = false;
-            document.removeEventListener('mousemove', drag);
-            document.removeEventListener('mouseup', endDrag);
-        }
+    isDragging = false;
+    document.removeEventListener('mousemove', drag);
+    document.removeEventListener('mouseup', endDrag);
+}
 
         function drag(event) {
-            if (isDragging) {
-                const container = document.getElementById('container');
-                const rect = container.getBoundingClientRect();
-                let newX = event.clientX - rect.left - offsetX;
-                let newY = event.clientY - rect.top - offsetY;
+    if (isDragging) {
+        const container = document.getElementById('container');
+        const square = document.getElementById('square');
+        const containerRect = container.getBoundingClientRect();
 
-                newX = Math.max(0, Math.min(newX, container.clientWidth - square.offsetWidth));
-                newY = Math.max(0, Math.min(newY, container.clientHeight - square.offsetHeight));
+        let newX = event.clientX - containerRect.left - offsetX;
+        let newY = event.clientY - containerRect.top - offsetY;
 
-                square.style.left = `${newX}px`;
-                square.style.top = `${newY}px`;
-            }
-        }
+        newX = Math.max(0, Math.min(newX, containerRect.width - square.offsetWidth));
+        newY = Math.max(0, Math.min(newY, containerRect.height - square.offsetHeight));
+
+        square.style.left = `${newX}px`;
+        square.style.top = `${newY}px`;
+    }
+}
 
         function togglePoints() {
             const points = document.getElementsByClassName('point');
