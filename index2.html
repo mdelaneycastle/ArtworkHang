@@ -5,32 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pixel Distance Measurement</title>
     <style>
-        #container {
-            position: relative;
-            width: 500px; /* Set the width and height of your container */
-            height: 500px;
-            border: 1px solid black;
-            background-size: cover;
-            background-position: center;
-        }
-        .point {
-            position: absolute;
-            width: 10px; /* Set the size of your point */
-            height: 10px;
-            background-color: red; /* Set the color of your point */
-            border-radius: 50%; /* Make the point circular */
-        }
-        #square {
-            position: absolute;
-            width: 100px; /* Initial size of the square (100x100 pixels) */
-            height: 100px;
-            cursor: move; /* Set cursor to indicate draggable element */
-            background-image: url('image1.jpg'); /* Set background image */
-            background-size: cover;
-            background-position: center;
-            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Adjusted shadow properties */
-            transform: translate(-50%, -50%) perspective(500px) rotateY(0deg); /* Initial transform */
-        }
+     
+    #container {
+        position: relative;
+        width: 500px; /* Set the width and height of your container */
+        height: 500px;
+        border: 1px solid black;
+        background-size: cover;
+        background-position: center;
+    }
+    .point {
+        position: absolute;
+        width: 10px; /* Set the size of your point */
+        height: 10px;
+        background-color: red; /* Set the color of your point */
+        border-radius: 50%; /* Make the point circular */
+    }
+    #square {
+        position: absolute;
+        width: 100px; /* Initial size of the square (100x100 pixels) */
+        height: 100px;
+        cursor: move; /* Set cursor to indicate draggable element */
+        background-image: url('image1.jpg'); /* Set background image */
+        background-size: cover;
+        background-position: center;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Adjusted shadow properties */
+        transform: translate(-50%, -50%) perspective(500px) rotateY(0deg); /* Initial transform */
+        top: 50%; /* Center vertically */
+        left: 50%; /* Center horizontally */
+        margin-top: -50px; /* Half of square height */
+        margin-left: -50px; /* Half of square width */
+    }
+
+
+
 
     </style>
 </head>
