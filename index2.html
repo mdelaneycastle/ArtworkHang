@@ -51,7 +51,7 @@
     <!--<input type="range" min="-50" max="50" value="0" id="perspectiveSlider" onchange="adjustPerspective(this.value)">-->
     <!--<span>Perspective Warp</span>-->
 
-    <input type="range" min="0" max="360" value="180" class="slider" id="slider">
+    <input type="range" min="-45" max="45" value="0" class="slider" id="slider">
 
     <script>
         let points = [];
@@ -149,18 +149,19 @@
         });
 
         square.addEventListener('mousedown', startDrag);
-        square.addEventListener('mouseup', endDrag);
 
         function startDrag(event) {
             isDragging = true;
             offsetX = event.clientX - square.getBoundingClientRect().left;
             offsetY = event.clientY - square.getBoundingClientRect().top;
             document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', endDrag);
         }
 
         function endDrag() {
             isDragging = false;
             document.removeEventListener('mousemove', drag);
+            document.removeEventListener('mouseup', endDrag);
         }
 
         function drag(event) {
