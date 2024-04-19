@@ -44,11 +44,11 @@
 
     <input type="file" id="imageInput" accept="image/*" onchange="setImageBackground(event)"><br><br>
 
-    <button onclick="resetMeasurement()">Reset</button>
+    <button onclick="resetMeasurement()">Reset.</button>
     <button onclick="togglePoints()">Hide Points</button>
 
-    <input type="range" min="-50" max="50" value="0" id="perspectiveSlider" onchange="adjustPerspective(this.value)">
-    <span>Perspective Warp</span>
+    <input type="range" min="-50" max="50" value="0" id="perspectiveSlider" oninput="adjustPerspective(this.value)">
+<span>Perspective Warp</span>
 
     <script>
         let points = [];
