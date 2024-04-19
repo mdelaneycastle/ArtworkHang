@@ -21,24 +21,7 @@
         background-position: center;
         margin: 20px auto;
         overflow: hidden;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        cursor: default;
     }
-
-    #container.dragging {
-        border-color: #4CAF50;
-    }
-
-    #container::before {
-        content: "Click here to place points or drag and drop to upload";
-        position: absolute;
-        font-size: 18px;
-        color: #555;
-    }
-
     .point {
         position: absolute;
         width: 10px;
@@ -97,6 +80,22 @@
         margin: 0 auto;
     }
 
+    #uploadBtn {
+        display: block;
+        padding: 10px 20px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        margin: 0 auto 20px;
+    }
+
+    #uploadBtn:hover {
+        background-color: #45a049;
+    }
+
     #pointsBtn {
         display: block;
         padding: 10px 20px;
@@ -111,6 +110,7 @@
 
     #pointsBtn:hover {
         background-color: #d32f2f;
+        margin-bottom: 20px;
     }
 
     .sliderContainer {
@@ -151,7 +151,7 @@
     </style>
 </head>
 <body>
-    <div id="container" onclick="handleClick(event)" ondragover="handleDragOver(event)" ondrop="handleDrop(event)" ondragenter="handleDragEnter(event)" ondragleave="handleDragLeave(event)">
+    <div id="container" onclick="handleClick(event)">
         <div id="square"></div>
     </div>
 
@@ -163,6 +163,8 @@
     
     <label id="realSizeLabel" for="realSize">Real Size of the Line (cm):</label>
     <input type="number" id="realSize" onchange="updateSquareSize()" step="any">
+
+    <button id="uploadBtn" onclick="document.getElementById('imageInput').click()">Upload Photo</button>
 
     <button id="pointsBtn" onclick="togglePoints()">Toggle Points</button>
 
@@ -180,34 +182,33 @@
         let pointsVisible = true;
 
         function handleClick(event) {
+            if (!pointsVisible) return;
             const container = document.getElementById('container');
-            if (!pointsVisible && event.target === container) {
-                const rect = container.getBoundingClientRect();
-                const x = event.clientX - rect.left;
-                const y = event.clientY - rect.top;
+            const rect = container.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
 
-                points.push({ x, y });
+            points.push({ x, y });
 
-                if (points.length === 2) {
-                    const distance = Math.sqrt(
-                        Math.pow(points[1].x - points[0].x, 2) +
-                        Math.pow(points[1].y - points[0].y, 2)
-                    );
+            if (points.length === 2) {
+                const distance = Math.sqrt(
+                    Math.pow(points[1].x - points[0].x, 2) +
+                    Math.pow(points[1].y - points[0].y, 2)
+                );
 
-                    const realSize = parseFloat(document.getElementById('realSize').value);
-                    if (!isNaN(realSize) && realSize > 0) {
-                        const scale = (initialSquareSize / realSize) * distance;
-                        document.getElementById('square').style.width = `${scale}px`;
-                        document.getElementById('square').style.height = `${scale}px`;
-                    }
+                const realSize = parseFloat(document.getElementById('realSize').value);
+                if (!isNaN(realSize) && realSize > 0) {
+                    const scale = (initialSquareSize / realSize) * distance;
+                    document.getElementById('square').style.width = `${scale}px`;
+                    document.getElementById('square').style.height = `${scale}px`;
                 }
-
-                if (points.length > 2) {
-                    points = points.slice(1);
-                }
-
-                drawPoint(x, y);
             }
+
+            if (points.length > 2) {
+                points = points.slice(1);
+            }
+
+            drawPoint(x, y);
         }
 
         function drawPoint(x, y) {
@@ -299,37 +300,6 @@
                 points[i].style.display = points[i].style.display === 'none' ? 'block' : 'none';
             }
             pointsVisible = !pointsVisible;
-        }
-
-        function handleDragOver(event) {
-            event.preventDefault();
-            event.stopPropagation();
-            event.dataTransfer.dropEffect = 'copy';
-            document.getElementById('container').classList.add('dragging');
-        }
-
-        function handleDragEnter(event) {
-            event.preventDefault();
-            event.stopPropagation();
-        }
-
-        function handleDragLeave(event) {
-            event.preventDefault();
-            event.stopPropagation();
-            document.getElementById('container').classList.remove('dragging');
-        }
-
-        function handleDrop(event) {
-            event.preventDefault();
-            event.stopPropagation();
-            document.getElementById('container').classList.remove('dragging');
-            const file = event.dataTransfer.files[0];
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                const imageData = event.target.result;
-                document.getElementById('container').style.backgroundImage = `url(${imageData})`;
-            };
-            reader.readAsDataURL(file);
         }
     </script>
 </body>
