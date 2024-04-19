@@ -9,16 +9,16 @@
             position: relative;
             width: 300px;
             margin: 50px auto;
+            text-align: center; /* Center the square and slider */
         }
 
         .square {
             width: 100px;
             height: 100px;
             background-color: #00f;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) perspective(500px) rotateX(0deg);
+            display: inline-block; /* Display square inline */
+            margin-bottom: 20px; /* Add some space between square and slider */
+            transform: translate(-50%, -50%) perspective(500px) rotateY(0deg);
         }
 
         .slider {
@@ -29,7 +29,7 @@
 <body>
     <div class="container">
         <div class="square" id="square"></div>
-        <input type="range" min="0" max="100" value="50" class="slider" id="slider">
+        <input type="range" min="0" max="360" value="180" class="slider" id="slider">
     </div>
     <script>
         const slider = document.getElementById('slider');
@@ -37,7 +37,7 @@
 
         slider.addEventListener('input', function() {
             const value = parseInt(this.value);
-            square.style.transform = `translate(-50%, -50%) perspective(500px) rotateX(${value}deg)`;
+            square.style.transform = `translate(-50%, -50%) perspective(500px) rotateY(${value}deg)`;
         });
     </script>
 </body>
