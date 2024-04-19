@@ -3,168 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Overlay</title>
+    <title>Perspective Slider</title>
     <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            font-family: Arial, sans-serif;
-        }
-
-        #imageContainer {
+        .container {
             position: relative;
-            max-width: 80%;
-            max-height: 80vh;
-            overflow: hidden;
+            width: 300px;
+            margin: 50px auto;
         }
 
-        #imageContainer img {
-            display: block;
+        .square {
+            width: 100px;
+            height: 100px;
+            background-color: #00f;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) perspective(500px) rotateX(0deg);
+        }
+
+        .slider {
             width: 100%;
-            height: auto;
-        }
-
-        #overlayOptions {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        #overlayImage {
-    display: none;
-    position: absolute;
-    width: 20%;
-    height: auto;
-    max-width: 400px;
-    max-height: 400px;
-    /* Add shadow */
-    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5); /* Adjust the values for your desired shadow effect */
-}
-
-        .overlayButton {
-    width: 150px;
-    height: 150px;
-    margin: 10px;
-    padding: 0; /* Remove padding */
-    border: none; /* Remove border */
-    background: none; /* Remove background */
-}
-
-.overlayButton img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Ensure image covers entire button */
-}
-
-        #pixelSize {
-            margin-top: 10px;
-            font-size: 16px;
-        }
-
-        #resizeSlider {
-            margin-top: 10px;
-            width: 80%;
         }
     </style>
 </head>
 <body>
-    <input type="file" id="uploadInput">
-    <div id="imageContainer">
-        <img id="overlayImage" src="#" alt="Overlay Image">
-        <img id="uploadedImage" src="#" alt="Uploaded Image">
+    <div class="container">
+        <div class="square" id="square"></div>
+        <input type="range" min="0" max="100" value="50" class="slider" id="slider">
     </div>
-    <div id="overlayOptions">
-    <button class="overlayButton" data-src="image1.jpg"><img src="image1.jpg" alt="Image 1"></button>
-    <button class="overlayButton" data-src="image2.jpg"><img src="image2.jpg" alt="Image 2"></button>
-    <button class="overlayButton" data-src="image3.jpg"><img src="image3.jpg" alt="Image 3"></button>
-    <p id="pixelSize">Pixel Size: </p>
-    <input type="range" id="resizeSlider" min="80" max="120" value="100" step="1">
-</div>
     <script>
-        // Function to handle image resizing
-        function handleResize() {
-            const scale = resizeSlider.value / 100;
-            overlayImage.style.transform = 'scale(' + scale + ')';
-        }
+        const slider = document.getElementById('slider');
+        const square = document.getElementById('square');
 
-        document.addEventListener('DOMContentLoaded', function() {
-            const uploadInput = document.getElementById('uploadInput');
-            const uploadedImage = document.getElementById('uploadedImage');
-            const overlayImage = document.getElementById('overlayImage');
-            const overlayButtons = document.querySelectorAll('.overlayButton');
-            const pixelSizeDisplay = document.getElementById('pixelSize');
-            const resizeSlider = document.getElementById('resizeSlider');
-
-            // Function to display uploaded image
-            uploadInput.addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    uploadedImage.src = event.target.result;
-                };
-                reader.readAsDataURL(file);
-            });
-
-            // Function to handle overlay image selection
-            overlayButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const src = this.getAttribute('data-src');
-                    overlayImage.src = src;
-                    overlayImage.style.display = 'block'; // Ensure the overlay image is displayed
-                    updatePixelSize(src);
-                });
-            });
-
-            // Function to update pixel size display
-            function updatePixelSize(src) {
-                const img = new Image();
-                img.src = src;
-                img.onload = function() {
-                    pixelSizeDisplay.textContent = 'Pixel Size: ' + img.width + 'x' + img.height;
-                };
-            }
-
-            resizeSlider.addEventListener('input', handleResize);
-
-            // Functionality for dragging overlay image
-            let isDragging = false;
-            let initialX, initialY;
-            let xOffset = 0;
-            let yOffset = 0;
-
-            overlayImage.addEventListener('mousedown', startDrag);
-            overlayImage.addEventListener('mouseup', endDrag);
-            overlayImage.addEventListener('mouseleave', endDrag);
-            overlayImage.addEventListener('mousemove', drag);
-
-            function startDrag(e) {
-                isDragging = true;
-                initialX = e.clientX - xOffset;
-                initialY = e.clientY - yOffset;
-            }
-
-            function endDrag() {
-                isDragging = false;
-            }
-
-            function drag(e) {
-    if (isDragging) {
-        e.preventDefault();
-        const scale = parseFloat(overlayImage.style.transform.match(/scale\((.*?)\)/)[1]);
-        const newX = e.clientX - initialX;
-        const newY = e.clientY - initialY;
-        xOffset = newX;
-        yOffset = newY;
-        setTranslate(newX, newY, overlayImage, scale);
-    }
-}
-
-
-            function setTranslate(xPos, yPos, element, scale) {
-    element.style.transform = "translate3d(" + xPos + "px, " + yPos + "px, 0) scale(" + scale + ")";
-}
+        slider.addEventListener('input', function() {
+            const value = parseInt(this.value);
+            square.style.transform = `translate(-50%, -50%) perspective(500px) rotateX(${value}deg)`;
         });
     </script>
 </body>
