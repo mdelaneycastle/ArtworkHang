@@ -155,11 +155,7 @@
         <div id="square"></div>
     </div>
 
-    <div id="imageButtons">
-        <img class="thumbnail" src="image1.jpg" alt="Image 1" onclick="setImage('image1.jpg')">
-        <img class="thumbnail" src="image2.jpg" alt="Image 2" onclick="setImage('image2.jpg')">
-        <img class="thumbnail" src="image3.jpg" alt="Image 3" onclick="setImage('image3.jpg')">
-    </div>
+    <div id="imageButtons"></div>
     
     <label id="realSizeLabel" for="realSize">Real Size of the Line (cm):</label>
     <input type="number" id="realSize" onchange="updateSquareSize()" step="any">
@@ -175,172 +171,188 @@
     <input type="file" id="imageInput" accept="image/*" style="display: none" onchange="setImageBackground(event)">
 
     <script>
-    let points = [];
-    const initialSquareSize = 101;
-    let isDragging = false;
-    let offsetX, offsetY;
-    let pointsVisible = true;
+        let points = [];
+        const initialSquareSize = 101;
+        let isDragging = false;
+        let offsetX, offsetY;
+        let pointsVisible = true;
 
-    function handleClick(event) {
-        if (!pointsVisible) return;
-        const container = document.getElementById('container');
-        const rect = container.getBoundingClientRect();
-        const x = event.clientX - rect.left;
-        const y = event.clientY - rect.top;
+        function handleClick(event) {
+            if (!pointsVisible) return;
+            const container = document.getElementById('container');
+            const rect = container.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
 
-        points.push({ x, y });
+            points.push({ x, y });
 
-        if (points.length === 2) {
-            const distance = Math.sqrt(
-                Math.pow(points[1].x - points[0].x, 2) +
-                Math.pow(points[1].y - points[0].y, 2)
-            );
+            if (points.length === 2) {
+                const distance = Math.sqrt(
+                    Math.pow(points[1].x - points[0].x, 2) +
+                    Math.pow(points[1].y - points[0].y, 2)
+                );
 
+                const realSize = parseFloat(document.getElementById('realSize').value);
+                if (!isNaN(realSize) && realSize > 0) {
+                    const scale = (initialSquareSize / realSize) * distance;
+                    document.getElementById('square').style.width = `${scale}px`;
+                    document.getElementById('square').style.height = `${scale}px`;
+                }
+            }
+
+            if (points.length > 2) {
+                points = points.slice(1);
+            }
+
+            drawPoint(x, y);
+        }
+
+        function drawPoint(x, y) {
+            const container = document.getElementById('container');
+            const point = document.createElement('div');
+            point.className = 'point';
+            point.style.left = `${x}px`;
+            point.style.top = `${y}px`;
+            container.appendChild(point);
+        }
+
+        function updateSquareSize() {
             const realSize = parseFloat(document.getElementById('realSize').value);
             if (!isNaN(realSize) && realSize > 0) {
+                const distance = calculateDistance();
                 const scale = (initialSquareSize / realSize) * distance;
                 document.getElementById('square').style.width = `${scale}px`;
                 document.getElementById('square').style.height = `${scale}px`;
             }
         }
 
-        if (points.length > 2) {
-            points = points.slice(1);
+        function calculateDistance() {
+            if (points.length === 2) {
+                return Math.sqrt(
+                    Math.pow(points[1].x - points[0].x, 2) +
+                    Math.pow(points[1].y - points[0].y, 2)
+                );
+            }
+            return 0;
         }
 
-        drawPoint(x, y);
-    }
-
-    function drawPoint(x, y) {
-        const container = document.getElementById('container');
-        const point = document.createElement('div');
-        point.className = 'point';
-        point.style.left = `${x}px`;
-        point.style.top = `${y}px`;
-        container.appendChild(point);
-    }
-
-    function updateSquareSize() {
-        const realSize = parseFloat(document.getElementById('realSize').value);
-        if (!isNaN(realSize) && realSize > 0) {
-            const distance = calculateDistance();
-            const scale = (initialSquareSize / realSize) * distance;
-            document.getElementById('square').style.width = `${scale}px`;
-            document.getElementById('square').style.height = `${scale}px`;
+        function setImage(imageUrl) {
+            document.getElementById('square').style.backgroundImage = `url(${imageUrl})`;
         }
-    }
 
-    function calculateDistance() {
-        if (points.length === 2) {
-            return Math.sqrt(
-                Math.pow(points[1].x - points[0].x, 2) +
-                Math.pow(points[1].y - points[0].y, 2)
-            );
+        function setImageBackground(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const imageData = event.target.result;
+                document.getElementById('container').style.backgroundImage = `url(${imageData})`;
+            };
+            reader.readAsDataURL(file);
         }
-        return 0;
-    }
 
-    function setImage(imageUrl) {
-        document.getElementById('square').style.backgroundImage = `url(${imageUrl})`;
-    }
+        const square = document.getElementById('square');
+        const slider = document.getElementById('slider');
 
-    function setImageBackground(event) {
-        const file = event.target.files[0];
-        const reader = new FileReader();
-        reader.onload = function(event) {
-            const imageData = event.target.result;
-            document.getElementById('container').style.backgroundImage = `url(${imageData})`;
-        };
-        reader.readAsDataURL(file);
-    }
+        slider.addEventListener('input', function() {
+            const value = parseInt(this.value);
+            square.style.transform = `translate(-50%, -50%) perspective(500px) rotateY(${value}deg)`;
+        });
 
-    const square = document.getElementById('square');
-    const slider = document.getElementById('slider');
+        square.addEventListener('mousedown', startDrag);
+        square.addEventListener('touchstart', startDragTouch);
 
-    slider.addEventListener('input', function() {
-        const value = parseInt(this.value);
-        square.style.transform = `translate(-50%, -50%) perspective(500px) rotateY(${value}deg)`;
-    });
-
-    square.addEventListener('mousedown', startDrag);
-    square.addEventListener('touchstart', startDragTouch);
-
-    function startDrag(event) {
-        isDragging = true;
-        const squareRect = square.getBoundingClientRect();
-        offsetX = event.clientX - (squareRect.left + squareRect.width / 2);
-        offsetY = event.clientY - (squareRect.top + squareRect.height / 2);
-        document.addEventListener('mousemove', drag);
-        document.addEventListener('mouseup', endDrag);
-    }
-
-    function startDragTouch(event) {
-        isDragging = true;
-        const squareRect = square.getBoundingClientRect();
-        offsetX = event.touches[0].clientX - (squareRect.left + squareRect.width / 2);
-        offsetY = event.touches[0].clientY - (squareRect.top + squareRect.height / 2);
-        document.addEventListener('touchmove', dragTouch);
-        document.addEventListener('touchend', endDrag);
-    }
-
-    function endDrag() {
-        isDragging = false;
-        document.removeEventListener('mousemove', drag);
-        document.removeEventListener('touchmove', dragTouch);
-        document.removeEventListener('mouseup', endDrag);
-        document.removeEventListener('touchend', endDrag);
-    }
-
-    function drag(event) {
-        if (isDragging) {
-            const container = document.getElementById('container');
-            const square = document.getElementById('square');
-            const containerRect = container.getBoundingClientRect();
-
-            let newX = event.clientX - containerRect.left - offsetX;
-            let newY = event.clientY - containerRect.top - offsetY;
-
-            newX = Math.max(0, Math.min(newX, containerRect.width - square.offsetWidth));
-            newY = Math.max(0, Math.min(newY, containerRect.height - square.offsetHeight));
-
-            // Adjust newX and newY to ensure the square stays within the container bounds
-            newX = Math.min(newX, containerRect.width - square.offsetWidth);
-            newY = Math.min(newY, containerRect.height - square.offsetHeight);
-
-            square.style.left = `${newX}px`;
-            square.style.top = `${newY}px`;
+        function startDrag(event) {
+            isDragging = true;
+            const squareRect = square.getBoundingClientRect();
+            offsetX = event.clientX - (squareRect.left + squareRect.width / 2);
+            offsetY = event.clientY - (squareRect.top + squareRect.height / 2);
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', endDrag);
         }
-    }
 
-    function dragTouch(event) {
-        if (isDragging) {
-            const container = document.getElementById('container');
-            const square = document.getElementById('square');
-            const containerRect = container.getBoundingClientRect();
-
-            let newX = event.touches[0].clientX - containerRect.left - offsetX;
-            let newY = event.touches[0].clientY - containerRect.top - offsetY;
-
-            newX = Math.max(0, Math.min(newX, containerRect.width - square.offsetWidth));
-            newY = Math.max(0, Math.min(newY, containerRect.height - square.offsetHeight));
-
-            // Adjust newX and newY to ensure the square stays within the container bounds
-            newX = Math.min(newX, containerRect.width - square.offsetWidth);
-            newY = Math.min(newY, containerRect.height - square.offsetHeight);
-
-            square.style.left = `${newX}px`;
-            square.style.top = `${newY}px`;
+        function startDragTouch(event) {
+            isDragging = true;
+            const squareRect = square.getBoundingClientRect();
+            offsetX = event.touches[0].clientX - (squareRect.left + squareRect.width / 2);
+            offsetY = event.touches[0].clientY - (squareRect.top + squareRect.height / 2);
+            document.addEventListener('touchmove', dragTouch);
+            document.addEventListener('touchend', endDrag);
         }
-    }
 
-    function togglePoints() {
-        const points = document.getElementsByClassName('point');
-        for (let i = 0; i < points.length; i++) {
-            points[i].style.display = points[i].style.display === 'none' ? 'block' : 'none';
+        function endDrag() {
+            isDragging = false;
+            document.removeEventListener('mousemove', drag);
+            document.removeEventListener('touchmove', dragTouch);
+            document.removeEventListener('mouseup', endDrag);
+            document.removeEventListener('touchend', endDrag);
         }
-        pointsVisible = !pointsVisible;
-    }
-</script>
 
+        function drag(event) {
+            if (isDragging) {
+                const container = document.getElementById('container');
+                const square = document.getElementById('square');
+                const containerRect = container.getBoundingClientRect();
+
+                let newX = event.clientX - containerRect.left - offsetX;
+                let newY = event.clientY - containerRect.top - offsetY;
+
+                newX = Math.max(0, Math.min(newX, containerRect.width - square.offsetWidth));
+                newY = Math.max(0, Math.min(newY, containerRect.height - square.offsetHeight));
+
+                // Adjust newX and newY to ensure the square stays within the container bounds
+                newX = Math.min(newX, containerRect.width - square.offsetWidth);
+                newY = Math.min(newY, containerRect.height - square.offsetHeight);
+
+                square.style.left = `${newX}px`;
+                square.style.top = `${newY}px`;
+            }
+        }
+
+        function dragTouch(event) {
+            if (isDragging) {
+                const container = document.getElementById('container');
+                const square = document.getElementById('square');
+                const containerRect = container.getBoundingClientRect();
+
+                let newX = event.touches[0].clientX - containerRect.left - offsetX;
+                let newY = event.touches[0].clientY - containerRect.top - offsetY;
+
+                newX = Math.max(0, Math.min(newX, containerRect.width - square.offsetWidth));
+                newY = Math.max(0, Math.min(newY, containerRect.height - square.offsetHeight));
+
+                // Adjust newX and newY to ensure the square stays within the container bounds
+                newX = Math.min(newX, containerRect.width - square.offsetWidth);
+                newY = Math.min(newY, containerRect.height - square.offsetHeight);
+
+                square.style.left = `${newX}px`;
+                square.style.top = `${newY}px`;
+            }
+        }
+
+        function togglePoints() {
+            const points = document.getElementsByClassName('point');
+            for (let i = 0; i < points.length; i++) {
+                points[i].style.display = points[i].style.display === 'none' ? 'block' : 'none';
+            }
+            pointsVisible = !pointsVisible;
+        }
+
+        // Fetch image data from JSON file
+        fetch('images.json')
+            .then(response => response.json())
+            .then(data => {
+                const imageButtonsContainer = document.getElementById('imageButtons');
+
+                data.forEach(image => {
+                    const imgElement = document.createElement('img');
+                    imgElement.className = 'thumbnail';
+                    imgElement.src = image.name;
+                    imgElement.alt = image.title;
+                    imgElement.onclick = () => setImage(image.name);
+                    imageButtonsContainer.appendChild(imgElement);
+                });
+            })
+            .catch(error => console.error('Error fetching images:', error));
+    </script>
 </body>
 </html>
