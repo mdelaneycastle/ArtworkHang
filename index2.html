@@ -109,13 +109,25 @@
         }
 
         function resetMeasurement() {
-            points = [];
-            const container = document.getElementById('container');
-            while (container.firstChild) {
-                container.removeChild(container.firstChild);
-            }
-            container.style.backgroundImage = ''; // Reset background image
-        }
+    // Reset points array
+    points = [];
+
+    // Remove all drawn points
+    const container = document.getElementById('container');
+    while (container.firstChild) {
+        container.removeChild(container.firstChild);
+    }
+
+    // Reset square size and position
+    document.getElementById('square').style.width = '100px';
+    document.getElementById('square').style.height = '100px';
+    document.getElementById('square').style.top = '50%';
+    document.getElementById('square').style.left = '50%';
+
+    // Reset image background
+    container.style.backgroundImage = '';
+}
+
 
         function updateSquareSize() {
             const realSize = parseFloat(document.getElementById('realSize').value);
