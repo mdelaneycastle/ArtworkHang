@@ -119,14 +119,16 @@
     }
 
     // Reset square size and position
-    document.getElementById('square').style.width = '100px';
-    document.getElementById('square').style.height = '100px';
-    document.getElementById('square').style.top = '50%';
-    document.getElementById('square').style.left = '50%';
+    const square = document.getElementById('square');
+    square.style.width = '100px';
+    square.style.height = '100px';
+    square.style.top = '50%';
+    square.style.left = '50%';
 
-    // Reset image background
-    container.style.backgroundImage = '';
+    // Clear image background
+    container.style.backgroundImage = 'none';
 }
+
 
 
         function updateSquareSize() {
