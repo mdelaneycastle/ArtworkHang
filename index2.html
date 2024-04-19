@@ -29,6 +29,7 @@
             background-size: cover;
             background-position: center;
             box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Adjusted shadow properties */
+            transform: translate(-50%, -50%) perspective(500px) rotateY(0deg); /* Initial transform */
         }
 
     </style>
@@ -49,6 +50,8 @@
 
     <!--<input type="range" min="-50" max="50" value="0" id="perspectiveSlider" onchange="adjustPerspective(this.value)">-->
     <!--<span>Perspective Warp</span>-->
+
+    <input type="range" min="0" max="360" value="180" class="slider" id="slider">
 
     <script>
         let points = [];
@@ -138,6 +141,12 @@
         }
 
         const square = document.getElementById('square');
+        const slider = document.getElementById('slider');
+
+        slider.addEventListener('input', function() {
+            const value = parseInt(this.value);
+            square.style.transform = `translate(-50%, -50%) perspective(500px) rotateY(${value}deg)`;
+        });
 
         square.addEventListener('mousedown', startDrag);
         square.addEventListener('mouseup', endDrag);
@@ -177,10 +186,6 @@
             }
             pointsVisible = !pointsVisible; // Toggle points visibility flag
         }
-
-        // function adjustPerspective(value) {
-        //     square.style.transform = `perspective(500px) rotateY(${value}deg)`;
-        // }
     </script>
 </body>
 </html>
