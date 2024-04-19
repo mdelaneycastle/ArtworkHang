@@ -1,0 +1,20 @@
+[
+  {
+    "name": "image1.jpg",
+    "title": "Title of Image 1",
+    "artist": "Artist of Image 1",
+    "width_cm": 100
+  },
+  {
+    "name": "image2.jpg",
+    "title": "Title of Image 2",
+    "artist": "Artist of Image 2",
+    "width_cm": 120
+  },
+  {
+    "name": "image3.jpg",
+    "title": "Title of Image 3",
+    "artist": "Artist of Image 3",
+    "width_cm": 80
+  }
+]
