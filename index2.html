@@ -47,8 +47,8 @@
     <button onclick="resetMeasurement()">Reset</button>
     <button onclick="togglePoints()">Hide Points</button>
 
-    <input type="range" min="-50" max="50" value="0" id="perspectiveSlider" onchange="adjustPerspective(this.value)">
-    <span>Perspective Warp</span>
+    <!--<input type="range" min="-50" max="50" value="0" id="perspectiveSlider" onchange="adjustPerspective(this.value)">-->
+    <!--<span>Perspective Warp</span>-->
 
     <script>
         let points = [];
@@ -178,9 +178,9 @@
             pointsVisible = !pointsVisible; // Toggle points visibility flag
         }
 
-        function adjustPerspective(value) {
-            square.style.transform = `perspective(500px) rotateY(${value}deg)`;
-        }
+        // function adjustPerspective(value) {
+        //     square.style.transform = `perspective(500px) rotateY(${value}deg)`;
+        // }
     </script>
 </body>
 </html>
