@@ -86,7 +86,7 @@
         border-radius: 5px;
         cursor: pointer;
         font-size: 16px;
-        margin-bottom: 20px;
+        margin: 0 auto 20px;
     }
 
     #uploadBtn:hover {
@@ -159,14 +159,15 @@
     <label id="realSizeLabel" for="realSize">Real Size of the Line (cm):</label>
     <input type="number" id="realSize" onchange="updateSquareSize()" step="any">
 
-    <input type="file" id="imageInput" accept="image/*" onchange="setImageBackground(event)">
-    <button id="uploadBtn" onclick="document.getElementById('imageInput').click()">Upload Image</button>
+    <button id="uploadBtn" onclick="document.getElementById('imageInput').click()">Upload Photo</button>
 
     <button id="pointsBtn" onclick="togglePoints()">Toggle Points</button>
 
     <div class="sliderContainer">
         <input type="range" min="-45" max="45" value="0" class="slider" id="slider">
     </div>
+
+    <input type="file" id="imageInput" accept="image/*" style="display: none" onchange="setImageBackground(event)">
 
     <script>
         let points = [];
