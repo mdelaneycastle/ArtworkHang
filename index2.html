@@ -62,6 +62,8 @@
     </div>
     
     <button onclick="togglePoints()">Hide Points</button>
+    
+    <input type="file" id="imageInput" accept="image/*" onchange="setImageBackground(event)"><br><br>
 
     <!--<input type="range" min="-50" max="50" value="0" id="perspectiveSlider" onchange="adjustPerspective(this.value)">-->
     <!--<span>Perspective Warp</span>-->
@@ -142,6 +144,57 @@
 
         function setImage(imageUrl) {
             document.getElementById('square').style.backgroundImage = `url(${imageUrl})`;
+        }
+
+        function setImageBackground(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const imageData = event.target.result;
+                document.getElementById('container').style.backgroundImage = `url(${imageData})`;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        const square = document.getElementById('square');
+        const slider = document.getElementById('slider');
+
+        slider.addEventListener('input', function() {
+            const value = parseInt(this.value);
+            square.style.transform = `translate(-50%, -50%) perspective(500px) rotateY(${value}deg)`;
+        });
+
+        square.addEventListener('mousedown', startDrag);
+
+        function startDrag(event) {
+            isDragging = true;
+            const squareRect = square.getBoundingClientRect();
+            offsetX = event.clientX - (squareRect.left + squareRect.width / 2);
+            offsetY = event.clientY - (squareRect.top + squareRect.height / 2);
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', endDrag);
+        }
+
+        function endDrag() {
+            isDragging = false;
+            document.removeEventListener('mousemove', drag);
+            document.removeEventListener('mouseup', endDrag);
+        }
+
+        function drag(event) {
+            if (isDragging) {
+                const container = document.getElementById('container');
+                const rect = container.getBoundingClientRect();
+                let newX = event.clientX - rect.left - offsetX;
+                let newY = event.clientY - rect.top - offsetY;
+
+                // Ensure the square stays within the container
+                newX = Math.max(0, Math.min(newX, container.clientWidth - square.offsetWidth));
+                newY = Math.max(0, Math.min(newY, container.clientHeight - square.offsetHeight));
+
+                square.style.left = `${newX}px`;
+                square.style.top = `${newY}px`;
+            }
         }
 
         function togglePoints() {
