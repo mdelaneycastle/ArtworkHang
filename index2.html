@@ -340,6 +340,17 @@
         }
         pointsVisible = !pointsVisible;
     }
+
+        <script>
+    // Existing code...
+
+    document.addEventListener('touchmove', function(event) {
+        if (isDragging) {
+            event.preventDefault();
+        }
+    });
+</script>
+
 </script>
 
 </body>
