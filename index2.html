@@ -46,15 +46,22 @@
     }
 
     .thumbnail {
-        width: 150px; /* Adjust as needed */
-        height: 100px; /* Adjust as needed */
-        cursor: pointer;
-        margin-right: 10px;
-        border-radius: 5px;
-        background-size: cover;
-        background-position: center;
-        transition: transform 0.3s ease;
-    }
+    width: 150px; /* Set a fixed width */
+    height: 150px; /* Set a fixed height */
+    cursor: pointer;
+    margin-right: 10px;
+    border-radius: 5px;
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.3s ease;
+}
+
+/* For rectangular images, adjust the height to maintain aspect ratio */
+.thumbnail.rectangular {
+    height: auto;
+    width: 150px; /* Set a fixed width */
+}
+
 
     .thumbnail:hover {
         transform: scale(1.1);
@@ -358,21 +365,27 @@
             .catch(error => console.error('Error fetching images:', error));
 
         function displayArtistImages(images) {
-            const imageButtonsContainer = document.getElementById('imageButtons');
-            imageButtonsContainer.innerHTML = ''; // Clear previous buttons
+    const imageButtonsContainer = document.getElementById('imageButtons');
+    imageButtonsContainer.innerHTML = ''; // Clear previous buttons
 
-            images.forEach(image => {
-                const imgElement = document.createElement('img');
-                imgElement.className = 'thumbnail';
-                imgElement.src = image.name;
-                imgElement.alt = image.title;
-                imgElement.onclick = () => setImage(image.name);
-                imageButtonsContainer.appendChild(imgElement);
-            });
+    images.forEach(image => {
+        const imgElement = document.createElement('img');
+        imgElement.className = 'thumbnail';
+        imgElement.src = image.name;
+        imgElement.alt = image.title;
 
-            // Show the back button
-            document.getElementById('backButton').style.display = 'block';
+        // Check if the image is rectangular
+        if (image.width > image.height) {
+            imgElement.classList.add('rectangular');
         }
+
+        imgElement.onclick = () => setImage(image.name);
+        imageButtonsContainer.appendChild(imgElement);
+    });
+
+    // Show the back button
+    document.getElementById('backButton').style.display = 'block';
+}
 
         function goBack() {
             // Clear the image display area
