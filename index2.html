@@ -164,7 +164,7 @@
 
     <button id="uploadBtn" onclick="document.getElementById('imageInput').click()">Upload Photo</button>
 
-    <button id="pointsBtn" onclick="togglePoints()">-Toggle Points</button>
+    <button id="pointsBtn" onclick="togglePoints()">Toggle Points</button>
 
     <div class="sliderContainer">
         <input type="range" min="-45" max="45" value="0" class="slider" id="slider">
@@ -174,12 +174,12 @@
 
 
     <script>
-
-       let aspectRatio;
+        let aspectRatio;
         let points = [];
-                let isDragging = false;
+        let isDragging = false;
         let offsetX, offsetY;
         let pointsVisible = true;
+        let data; // Define 'data' at a global scope
 
         function handleClick(event) {
             if (!pointsVisible) return;
@@ -221,22 +221,20 @@
         }
 
         function updateSquareSize() {
-    const realSize = parseFloat(document.getElementById('realSize').value);
-    if (!isNaN(realSize) && realSize > 0) {
-        const distance = calculateDistance();
-        const scale = (initialSquareSize / realSize) * distance;
+            const realSize = parseFloat(document.getElementById('realSize').value);
+            if (!isNaN(realSize) && realSize > 0) {
+                const distance = calculateDistance();
+                const scale = (initialSquareSize / realSize) * distance;
 
-        // Calculate the new width and height based on the scale factor and aspect ratio
-        const newWidth = scale;
-        const newHeight = scale / aspectRatio;
+                // Calculate the new width and height based on the scale factor and aspect ratio
+                const newWidth = scale;
+                const newHeight = scale / aspectRatio;
 
-        // Set the new width and height to the square element
-        document.getElementById('square').style.width = `${newWidth}px`;
-        document.getElementById('square').style.height = `${newHeight}px`;
-    }
-}
-
-
+                // Set the new width and height to the square element
+                document.getElementById('square').style.width = `${newWidth}px`;
+                document.getElementById('square').style.height = `${newHeight}px`;
+            }
+        }
 
         function calculateDistance() {
             if (points.length === 2) {
@@ -249,34 +247,31 @@
         }
 
         function setImage(imageUrl) {
-    const square = document.getElementById('square');
-    square.style.backgroundImage = `url(${imageUrl})`;
-    square.style.backgroundSize = 'contain';
-    square.style.backgroundRepeat = 'no-repeat';
-    square.style.backgroundPosition = 'center';
-    
-    // Find the image data in the JSON
-    const imageData = data.find(image => image.name === imageUrl); // Change imageData to data
-    if (imageData && imageData.initialSize) {
-        // Set the initial size of the square from the JSON data
-        square.style.width = `${imageData.initialSize}px`;
-        square.style.height = `${imageData.initialSize}px`;
-    } else {
-        // Set a default initial size if the data is missing or invalid
-        square.style.width = '100px';
-        square.style.height = '100px';
-    }
+            const square = document.getElementById('square');
+            square.style.backgroundImage = `url(${imageUrl})`;
+            square.style.backgroundSize = 'contain';
+            square.style.backgroundRepeat = 'no-repeat';
+            square.style.backgroundPosition = 'center';
+            
+            // Find the image data in the JSON
+            const imageData = data.find(image => image.name === imageUrl);
+            if (imageData && imageData.initialSize) {
+                // Set the initial size of the square from the JSON data
+                square.style.width = `${imageData.initialSize}px`;
+                square.style.height = `${imageData.initialSize}px`;
+            } else {
+                // Set a default initial size if the data is missing or invalid
+                square.style.width = '100px';
+                square.style.height = '100px';
+            }
 
-    // Calculate and set the aspect ratio
-    const img = new Image();
-    img.onload = function() {
-        aspectRatio = this.width / this.height;
-    };
-    img.src = imageUrl;
-}
-
-
-
+            // Calculate and set the aspect ratio
+            const img = new Image();
+            img.onload = function() {
+                aspectRatio = this.width / this.height;
+            };
+            img.src = imageUrl;
+        }
 
         function setImageBackground(event) {
             const file = event.target.files[0];
@@ -377,7 +372,8 @@
 
         fetch('images.json')
             .then(response => response.json())
-            .then(data => {
+            .then(jsonData => {
+                data = jsonData; // Assign the fetched JSON data to the 'data' variable
                 const imageButtonsContainer = document.getElementById('imageButtons');
 
                 data.forEach(artist => {
@@ -414,7 +410,8 @@
             // Re-display the artist selection buttons
             fetch('images.json')
                 .then(response => response.json())
-                .then(data => {
+                .then(jsonData => {
+                    data = jsonData; // Assign the fetched JSON data to the 'data' variable
                     const imageButtonsContainer = document.getElementById('imageButtons');
 
                     data.forEach(artist => {
