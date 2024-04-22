@@ -1,20 +1,74 @@
 [
   {
-    "name": "image1.jpg",
-    "title": "Title of Image 1",
-    "artist": "Artist of Image 1",
-    "width_cm": 100
+    "artist": "Paul Kenton",
+    "images": [
+      {
+        "name": "pke1.jpg",
+        "title": "Image 1"
+      },
+      {
+        "name": "pke2.jpg",
+        "title": "Image 2"
+      },
+      {
+        "name": "pke3.jpg",
+        "title": "Image 3"
+      },
+      {
+        "name": "pke4.jpg",
+        "title": "Image 4"
+      }
+    ]
   },
   {
-    "name": "image2.jpg",
-    "title": "Title of Image 2",
-    "artist": "Artist of Image 2",
-    "width_cm": 120
+    "artist": "Peter Smith",
+    "images": [
+      {
+        "name": "psm1.jpg",
+        "title": "Image 1"
+      },
+      {
+        "name": "psm2.jpg",
+        "title": "Image 2"
+      },
+      {
+        "name": "psm3.jpg",
+        "title": "Image 3"
+      },
+      {
+        "name": "psm4.jpg",
+        "title": "Image 4"
+      }
+    ]
   },
   {
-    "name": "image3.jpg",
-    "title": "Title of Image 3",
-    "artist": "Artist of Image 3",
-    "width_cm": 80
+    "artist": "Ron English",
+    "images": [
+      {
+        "name": "ren1.jpg",
+        "title": "Image 1"
+      },
+      {
+        "name": "ren2.jpg",
+        "title": "Image 2"
+      }
+    ]
+  },
+  {
+    "artist": "Whathisname",
+    "images": [
+      {
+        "name": "whn1.jpg",
+        "title": "Image 1"
+      },
+      {
+        "name": "whn2.jpg",
+        "title": "Image 2"
+      },
+      {
+        "name": "whn3.jpg",
+        "title": "Image 3"
+      }
+    ]
   }
 ]
