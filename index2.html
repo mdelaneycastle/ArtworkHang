@@ -34,15 +34,19 @@
     width: 100px;
     height: auto;
     cursor: move;
-    background-image: url('image1.jpg');
-    background-size: contain;
-    background-position: center;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
     transform: translate(-50%, -50%) perspective(500px) rotateY(0deg);
     top: 50%;
     left: 50%;
     margin-top: -50px; /* Half of the width */
     margin-left: -50px; /* Half of the height */
+}
+
+#imageHolder {
+    width: 100%;
+    height: 100%;
+    background-size: contain;
+    background-position: center;
 }
 
 
@@ -163,8 +167,10 @@
 </head>
 <body>
     <div id="container" onclick="handleClick(event)">
-        <div id="square"></div>
+    <div id="square">
+        <div id="imageHolder"></div>
     </div>
+</div>
 
     <div id="imageButtons"></div>
     
@@ -176,7 +182,7 @@
 
     <button id="uploadBtn" onclick="document.getElementById('imageInput').click()">Upload Photo</button>
 
-    <button id="pointsBtn" onclick="togglePoints()">Toggle Points</button>
+    <button id="pointsBtn" onclick="togglePoints()">-Toggle Points</button>
 
     <div class="sliderContainer">
         <input type="range" min="-45" max="45" value="0" class="slider" id="slider">
@@ -252,15 +258,12 @@
         }
 
         function setImage(imageUrl) {
-    const square = document.getElementById('square');
+    const imageHolder = document.getElementById('imageHolder');
     const img = new Image();
     img.src = imageUrl;
     img.onload = function() {
         const aspectRatio = img.width / img.height;
-        square.style.backgroundImage = `url(${imageUrl})`;
-        square.style.backgroundSize = 'contain'; // Change background size to contain
-        square.style.width = '100%'; // Set width to 100% to match image width
-        square.style.height = 'auto'; // Set height to auto to maintain aspect ratio
+        imageHolder.style.backgroundImage = `url(${imageUrl})`;
     };
 }
 
