@@ -242,9 +242,21 @@
         }
 
         function setImage(imageUrl) {
-            document.getElementById('square').style.backgroundImage = `url(${imageUrl})`;
-            document.getElementById('square').style.backgroundSize = 'auto';
-        }
+    const square = document.getElementById('square');
+    square.style.backgroundImage = `url(${imageUrl})`;
+    square.style.backgroundSize = 'contain';
+    square.style.backgroundRepeat = 'no-repeat';
+    square.style.backgroundPosition = 'center';
+    
+    // Create a new Image object to retrieve the dimensions of the background image
+    const img = new Image();
+    img.onload = function() {
+        // Update the width and height of the square element to match the dimensions of the background image
+        square.style.width = `${this.width}px`;
+        square.style.height = `${this.height}px`;
+    };
+    img.src = imageUrl;
+}
 
         function setImageBackground(event) {
             const file = event.target.files[0];
