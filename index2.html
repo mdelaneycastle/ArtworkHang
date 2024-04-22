@@ -176,7 +176,7 @@
 
     <button id="uploadBtn" onclick="document.getElementById('imageInput').click()">Upload Photo</button>
 
-    <button id="pointsBtn" onclick="togglePoints()">Toggle Points</button>
+    <button id="pointsBtn" onclick="togglePoints()">-Toggle Points-</button>
 
     <div class="sliderContainer">
         <input type="range" min="-45" max="45" value="0" class="slider" id="slider">
@@ -258,6 +258,7 @@
     img.onload = function() {
         const aspectRatio = img.width / img.height;
         square.style.backgroundImage = `url(${imageUrl})`;
+        square.style.backgroundSize = 'auto'; // Set background size to auto
         if (aspectRatio >= 1) {
             square.style.width = '100px';
             square.style.height = '100px';
