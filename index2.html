@@ -256,7 +256,7 @@
     square.style.backgroundPosition = 'center';
     
     // Find the image data in the JSON
-    const imageData = imageData.find(image => image.name === imageUrl);
+    const imageData = data.find(image => image.name === imageUrl); // Change imageData to data
     if (imageData && imageData.initialSize) {
         // Set the initial size of the square from the JSON data
         square.style.width = `${imageData.initialSize}px`;
@@ -274,6 +274,7 @@
     };
     img.src = imageUrl;
 }
+
 
 
 
