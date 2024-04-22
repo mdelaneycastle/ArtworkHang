@@ -164,7 +164,7 @@
 
     <button id="uploadBtn" onclick="document.getElementById('imageInput').click()">Upload Photo</button>
 
-    <button id="pointsBtn" onclick="togglePoints()">-Toggle Points-</button>
+    <button id="pointsBtn" onclick="togglePoints()">Toggle Points</button>
 
     <div class="sliderContainer">
         <input type="range" min="-45" max="45" value="0" class="slider" id="slider">
@@ -222,14 +222,17 @@
         }
 
         function updateSquareSize() {
-            const realSize = parseFloat(document.getElementById('realSize').value);
-            if (!isNaN(realSize) && realSize > 0) {
-                const distance = calculateDistance();
-                const scale = (initialSquareSize / realSize) * distance;
-                document.getElementById('square').style.width = `${scale}px`;
-                document.getElementById('square').style.height = `${scale}px`;
-            }
-        }
+    const realSize = parseFloat(document.getElementById('realSize').value);
+    if (!isNaN(realSize) && realSize > 0) {
+        const distance = calculateDistance();
+        const aspectRatio = 1; // Default aspect ratio for square
+        const scale = (initialSquareSize / realSize) * distance;
+        const width = scale * aspectRatio;
+        const height = scale / aspectRatio;
+        document.getElementById('square').style.width = `${width}px`;
+        document.getElementById('square').style.height = `${height}px`;
+    }
+}
 
         function calculateDistance() {
             if (points.length === 2) {
