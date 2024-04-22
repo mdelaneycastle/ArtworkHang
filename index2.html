@@ -258,17 +258,12 @@
     img.onload = function() {
         const aspectRatio = img.width / img.height;
         square.style.backgroundImage = `url(${imageUrl})`;
-        square.style.backgroundSize = 'auto'; // Set background size to auto
-        if (aspectRatio >= 1) {
-            square.style.width = '100px';
-            square.style.height = 'auto';
-        } else {
-            const squareSize = 100 / aspectRatio;
-            square.style.width = `${squareSize}px`;
-            square.style.height = `${squareSize}px`;
-        }
+        square.style.backgroundSize = 'contain'; // Change background size to contain
+        square.style.width = '100%'; // Set width to 100% to match image width
+        square.style.height = 'auto'; // Set height to auto to maintain aspect ratio
     };
 }
+
 
         function setImageBackground(event) {
             const file = event.target.files[0];
