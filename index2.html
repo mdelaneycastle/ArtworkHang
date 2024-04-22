@@ -31,12 +31,11 @@
     }
     #square {
         position: absolute;
-        width: 100px;
-        height: 100px;
+        width: auto;
+        height: auto;
         cursor: move;
         background-image: url('whn1.jpg');
         background-repeat: no-repeat;
-        background-size: contain;
         background-position: center;
         box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
         transform: translate(-50%, -50%) perspective(500px) rotateY(0deg);
@@ -47,12 +46,10 @@
     }
 
     .thumbnail {
-        width: auto; /* Adjust as needed */
+        width: auto;
         height: 100px; /* Adjust as needed */
         cursor: pointer;
         margin-right: 10px;        
-        background-size: contain;
-        background-position: center;
         transition: transform 0.3s ease;
     }
 
