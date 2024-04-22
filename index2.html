@@ -177,6 +177,11 @@
 
 
     <script>
+
+        window.addEventListener('DOMContentLoaded', (event) => {
+    // Set the background image of the square when the page loads
+    document.getElementById('square').style.backgroundImage = "url('whn1.jpg')";
+});
         let points = [];
         const initialSquareSize = 101;
         let isDragging = false;
