@@ -30,20 +30,21 @@
         border-radius: 50%;
     }
     #square {
-        position: absolute;
-        width: 100px;
-        height: 100px;
-        cursor: move;
-        background-image: url('image1.jpg');
-        background-size: cover;
-        background-position: center;
-        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
-        transform: translate(-50%, -50%) perspective(500px) rotateY(0deg);
-        top: 50%;
-        left: 50%;
-        margin-top: -50px;
-        margin-left: -50px;
-    }
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    cursor: move;
+    background-image: url('image1.jpg');
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+    transform: translate(-50%, -50%) perspective(500px) rotateY(0deg);
+    top: 50%;
+    left: 50%;
+    margin-top: -50px;
+    margin-left: -50px;
+}
+
 
     .thumbnail {
     width: 150px; /* Set a fixed width */
@@ -250,8 +251,17 @@
         }
 
         function setImage(imageUrl) {
-            document.getElementById('square').style.backgroundImage = `url(${imageUrl})`;
-        }
+    const square = document.getElementById('square');
+    const img = new Image();
+    img.src = imageUrl;
+    img.onload = function() {
+        const aspectRatio = img.width / img.height;
+        const squareSize = aspectRatio >= 1 ? '100px' : `${100 * aspectRatio}px`;
+        square.style.width = squareSize;
+        square.style.height = squareSize;
+        square.style.backgroundImage = `url(${imageUrl})`;
+    };
+}
 
         function setImageBackground(event) {
             const file = event.target.files[0];
