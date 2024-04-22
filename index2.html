@@ -177,8 +177,7 @@
 
        let aspectRatio;
         let points = [];
-        const initialSquareSize = 101;
-        let isDragging = false;
+                let isDragging = false;
         let offsetX, offsetY;
         let pointsVisible = true;
 
@@ -238,6 +237,7 @@
 }
 
 
+
         function calculateDistance() {
             if (points.length === 2) {
                 return Math.sqrt(
@@ -255,19 +255,26 @@
     square.style.backgroundRepeat = 'no-repeat';
     square.style.backgroundPosition = 'center';
     
-    // Create a new Image object to retrieve the dimensions of the background image
+    // Find the image data in the JSON
+    const imageData = imageData.find(image => image.name === imageUrl);
+    if (imageData && imageData.initialSize) {
+        // Set the initial size of the square from the JSON data
+        square.style.width = `${imageData.initialSize}px`;
+        square.style.height = `${imageData.initialSize}px`;
+    } else {
+        // Set a default initial size if the data is missing or invalid
+        square.style.width = '100px';
+        square.style.height = '100px';
+    }
+
+    // Calculate and set the aspect ratio
     const img = new Image();
     img.onload = function() {
-        // Calculate the aspect ratio of the background image
         aspectRatio = this.width / this.height;
-
-        // Set the width of the square element to 100px
-        square.style.width = '100px';
-        // Calculate the height based on the aspect ratio
-        square.style.height = `${100 / aspectRatio}px`;
     };
     img.src = imageUrl;
 }
+
 
 
         function setImageBackground(event) {
