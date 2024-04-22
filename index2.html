@@ -41,8 +41,8 @@
     transform: translate(-50%, -50%) perspective(500px) rotateY(0deg);
     top: 50%;
     left: 50%;
-    margin-top: -50px;
-    margin-left: -50px;
+    margin-top: -50px; /* Half of the width */
+    margin-left: -50px; /* Half of the height */
 }
 
 
@@ -175,7 +175,7 @@
 
     <button id="uploadBtn" onclick="document.getElementById('imageInput').click()">Upload Photo</button>
 
-    <button id="pointsBtn" onclick="togglePoints()">- Toggle Points -</button>
+    <button id="pointsBtn" onclick="togglePoints()">Toggle Points</button>
 
     <div class="sliderContainer">
         <input type="range" min="-45" max="45" value="0" class="slider" id="slider">
@@ -256,7 +256,7 @@
     img.src = imageUrl;
     img.onload = function() {
         const aspectRatio = img.width / img.height;
-        const squareSize = aspectRatio >= 1 ? '100px' : `${100 * aspectRatio}px`;
+        const squareSize = aspectRatio >= 1 ? '100px' : `${100 / aspectRatio}px`;
         square.style.width = squareSize;
         square.style.height = squareSize;
         square.style.backgroundImage = `url(${imageUrl})`;
