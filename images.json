@@ -4,22 +4,22 @@
     "images": [
       {
         "name": "pke1.jpg",
-        "title": "Image 1"
+        "title": "Image 1",
         "initialSize": 133.9
       },
       {
         "name": "pke2.jpg",
-        "title": "Image 2"
+        "title": "Image 2",
         "initialSize": 108
       },
       {
         "name": "pke3.jpg",
-        "title": "Image 3"
+        "title": "Image 3",
         "initialSize": 87.4
       },
       {
         "name": "pke4.jpg",
-        "title": "Image 4"
+        "title": "Image 4",
         "initialSize": 87.4
       }
     ]
@@ -29,22 +29,22 @@
     "images": [
       {
         "name": "psm1.jpg",
-        "title": "Image 1"
+        "title": "Image 1",
         "initialSize": 72.9
       },
       {
         "name": "psm2.jpg",
-        "title": "Image 2"
+        "title": "Image 2",
         "initialSize": 57.4
       },
       {
         "name": "psm3.jpg",
-        "title": "Image 3"
+        "title": "Image 3",
         "initialSize": 57.4
       },
       {
         "name": "psm4.jpg",
-        "title": "Image 4"
+        "title": "Image 4",
         "initialSize": 72.9
       }
     ]
@@ -54,12 +54,12 @@
     "images": [
       {
         "name": "ren1.jpg",
-        "title": "Image 1"
+        "title": "Image 1",
         "initialSize": 156
       },
       {
         "name": "ren2.jpg",
-        "title": "Image 2"
+        "title": "Image 2",
         "initialSize": 156
       }
     ]
@@ -69,17 +69,17 @@
     "images": [
       {
         "name": "whn1.jpg",
-        "title": "Image 1"
+        "title": "Image 1",
         "initialSize": 101
       },
       {
         "name": "whn2.jpg",
-        "title": "Image 2"
+        "title": "Image 2",
         "initialSize": 101
       },
       {
         "name": "whn3.jpg",
-        "title": "Image 3"
+        "title": "Image 3",
         "initialSize": 101
       }
     ]
