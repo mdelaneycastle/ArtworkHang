@@ -153,13 +153,15 @@
     </style>
 </head>
 <body>
-    <body>
     <div id="container" onclick="handleClick(event)">
         <div id="square"></div>
     </div>
 
     <div id="imageButtons"></div>
     
+    <!-- Add a back button -->
+    <button id="backButton" style="display: none;" onclick="goBack()">Back to Artists</button>
+
     <label id="realSizeLabel" for="realSize">Real Size of the Line (cm):</label>
     <input type="number" id="realSize" onchange="updateSquareSize()" step="any">
 
@@ -172,6 +174,7 @@
     </div>
 
     <input type="file" id="imageInput" accept="image/*" style="display: none" onchange="setImageBackground(event)">
+
 
     <script>
         let points = [];
@@ -340,36 +343,60 @@
             pointsVisible = !pointsVisible;
         }
 
-        // Fetch image data from JSON file
-        fetch('images.json')
-    .then(response => response.json())
-    .then(data => {
-        const imageButtonsContainer = document.getElementById('imageButtons');
+       fetch('images.json')
+            .then(response => response.json())
+            .then(data => {
+                const imageButtonsContainer = document.getElementById('imageButtons');
 
-        data.forEach(artist => {
-            const artistButton = document.createElement('button');
-            artistButton.textContent = artist.artist;
-            artistButton.onclick = () => displayArtistImages(artist.images);
-            imageButtonsContainer.appendChild(artistButton);
-        });
-    })
-    .catch(error => console.error('Error fetching images:', error));
+                data.forEach(artist => {
+                    const artistButton = document.createElement('button');
+                    artistButton.textContent = artist.artist;
+                    artistButton.onclick = () => displayArtistImages(artist.images);
+                    imageButtonsContainer.appendChild(artistButton);
+                });
+            })
+            .catch(error => console.error('Error fetching images:', error));
 
-function displayArtistImages(images) {
-    const imageButtonsContainer = document.getElementById('imageButtons');
-    imageButtonsContainer.innerHTML = ''; // Clear previous buttons
+        function displayArtistImages(images) {
+            const imageButtonsContainer = document.getElementById('imageButtons');
+            imageButtonsContainer.innerHTML = ''; // Clear previous buttons
 
-    images.forEach(image => {
-        const imgElement = document.createElement('img');
-        imgElement.className = 'thumbnail';
-        imgElement.src = image.name;
-        imgElement.alt = image.title;
-        imgElement.onclick = () => setImage(image.name);
-        imageButtonsContainer.appendChild(imgElement);
-    });
-}
+            images.forEach(image => {
+                const imgElement = document.createElement('img');
+                imgElement.className = 'thumbnail';
+                imgElement.src = image.name;
+                imgElement.alt = image.title;
+                imgElement.onclick = () => setImage(image.name);
+                imageButtonsContainer.appendChild(imgElement);
+            });
 
+            // Show the back button
+            document.getElementById('backButton').style.display = 'block';
+        }
 
+        function goBack() {
+            // Clear the image display area
+            const imageButtonsContainer = document.getElementById('imageButtons');
+            imageButtonsContainer.innerHTML = '';
+
+            // Re-display the artist selection buttons
+            fetch('images.json')
+                .then(response => response.json())
+                .then(data => {
+                    const imageButtonsContainer = document.getElementById('imageButtons');
+
+                    data.forEach(artist => {
+                        const artistButton = document.createElement('button');
+                        artistButton.textContent = artist.artist;
+                        artistButton.onclick = () => displayArtistImages(artist.images);
+                        imageButtonsContainer.appendChild(artistButton);
+                    });
+                })
+                .catch(error => console.error('Error fetching images:', error));
+
+            // Hide the back button again
+            document.getElementById('backButton').style.display = 'none';
+        }
     </script>
 </body>
 </html>
