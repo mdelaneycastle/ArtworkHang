@@ -31,7 +31,7 @@
     }
     #square {
     position: absolute;
-    width: auto;
+    width: 100px;
     height: auto;
     cursor: move;
     background-image: url('image1.jpg');
@@ -48,7 +48,7 @@
 
     .thumbnail {
     width: auto;
-    height: auto;
+    height: 100px;
         max-width: 100%
     cursor: pointer;
     margin-right: 10px;
@@ -176,7 +176,7 @@
 
     <button id="uploadBtn" onclick="document.getElementById('imageInput').click()">Upload Photo</button>
 
-    <button id="pointsBtn" onclick="togglePoints()">-Toggle Points-</button>
+    <button id="pointsBtn" onclick="togglePoints()">Toggle Points</button>
 
     <div class="sliderContainer">
         <input type="range" min="-45" max="45" value="0" class="slider" id="slider">
