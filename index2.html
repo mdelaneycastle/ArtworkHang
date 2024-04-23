@@ -176,7 +176,7 @@
 
     <button id="uploadBtn" onclick="document.getElementById('imageInput').click()">Upload Photo</button>
 
-    <button id="pointsBtn" onclick="togglePoints()">Toggle Points</button>
+    <button id="pointsBtn" onclick="togglePoints()">-Toggle Points</button>
 
     <div class="sliderContainer">
         <input type="range" min="-45" max="45" value="0" class="slider" id="slider">
@@ -480,13 +480,19 @@
         const overlayImage = new Image();
         overlayImage.src = square.style.backgroundImage.replace('url("', '').replace('")', '');
         const overlayRect = square.getBoundingClientRect();
-        const overlayX = overlayRect.left - rect.left;
-        const overlayY = overlayRect.top - rect.top;
+        
+        // Calculate scaling factors for width and height
+        const scaleX = bgWidth / rect.width;
+        const scaleY = bgHeight / rect.height;
 
-        // Set image smoothing for better quality
-        ctx.imageSmoothingEnabled = true;
+        // Calculate overlay position and size based on scaling factors
+        const overlayX = (overlayRect.left - rect.left) * scaleX;
+        const overlayY = (overlayRect.top - rect.top) * scaleY;
+        const overlayWidth = parseFloat(square.style.width) * scaleX;
+        const overlayHeight = parseFloat(square.style.height) * scaleY;
 
-        ctx.drawImage(overlayImage, overlayX, overlayY, parseFloat(square.style.width), parseFloat(square.style.height));
+        // Draw overlay image on canvas
+        ctx.drawImage(overlayImage, overlayX, overlayY, overlayWidth, overlayHeight);
 
         // Create download link
         const link = document.createElement('a');
