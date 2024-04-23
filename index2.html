@@ -176,7 +176,7 @@
 
     <button id="uploadBtn" onclick="document.getElementById('imageInput').click()">Upload Photo</button>
 
-    <button id="pointsBtn" onclick="togglePoints()">Toggle Points</button>
+    <button id="pointsBtn" onclick="togglePoints()">-Toggle Points</button>
 
     <div class="sliderContainer">
         <input type="range" min="-45" max="45" value="0" class="slider" id="slider">
@@ -454,30 +454,33 @@
             document.getElementById('backButton').style.display = 'none';
         }
     function downloadCompositeImage() {
-            const container = document.getElementById('container');
-            const rect = container.getBoundingClientRect();
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = rect.width;
-            canvas.height = rect.height;
+    const container = document.getElementById('container');
+    const rect = container.getBoundingClientRect();
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = rect.width;
+    canvas.height = rect.height;
 
-            // Draw background image
-            const backgroundImage = new Image();
-            backgroundImage.src = container.style.backgroundImage.replace('url("', '').replace('")', '');
-            ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+    // Draw background image
+    const backgroundImage = new Image();
+    backgroundImage.src = container.style.backgroundImage.replace('url("', '').replace('")', '');
+    ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
 
-            // Draw overlay image
-            const square = document.getElementById('square');
-            const overlayImage = new Image();
-            overlayImage.src = square.style.backgroundImage.replace('url("', '').replace('")', '');
-            ctx.drawImage(overlayImage, parseFloat(square.style.left), parseFloat(square.style.top), parseFloat(square.style.width), parseFloat(square.style.height));
+    // Draw overlay image at its current position relative to the container
+    const square = document.getElementById('square');
+    const overlayImage = new Image();
+    overlayImage.src = square.style.backgroundImage.replace('url("', '').replace('")', '');
+    const overlayRect = square.getBoundingClientRect();
+    const overlayX = overlayRect.left - rect.left;
+    const overlayY = overlayRect.top - rect.top;
+    ctx.drawImage(overlayImage, overlayX, overlayY, parseFloat(square.style.width), parseFloat(square.style.height));
 
-            // Create download link
-            const link = document.createElement('a');
-            link.download = 'composite_image.png';
-            link.href = canvas.toDataURL('image/png');
-            link.click();
-        }
+    // Create download link
+    const link = document.createElement('a');
+    link.download = 'composite_image.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+}
     </script>
 </body>
 </html>
