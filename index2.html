@@ -176,7 +176,7 @@
 
     <button id="uploadBtn" onclick="document.getElementById('imageInput').click()">Upload Photo</button>
 
-    <button id="pointsBtn" onclick="togglePoints()">-Toggle Points</button>
+    <button id="pointsBtn" onclick="togglePoints()">Toggle Points</button>
 
     <div class="sliderContainer">
         <input type="range" min="-45" max="45" value="0" class="slider" id="slider">
@@ -463,21 +463,17 @@
     const backgroundImage = new Image();
     backgroundImage.src = container.style.backgroundImage.replace('url("', '').replace('")', '');
 
-    // Load background image to get its aspect ratio
+    // Load background image to get its dimensions
     backgroundImage.onload = function() {
-        const aspectRatio = backgroundImage.width / backgroundImage.height;
+        const bgWidth = backgroundImage.width;
+        const bgHeight = backgroundImage.height;
 
-        // Adjust canvas size to match background image aspect ratio
-        if (aspectRatio > 1) {
-            canvas.width = rect.width;
-            canvas.height = rect.width / aspectRatio;
-        } else {
-            canvas.width = rect.height * aspectRatio;
-            canvas.height = rect.height;
-        }
+        // Set canvas dimensions to match background image
+        canvas.width = bgWidth;
+        canvas.height = bgHeight;
 
         // Draw background image
-        ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+        ctx.drawImage(backgroundImage, 0, 0, bgWidth, bgHeight);
 
         // Draw overlay image at its current position relative to the container
         const square = document.getElementById('square');
@@ -486,6 +482,10 @@
         const overlayRect = square.getBoundingClientRect();
         const overlayX = overlayRect.left - rect.left;
         const overlayY = overlayRect.top - rect.top;
+
+        // Set image smoothing for better quality
+        ctx.imageSmoothingEnabled = true;
+
         ctx.drawImage(overlayImage, overlayX, overlayY, parseFloat(square.style.width), parseFloat(square.style.height));
 
         // Create download link
@@ -495,6 +495,7 @@
         link.click();
     };
 }
+
 
 
 
