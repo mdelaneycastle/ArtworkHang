@@ -162,7 +162,7 @@
 
     <button id="uploadBtn" onclick="document.getElementById('imageInput').click()">Upload Photo</button>
 
-    <button id="pointsBtn" onclick="togglePoints()">-Toggle Points</button>
+    <button id="pointsBtn" onclick="togglePoints()">Toggle Points</button>
 
     <div class="sliderContainer">
         <input type="range" min="-45" max="45" value="0" class="slider" id="slider">
@@ -259,18 +259,17 @@ let data; // Define 'data' at a global scope
         square.style.width = `${initialSquareSize}px`;
         square.style.height = `${initialSquareSize}px`;
     } else {
-        // Set a default initial size if the data is missing or invalid
-        square.style.width = '100px';
-        square.style.height = '100px';
+        // Set a default initial size based on the aspect ratio
+        const img = new Image();
+        img.onload = function() {
+            aspectRatio = this.width / this.height;
+            square.style.width = `100px`; // Set a default width
+            square.style.height = `${100 / aspectRatio}px`; // Calculate height based on aspect ratio
+        };
+        img.src = imageUrl;
     }
-
-    // Calculate and set the aspect ratio
-    const img = new Image();
-    img.onload = function() {
-        aspectRatio = this.width / this.height;
-    };
-    img.src = imageUrl;
 }
+
 
         function setImageBackground(event) {
             const file = event.target.files[0];
