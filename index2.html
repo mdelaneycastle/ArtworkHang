@@ -246,30 +246,31 @@
         }
 
         function setImage(imageUrl) {
-            const square = document.getElementById('square');
-            square.style.backgroundImage = `url(${imageUrl})`;
-            square.style.backgroundSize = 'contain';
-            square.style.backgroundRepeat = 'no-repeat';
-            square.style.backgroundPosition = 'center';
-            
-            // Find the image data in the JSON
-            const imageData = data.find(image => image.name === imageUrl);
-            if (imageData && imageData.initialSize) {
-                // Set the initial size of the square from the JSON data
-                const initialSquareSize = imageData.initialSize; // Define initialSquareSize
-                square.style.width = `${initialSquareSize}px`;
-                square.style.height = `${initialSquareSize}px`;
-            } else {
-                // Set a default initial size based on the aspect ratio
-                const img = new Image();
-                img.onload = function() {
-                    aspectRatio = this.width / this.height;
-                    square.style.width = `100px`; // Set a default width
-                    square.style.height = `${100 / aspectRatio}px`; // Calculate height based on aspect ratio
-                };
-                img.src = imageUrl;
-            }
-        }
+    const square = document.getElementById('square');
+    square.style.backgroundImage = `url(${imageUrl})`;
+    square.style.backgroundSize = 'contain';
+    square.style.backgroundRepeat = 'no-repeat';
+    square.style.backgroundPosition = 'center';
+    
+    // Find the image data in the JSON
+    const imageData = data.find(image => image.name === imageUrl);
+    if (imageData && imageData.initialSize) {
+        // Set the initial size of the square from the JSON data
+        initialSquareSize = imageData.initialSize; // Initialize initialSquareSize
+        square.style.width = `${initialSquareSize}px`;
+        square.style.height = `${initialSquareSize}px`;
+    } else {
+        // Set a default initial size based on the aspect ratio
+        const img = new Image();
+        img.onload = function() {
+            aspectRatio = this.width / this.height;
+            initialSquareSize = 100; // Set a default initial size
+            square.style.width = `${initialSquareSize}px`; // Set width based on initialSquareSize
+            square.style.height = `${initialSquareSize / aspectRatio}px`; // Calculate height based on aspect ratio
+        };
+        img.src = imageUrl;
+    }
+}
 
         function setImageBackground(event) {
             const file = event.target.files[0];
