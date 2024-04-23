@@ -176,7 +176,7 @@
 
     <button id="uploadBtn" onclick="document.getElementById('imageInput').click()">Upload Photo</button>
 
-    <button id="pointsBtn" onclick="togglePoints()">-Toggle Points</button>
+    <button id="pointsBtn" onclick="togglePoints()">Toggle Points</button>
 
     <div class="sliderContainer">
         <input type="range" min="-45" max="45" value="0" class="slider" id="slider">
@@ -189,6 +189,17 @@
 
     <label for="pixelWidth">Pixel Width:</label>
 <input type="text" id="pixelWidth" readonly>
+
+    <div id="instructionsContainer">
+        <!-- Instruction for uploading photo -->
+        <div id="uploadInstruction" class="instruction">Step 1: Select the upload photo button.</div>
+        <!-- Instruction for selecting artist and image -->
+        <div id="selectImageInstruction" class="instruction">Step 2: Select the artist and image you'd like to view from the buttons.</div>
+        <!-- Instruction for clicking two points -->
+        <div id="clickPointsInstruction" class="instruction">Step 3: Click your two points on the image.</div>
+        <!-- Instruction for entering real world size -->
+        <div id="enterSizeInstruction" class="instruction">Step 4: Once that's done, enter the real world size of the line.</div>
+    </div>
 
 
     <input type="file" id="imageInput" accept="image/*" style="display: none" onchange="setImageBackground(event)">
@@ -502,7 +513,64 @@
     };
 }
 
+// Function to hide instructions
+        function hideInstruction(instructionId) {
+            const instruction = document.getElementById(instructionId);
+            if (instruction) {
+                instruction.style.display = 'none';
+            }
+        }
 
+        // Function to show the next instruction
+        function showNextInstruction(instructionId) {
+            const instruction = document.getElementById(instructionId);
+            if (instruction) {
+                instruction.style.display = 'block';
+            }
+        }
+
+        // Function to show initial instruction and start the process
+        function startInstructions() {
+            showNextInstruction('uploadInstruction');
+        }
+
+        // Function to handle completion of each step and show the next instruction
+        function handleStepCompletion(step) {
+            switch (step) {
+                case 1:
+                    hideInstruction('uploadInstruction');
+                    showNextInstruction('selectImageInstruction');
+                    break;
+                case 2:
+                    hideInstruction('selectImageInstruction');
+                    showNextInstruction('clickPointsInstruction');
+                    break;
+                case 3:
+                    hideInstruction('clickPointsInstruction');
+                    showNextInstruction('enterSizeInstruction');
+                    break;
+                case 4:
+                    hideInstruction('enterSizeInstruction');
+                    // Hide all instructions after the last step is completed
+                    hideAllInstructions();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        // Function to hide all instructions
+        function hideAllInstructions() {
+            const instructions = document.querySelectorAll('.instruction');
+            instructions.forEach(instruction => {
+                instruction.style.display = 'none';
+            });
+        }
+
+        // Your existing event handlers and functions
+
+        // Call startInstructions() to begin the process
+        startInstructions();
 
 
     </script>
