@@ -176,7 +176,7 @@
 
     <button id="uploadBtn" onclick="document.getElementById('imageInput').click()">Upload Photo</button>
 
-    <button id="pointsBtn" onclick="togglePoints()">-Toggle Points</button>
+    <button id="pointsBtn" onclick="togglePoints()">Toggle Points</button>
 
     <div class="sliderContainer">
         <input type="range" min="-45" max="45" value="0" class="slider" id="slider">
@@ -458,29 +458,44 @@
     const rect = container.getBoundingClientRect();
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
-    canvas.width = rect.width;
-    canvas.height = rect.height;
 
-    // Draw background image
+    // Get the background image
     const backgroundImage = new Image();
     backgroundImage.src = container.style.backgroundImage.replace('url("', '').replace('")', '');
-    ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
 
-    // Draw overlay image at its current position relative to the container
-    const square = document.getElementById('square');
-    const overlayImage = new Image();
-    overlayImage.src = square.style.backgroundImage.replace('url("', '').replace('")', '');
-    const overlayRect = square.getBoundingClientRect();
-    const overlayX = overlayRect.left - rect.left;
-    const overlayY = overlayRect.top - rect.top;
-    ctx.drawImage(overlayImage, overlayX, overlayY, parseFloat(square.style.width), parseFloat(square.style.height));
+    // Load background image to get its aspect ratio
+    backgroundImage.onload = function() {
+        const aspectRatio = backgroundImage.width / backgroundImage.height;
 
-    // Create download link
-    const link = document.createElement('a');
-    link.download = 'composite_image.png';
-    link.href = canvas.toDataURL('image/png');
-    link.click();
+        // Adjust canvas size to match background image aspect ratio
+        if (aspectRatio > 1) {
+            canvas.width = rect.width;
+            canvas.height = rect.width / aspectRatio;
+        } else {
+            canvas.width = rect.height * aspectRatio;
+            canvas.height = rect.height;
+        }
+
+        // Draw background image
+        ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+
+        // Draw overlay image at its current position relative to the container
+        const square = document.getElementById('square');
+        const overlayImage = new Image();
+        overlayImage.src = square.style.backgroundImage.replace('url("', '').replace('")', '');
+        const overlayRect = square.getBoundingClientRect();
+        const overlayX = overlayRect.left - rect.left;
+        const overlayY = overlayRect.top - rect.top;
+        ctx.drawImage(overlayImage, overlayX, overlayY, parseFloat(square.style.width), parseFloat(square.style.height));
+
+        // Create download link
+        const link = document.createElement('a');
+        link.download = 'composite_image.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+    };
 }
+
     </script>
 </body>
 </html>
