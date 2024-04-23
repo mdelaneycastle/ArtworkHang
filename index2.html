@@ -162,7 +162,7 @@
 
     <button id="uploadBtn" onclick="document.getElementById('imageInput').click()">Upload Photo</button>
 
-    <button id="pointsBtn" onclick="togglePoints()">Toggle Points</button>
+    <button id="pointsBtn" onclick="togglePoints()">-Toggle Points</button>
 
     <div class="sliderContainer">
         <input type="range" min="-45" max="45" value="0" class="slider" id="slider">
@@ -219,10 +219,10 @@
 
         const square = document.getElementById('square');
         const initialSize = initialSquareSize || 100; // Use initialSquareSize if available, otherwise default to 100
-        const newSize = (initialSize / realSizeInput) * pixelDistance;
+        const newWidth = (initialSize / realSizeInput) * pixelDistance;
 
-        square.style.width = `${newSize}px`;
-        square.style.height = `${newSize}px`;
+        square.style.width = `${newWidth}px`;
+        square.style.height = 'auto'; // Maintain aspect ratio for the height
     }
 }
 
