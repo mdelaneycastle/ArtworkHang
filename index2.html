@@ -453,7 +453,7 @@
             // Hide the back button again
             document.getElementById('backButton').style.display = 'none';
         }
-    function downloadCompositeImage() {
+   function downloadCompositeImage() {
     const container = document.getElementById('container');
     const rect = container.getBoundingClientRect();
     const canvas = document.createElement('canvas');
@@ -467,33 +467,25 @@
     backgroundImage.onload = function() {
         const aspectRatio = backgroundImage.width / backgroundImage.height;
 
-        // Calculate visible portion of background image within the container
-        const visibleWidth = Math.min(rect.width, backgroundImage.width);
-        const visibleHeight = Math.min(rect.height, backgroundImage.height);
-        let startX = (backgroundImage.width - visibleWidth) / 2;
-        let startY = (backgroundImage.height - visibleHeight) / 2;
-
-        // Adjust canvas size to match visible portion of background image
+        // Adjust canvas size to match background image aspect ratio
         if (aspectRatio > 1) {
-            canvas.width = visibleWidth;
-            canvas.height = visibleWidth / aspectRatio;
-            startY = startY + (backgroundImage.height - visibleHeight) / 2;
+            canvas.width = rect.width;
+            canvas.height = rect.width / aspectRatio;
         } else {
-            canvas.width = visibleHeight * aspectRatio;
-            canvas.height = visibleHeight;
-            startX = startX + (backgroundImage.width - visibleWidth) / 2;
+            canvas.width = rect.height * aspectRatio;
+            canvas.height = rect.height;
         }
 
         // Draw background image
-        ctx.drawImage(backgroundImage, startX, startY, visibleWidth, visibleHeight, 0, 0, canvas.width, canvas.height);
+        ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
 
         // Draw overlay image at its current position relative to the container
         const square = document.getElementById('square');
         const overlayImage = new Image();
         overlayImage.src = square.style.backgroundImage.replace('url("', '').replace('")', '');
         const overlayRect = square.getBoundingClientRect();
-        const overlayX = overlayRect.left - rect.left - startX;
-        const overlayY = overlayRect.top - rect.top - startY;
+        const overlayX = overlayRect.left - rect.left;
+        const overlayY = overlayRect.top - rect.top;
         ctx.drawImage(overlayImage, overlayX, overlayY, parseFloat(square.style.width), parseFloat(square.style.height));
 
         // Create download link
@@ -503,6 +495,7 @@
         link.click();
     };
 }
+
 
 
     </script>
