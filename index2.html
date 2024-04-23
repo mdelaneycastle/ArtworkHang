@@ -162,7 +162,7 @@
 
     <button id="uploadBtn" onclick="document.getElementById('imageInput').click()">Upload Photo</button>
 
-    <button id="pointsBtn" onclick="togglePoints()">Toggle Points</button>
+    <button id="pointsBtn" onclick="togglePoints()">-Toggle Points</button>
 
     <div class="sliderContainer">
         <input type="range" min="-45" max="45" value="0" class="slider" id="slider">
@@ -170,6 +170,9 @@
 
 <label for="distance">Distance between points:</label>
 <input type="text" id="distance" readonly>
+
+    <label for="pixelWidth">Pixel Width:</label>
+<input type="text" id="pixelWidth" readonly>
 
     <input type="file" id="imageInput" accept="image/*" style="display: none" onchange="setImageBackground(event)">
 
@@ -218,13 +221,16 @@
         const pixelDistance = calculateDistance();
 
         const square = document.getElementById('square');
-        const initialSize = initialSquareSize || 100; // Use initialSquareSize if available, otherwise default to 100
-        const aspectRatio = square.offsetHeight / square.offsetWidth; // Calculate the aspect ratio based on the current height and width
+        const initialSize = initialSquareSize || 100;
+        const aspectRatio = square.offsetHeight / square.offsetWidth;
 
         const newWidth = (initialSize / realSizeInput) * pixelDistance;
 
         square.style.width = `${newWidth}px`;
-        square.style.height = `${newWidth * aspectRatio}px`; // Maintain aspect ratio for the height
+        square.style.height = `${newWidth * aspectRatio}px`;
+
+        // Display the pixel width
+        document.getElementById('pixelWidth').value = newWidth.toFixed(2);
     }
 }
 
