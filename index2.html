@@ -213,17 +213,20 @@
         }
 
         function updateSquareSize() {
-    const realSize = parseFloat(document.getElementById('realSize').value);
-    if (!isNaN(realSize) && realSize > 0) {
-        const distance = calculateDistance();
+    const realSizeInput = parseFloat(document.getElementById('realSize').value);
+    if (!isNaN(realSizeInput) && realSizeInput > 0) {
+        const pixelDistance = calculateDistance();
+        const pixelSizePerPixelDistance = realSizeInput / pixelDistance;
 
-        // Set the new width and height based on the real size directly
-        const newWidth = realSize;
-        const newHeight = realSize / aspectRatio;
+        const square = document.getElementById('square');
+        const currentWidth = parseFloat(square.style.width.replace('px', ''));
+        const currentHeight = parseFloat(square.style.height.replace('px', ''));
 
-        // Set the new width and height to the square element
-        document.getElementById('square').style.width = `${newWidth}px`;
-        document.getElementById('square').style.height = `${newHeight}px`;
+        const newWidth = currentWidth * pixelSizePerPixelDistance;
+        const newHeight = currentHeight * pixelSizePerPixelDistance;
+
+        square.style.width = `${newWidth}px`;
+        square.style.height = `${newHeight}px`;
     }
 }
 
