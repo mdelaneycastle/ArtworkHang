@@ -221,13 +221,13 @@
         const pixelDistance = calculateDistance();
 
         const square = document.getElementById('square');
-        const aspectRatio = square.offsetHeight / square.offsetWidth;
+        const imageUrl = square.style.backgroundImage.replace('url("', '').replace('")', ''); // Extract the image URL from the background image style
+        const imageData = data.find(image => image.images.some(img => img.name === imageUrl)); // Find the image data in the JSON
 
-        // Find the image data in the JSON
-        const imageData = data.find(image => image.name === square.style.backgroundImage.replace(/^url\(['"](.+)['"]\)/, '$1'));
-        
         // Use the initialSize from the JSON data
-        const initialSize = imageData ? imageData.initialSize : 100;
+        const initialSize = imageData ? imageData.images.find(img => img.name === imageUrl).initialSize : 100; // Use the initialSize from the JSON data, default to 100 if not found
+
+        const aspectRatio = square.offsetHeight / square.offsetWidth;
 
         // Calculate the new width based on the initial size from JSON divided by real size, multiplied by pixel distance
         const newWidth = (initialSize / realSizeInput) * pixelDistance;
@@ -239,6 +239,7 @@
         document.getElementById('pixelWidth').value = newWidth.toFixed(2);
     }
 }
+
 
 
 
