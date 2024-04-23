@@ -225,9 +225,15 @@
         const distance = calculateDistance();
         const scale = (initialSquareSize / realSize) * distance;
 
-        // Set the new width and height to the square element based on the calculated scale
-        document.getElementById('square').style.width = `${scale}px`;
-        document.getElementById('square').style.height = `${scale}px`;
+        // Calculate the new width based on the scale factor
+        const newWidth = scale;
+
+        // Calculate the new height based on the aspect ratio and the new width
+        const newHeight = newWidth / aspectRatio;
+
+        // Set the new width and height to the square element
+        document.getElementById('square').style.width = `${newWidth}px`;
+        document.getElementById('square').style.height = `${newHeight}px`;
     }
 }
 
