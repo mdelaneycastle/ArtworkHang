@@ -219,12 +219,15 @@
 
         const square = document.getElementById('square');
         const initialSize = initialSquareSize || 100; // Use initialSquareSize if available, otherwise default to 100
+        const aspectRatio = square.offsetHeight / square.offsetWidth; // Calculate the aspect ratio based on the current height and width
+
         const newWidth = (initialSize / realSizeInput) * pixelDistance;
 
         square.style.width = `${newWidth}px`;
-        square.style.height = 'auto'; // Maintain aspect ratio for the height
+        square.style.height = `${newWidth * aspectRatio}px`; // Maintain aspect ratio for the height
     }
 }
+
 
 
         function calculateDistance() {
