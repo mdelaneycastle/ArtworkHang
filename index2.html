@@ -162,7 +162,7 @@
 
     <button id="uploadBtn" onclick="document.getElementById('imageInput').click()">Upload Photo</button>
 
-    <button id="pointsBtn" onclick="togglePoints()">Toggle Points</button>
+    <button id="pointsBtn" onclick="togglePoints()">-Toggle Points</button>
 
     <div class="sliderContainer">
         <input type="range" min="-45" max="45" value="0" class="slider" id="slider">
@@ -223,13 +223,10 @@
     const realSize = parseFloat(document.getElementById('realSize').value);
     if (!isNaN(realSize) && realSize > 0) {
         const distance = calculateDistance();
-        const scale = (initialSquareSize / realSize) * distance;
 
-        // Calculate the new width based on the scale factor
-        const newWidth = scale;
-
-        // Calculate the new height based on the aspect ratio and the new width
-        const newHeight = newWidth / aspectRatio;
+        // Set the new width and height based on the real size directly
+        const newWidth = realSize;
+        const newHeight = realSize / aspectRatio;
 
         // Set the new width and height to the square element
         document.getElementById('square').style.width = `${newWidth}px`;
