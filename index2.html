@@ -172,21 +172,15 @@
     <button id="backButton" style="display: none;" onclick="goBack()">Back to Artists</button>
 
     <label id="realSizeLabel" for="realSize">Real Size of the Line (cm):</label>
-    <input type="number" id="realSize" onchange="updateSquareSize()" step="any" min="0">
+    <input type="number" id="realSize" onchange="updateSquareSize()" step="any" min="0"><br>
 
     <button id="uploadBtn" onclick="document.getElementById('imageInput').click()">Upload Photo</button>
 
-    <button id="pointsBtn" onclick="togglePoints()">-Toggle Points</button>
+    <button id="pointsBtn" onclick="togglePoints()">Toggle Points</button>
 
     <div class="sliderContainer">
         <input type="range" min="-45" max="45" value="0" class="slider" id="slider">
     </div>
-
-<label for="distance">Distance between points:</label>
-<input type="text" id="distance" readonly>
-
-    <label for="pixelWidth">Pixel Width:</label>
-<input type="text" id="pixelWidth" readonly>
 
     <button id="downloadBtn" onclick="downloadCompositeImage()">Download Composite Image</button>
 
