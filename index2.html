@@ -176,7 +176,7 @@
 
     <button id="uploadBtn" onclick="document.getElementById('imageInput').click()">Upload Photo</button>
 
-    <button id="pointsBtn" onclick="togglePoints()">Toggle Points</button>
+    <button id="pointsBtn" onclick="togglePoints()">-Toggle Points</button>
 
     <div class="sliderContainer">
         <input type="range" min="-45" max="45" value="0" class="slider" id="slider">
@@ -514,64 +514,61 @@
 }
 
 // Function to hide instructions
-        function hideInstruction(instructionId) {
-            const instruction = document.getElementById(instructionId);
-            if (instruction) {
-                instruction.style.display = 'none';
-            }
-        }
+function hideInstruction(instructionId) {
+    const instruction = document.getElementById(instructionId);
+    if (instruction) {
+        instruction.style.display = 'none';
+    }
+}
 
-        // Function to show the next instruction
-        function showNextInstruction(instructionId) {
-            const instruction = document.getElementById(instructionId);
-            if (instruction) {
-                instruction.style.display = 'block';
-            }
-        }
+// Function to show the next instruction
+function showNextInstruction(instructionId) {
+    const instruction = document.getElementById(instructionId);
+    if (instruction) {
+        instruction.style.display = 'block';
+    }
+}
 
-        // Function to show initial instruction and start the process
-        function startInstructions() {
-            showNextInstruction('uploadInstruction');
-        }
+// Function to show initial instruction and start the process
+function startInstructions() {
+    showNextInstruction('uploadInstruction');
+}
 
-        // Function to handle completion of each step and show the next instruction
-        function handleStepCompletion(step) {
-            switch (step) {
-                case 1:
-                    hideInstruction('uploadInstruction');
-                    showNextInstruction('selectImageInstruction');
-                    break;
-                case 2:
-                    hideInstruction('selectImageInstruction');
-                    showNextInstruction('clickPointsInstruction');
-                    break;
-                case 3:
-                    hideInstruction('clickPointsInstruction');
-                    showNextInstruction('enterSizeInstruction');
-                    break;
-                case 4:
-                    hideInstruction('enterSizeInstruction');
-                    // Hide all instructions after the last step is completed
-                    hideAllInstructions();
-                    break;
-                default:
-                    break;
-            }
-        }
+// Function to handle completion of each step and show the next instruction
+function handleStepCompletion(step) {
+    switch (step) {
+        case 1:
+            hideInstruction('uploadInstruction');
+            showNextInstruction('selectImageInstruction');
+            break;
+        case 2:
+            hideInstruction('selectImageInstruction');
+            showNextInstruction('clickPointsInstruction');
+            break;
+        case 3:
+            hideInstruction('clickPointsInstruction');
+            showNextInstruction('enterSizeInstruction');
+            break;
+        case 4:
+            hideInstruction('enterSizeInstruction');
+            // Hide all instructions after the last step is completed
+            hideAllInstructions();
+            break;
+        default:
+            break;
+    }
+}
 
-        // Function to hide all instructions
-        function hideAllInstructions() {
-            const instructions = document.querySelectorAll('.instruction');
-            instructions.forEach(instruction => {
-                instruction.style.display = 'none';
-            });
-        }
+// Function to hide all instructions
+function hideAllInstructions() {
+    const instructions = document.querySelectorAll('.instruction');
+    instructions.forEach(instruction => {
+        instruction.style.display = 'none';
+    });
+}
 
-        // Your existing event handlers and functions
-
-        // Call startInstructions() to begin the process
-        startInstructions();
-
+// Call startInstructions() to begin the process
+startInstructions();
 
     </script>
 </body>
