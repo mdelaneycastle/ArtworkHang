@@ -162,7 +162,7 @@
 
     <button id="uploadBtn" onclick="document.getElementById('imageInput').click()">Upload Photo</button>
 
-    <button id="pointsBtn" onclick="togglePoints()">-Toggle Points</button>
+    <button id="pointsBtn" onclick="togglePoints()">Toggle Points</button>
 
     <div class="sliderContainer">
         <input type="range" min="-45" max="45" value="0" class="slider" id="slider">
@@ -220,20 +220,16 @@
         }
 
         function updateSquareSize() {
-            const realSize = parseFloat(document.getElementById('realSize').value);
-            if (!isNaN(realSize) && realSize > 0) {
-                const distance = calculateDistance();
-                const scale = (initialSquareSize / realSize) * distance;
+    const realSize = parseFloat(document.getElementById('realSize').value);
+    if (!isNaN(realSize) && realSize > 0) {
+        const distance = calculateDistance();
+        const scale = (initialSquareSize / realSize) * distance;
 
-                // Calculate the new width and height based on the scale factor and aspect ratio
-                const newWidth = scale;
-                const newHeight = scale / aspectRatio;
-
-                // Set the new width and height to the square element
-                document.getElementById('square').style.width = `${newWidth}px`;
-                document.getElementById('square').style.height = `${newHeight}px`;
-            }
-        }
+        // Set the new width and height to the square element based on the calculated scale
+        document.getElementById('square').style.width = `${scale}px`;
+        document.getElementById('square').style.height = `${scale}px`;
+    }
+}
 
         function calculateDistance() {
             if (points.length === 2) {
