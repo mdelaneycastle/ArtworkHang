@@ -162,11 +162,14 @@
 
     <button id="uploadBtn" onclick="document.getElementById('imageInput').click()">Upload Photo</button>
 
-    <button id="pointsBtn" onclick="togglePoints()">-Toggle Points</button>
+    <button id="pointsBtn" onclick="togglePoints()">Toggle Points</button>
 
     <div class="sliderContainer">
         <input type="range" min="-45" max="45" value="0" class="slider" id="slider">
     </div>
+
+<label for="distance">Distance between points:</label>
+<input type="text" id="distance" readonly>
 
     <input type="file" id="imageInput" accept="image/*" style="display: none" onchange="setImageBackground(event)">
 
@@ -181,35 +184,25 @@
         let initialSquareSize; // Define initialSquareSize globally
 
         function handleContainerClick(event) {
-            if (!pointsVisible) return;
-            const container = document.getElementById('container');
-            const rect = container.getBoundingClientRect();
-            const x = event.clientX - rect.left;
-            const y = event.clientY - rect.top;
+    if (!pointsVisible) return;
+    const container = document.getElementById('container');
+    const rect = container.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
 
-            points.push({ x, y });
+    points.push({ x, y });
 
-            if (points.length === 2) {
-                const distance = Math.sqrt(
-                    Math.pow(points[1].x - points[0].x, 2) +
-                    Math.pow(points[1].y - points[0].y, 2)
-                );
+    if (points.length === 2) {
+        const distance = calculateDistance();
+        document.getElementById('distance').value = distance.toFixed(2); // Display distance with 2 decimal places
+    }
 
-                const realSize = parseFloat(document.getElementById('realSize').value);
-                if (!isNaN(realSize) && realSize > 0) {
-                    const scale = (initialSquareSize / realSize) * distance;
-                    document.getElementById('square').style.width = `${scale}px`;
-                    document.getElementById('square').style.height = `${scale}px`;
-                }
-            }
+    if (points.length > 2) {
+        points = points.slice(1);
+    }
 
-            if (points.length > 2) {
-                points = points.slice(1);
-            }
-
-            drawPoint(x, y);
-        }
-
+    drawPoint(x, y);
+}
         function drawPoint(x, y) {
             const container = document.getElementById('container');
             const point = document.createElement('div');
