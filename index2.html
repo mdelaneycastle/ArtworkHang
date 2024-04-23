@@ -162,7 +162,7 @@
 
     <button id="uploadBtn" onclick="document.getElementById('imageInput').click()">Upload Photo</button>
 
-    <button id="pointsBtn" onclick="togglePoints()">-Toggle Points</button>
+    <button id="pointsBtn" onclick="togglePoints()">Toggle Points</button>
 
     <div class="sliderContainer">
         <input type="range" min="-45" max="45" value="0" class="slider" id="slider">
@@ -224,19 +224,17 @@
         const initialSize = initialSquareSize || 100;
         const aspectRatio = square.offsetHeight / square.offsetWidth;
 
-        // Calculate the new width based on the initial size from JSON divided by real size, multiplied by pixel distance
-        const newWidth = (initialSquareSize / realSizeInput) * pixelDistance;
+        // Calculate the new width based on the pixel distance directly
+        const newWidth = pixelDistance;
 
-        // Adjust the new width to ensure it reflects the correct pixel distance
-        const adjustedWidth = newWidth * (pixelDistance / initialSquareSize);
-
-        square.style.width = `${adjustedWidth}px`;
-        square.style.height = `${adjustedWidth * aspectRatio}px`;
+        square.style.width = `${newWidth}px`;
+        square.style.height = `${newWidth * aspectRatio}px`;
 
         // Display the pixel width
-        document.getElementById('pixelWidth').value = adjustedWidth.toFixed(2);
+        document.getElementById('pixelWidth').value = newWidth.toFixed(2);
     }
 }
+
 
 
 
