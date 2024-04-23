@@ -162,7 +162,7 @@
 
     <button id="uploadBtn" onclick="document.getElementById('imageInput').click()">Upload Photo</button>
 
-    <button id="pointsBtn" onclick="togglePoints()">-Toggle Points</button>
+    <button id="pointsBtn" onclick="togglePoints()">Toggle Points</button>
 
     <div class="sliderContainer">
         <input type="range" min="-45" max="45" value="0" class="slider" id="slider">
@@ -216,19 +216,16 @@
     const realSizeInput = parseFloat(document.getElementById('realSize').value);
     if (!isNaN(realSizeInput) && realSizeInput > 0) {
         const pixelDistance = calculateDistance();
-        const pixelSizePerPixelDistance = realSizeInput / pixelDistance;
 
         const square = document.getElementById('square');
-        const currentWidth = parseFloat(square.style.width.replace('px', ''));
-        const currentHeight = parseFloat(square.style.height.replace('px', ''));
+        const initialSize = initialSquareSize || 100; // Use initialSquareSize if available, otherwise default to 100
+        const newSize = (initialSize / realSizeInput) * pixelDistance;
 
-        const newWidth = currentWidth * pixelSizePerPixelDistance;
-        const newHeight = currentHeight * pixelSizePerPixelDistance;
-
-        square.style.width = `${newWidth}px`;
-        square.style.height = `${newHeight}px`;
+        square.style.width = `${newSize}px`;
+        square.style.height = `${newSize}px`;
     }
 }
+
 
         function calculateDistance() {
             if (points.length === 2) {
