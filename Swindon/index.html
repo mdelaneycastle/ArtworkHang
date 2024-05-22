@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Floor Plan.</title>
+    <title>Floor Plan</title>
     <style>
         body {
             display: flex;
@@ -57,9 +57,9 @@
             let shiftX = event.clientX - block.getBoundingClientRect().left;
             let shiftY = event.clientY - block.getBoundingClientRect().top;
 
-            function moveAt(pageX) {
+            function moveAt(pageX, pageY) {
                 let newLeft = pageX - shiftX;
-                let newTop = event.clientY - shiftY;
+                let newTop = pageY - shiftY;
 
                 // Boundary conditions
                 if (newLeft < 0) {
@@ -80,7 +80,7 @@
             }
 
             function onMouseMove(event) {
-                moveAt(event.pageX);
+                moveAt(event.pageX, event.pageY);
             }
 
             document.addEventListener('mousemove', onMouseMove);
