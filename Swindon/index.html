@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Floor Plan.</title>
+    <title>Floor Plan</title>
     <style>
         body {
             display: flex;
@@ -21,7 +21,8 @@
             height: 400px;
             border: 2px solid #000;
             position: relative;
-            background-color: #fff;
+            background: url('floor.png') no-repeat center center;
+            background-size: cover;
         }
         .block, .item {
             position: absolute;
@@ -38,9 +39,11 @@
             height: 10px;
             background-color: #e74c3c;
             position: absolute;
-            top: 0;
-            right: 0;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%); /* Center the handle */
             cursor: pointer;
+            display: none; /* Initially hidden */
         }
         .item img {
             max-width: 100%;
@@ -52,6 +55,7 @@
             position: absolute;
             top: 0;
             left: 50%;
+            transform: translateX(-50%); /* Center horizontally */
             pointer-events: none; /* Make it non-interactive */
         }
     </style>
@@ -63,6 +67,7 @@
         <button onclick="addItem('settee.png')">Add Sofa</button>
         <button onclick="addItem('desk.png')">Add Desk</button>
         <button onclick="addItem('bar.png')">Add Bar and Stools</button>
+        <button onclick="toggleHandles()">Toggle Handles</button>
     </div>
     <div id="floor-plan">
         <div class="archway">
@@ -188,6 +193,13 @@
             }
 
             document.addEventListener('mouseup', onMouseUp, { once: true });
+        }
+
+        function toggleHandles() {
+            const handles = document.querySelectorAll('.rotate-handle');
+            handles.forEach(handle => {
+                handle.style.display = handle.style.display === 'none' ? 'block' : 'none';
+            });
         }
 
         const floorPlan = document.getElementById('floor-plan');
