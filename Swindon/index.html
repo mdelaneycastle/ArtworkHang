@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Floor Plan</title>
+    <title>Floor Plan.</title>
     <style>
         body {
             display: flex;
@@ -27,16 +27,19 @@
             position: absolute;
             cursor: move;
             transform-origin: center center; /* Rotate around the center */
-            height:30%;
-            width:50px;
+        }
+        .block {
+            width: 50px;
+            height: 30%; /* 30% of the floor plan height */
+            background-color: #d8d1c5;
         }
         .rotate-handle {
             width: 10px;
             height: 10px;
             background-color: #e74c3c;
             position: absolute;
-            top: -15px;
-            right: -15px;
+            top: 0;
+            right: 0;
             cursor: pointer;
         }
         .item img {
@@ -49,7 +52,6 @@
             position: absolute;
             top: 0;
             left: 50%;
-            transform: translateX(-50%); /* Center horizontally */
             pointer-events: none; /* Make it non-interactive */
         }
     </style>
@@ -79,9 +81,6 @@
         function addBlock() {
             const block = document.createElement('div');
             block.classList.add('block');
-            block.style.width = '50px';
-            block.style.height = '50px'; /* Adjusted for better visibility */
-            block.style.backgroundColor = '#3498db'; /* Added color for visibility */
             block.style.left = '10px';
             block.style.top = '10px';
             block.id = 'block-' + blockCounter;
