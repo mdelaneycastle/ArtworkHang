@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Floor Plan.</title>
+    <title>Floor Plan</title>
     <style>
         body {
             display: flex;
@@ -26,6 +26,7 @@
             background-color: #3498db;
             position: absolute;
             cursor: move;
+            transform-origin: center center;
         }
         .rotate-handle {
             width: 10px;
@@ -125,7 +126,10 @@
                 const deltaX = event.clientX - centerX;
                 const deltaY = event.clientY - centerY;
                 const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
-                block.style.transform = `rotate(${angle}deg)`;
+
+                // Snap angle to nearest 45 degrees
+                const snappedAngle = Math.round(angle / 45) * 45;
+                block.style.transform = `rotate(${snappedAngle}deg)`;
             }
 
             document.addEventListener('mousemove', onMouseMove);
