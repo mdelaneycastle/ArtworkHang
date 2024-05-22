@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Floor Plan</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        #floor-plan {
+            width: 800px;
+            height: 400px;
+            border: 2px solid #000;
+            position: relative;
+            background-color: #fff;
+        }
+        .block {
+            width: 50px;
+            height: 50px;
+            background-color: #3498db;
+            position: absolute;
+            cursor: move;
+        }
+        button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="floor-plan">
+        <button onclick="addBlock()">Add Block</button>
+    </div>
+    <script>
+        let blockCounter = 0;
+
+        function addBlock() {
+            const block = document.createElement('div');
+            block.classList.add('block');
+            block.style.left = '10px';
+            block.style.top = '10px';
+            block.id = 'block-' + blockCounter;
+            blockCounter++;
+            block.onmousedown = startDrag;
+            document.getElementById('floor-plan').appendChild(block);
+        }
+
+        function startDrag(event) {
+            const block = event.target;
+            let shiftX = event.clientX - block.getBoundingClientRect().left;
+            let shiftY = event.clientY - block.getBoundingClientRect().top;
+
+            block.style.position = 'absolute';
+            block.style.zIndex = 1000;
+
+            function moveAt(pageX, pageY) {
+                block.style.left = pageX - shiftX + 'px';
+                block.style.top = pageY - shiftY + 'px';
+            }
+
+            function onMouseMove(event) {
+                moveAt(event.pageX, event.pageY);
+            }
+
+            document.addEventListener('mousemove', onMouseMove);
+
+            block.onmouseup = function() {
+                document.removeEventListener('mousemove', onMouseMove);
+                block.onmouseup = null;
+            };
+
+            block.ondragstart = function() {
+                return false;
+            };
+        }
+    </script>
+</body>
+</html>
