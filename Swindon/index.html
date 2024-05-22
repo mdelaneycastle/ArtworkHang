@@ -60,7 +60,13 @@
     </style>
 </head>
 <body>
-    <div id="controls">
+   
+    <div id="floor-plan">
+        <div class="archway">
+            <img src="archway.png" alt="Archway">
+        </div>
+
+         <div id="controls">
         <button onclick="addBlock()">Add Block</button>
         <button onclick="addItem('coffee.png', 70)">Add Coffee Table</button>
         <button onclick="addItem('settee.png', 50)">Add Sofa</button>
@@ -68,10 +74,7 @@
         <button onclick="addItem('bar.png', 100)">Add Bar and Stools</button>
         <button onclick="toggleHandles()">Toggle Handles</button>
     </div>
-    <div id="floor-plan">
-        <div class="archway">
-            <img src="archway.png" alt="Archway">
-        </div>
+        
     </div>
     <script>
         let blockCounter = 0;
