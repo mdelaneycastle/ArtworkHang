@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Floor Plan</title>
+    <title>Floor Plan.</title>
     <style>
         body {
             display: flex;
@@ -11,11 +11,16 @@
             align-items: center;
             justify-content: center;
             height: 100vh;
-            margin: 20px;
+            margin: 0;
             background-color: #f0f0f0;
         }
         #controls {
             margin-bottom: 10px;
+        }
+        #floor-plan-container {
+            display: flex;
+            justify-content: center;
+            width: 100%;
         }
         #floor-plan {
             width: 1500px;
@@ -59,7 +64,6 @@
         .item img {
             width: 100%;
             height: auto; /* Maintain aspect ratio */
-            
         }
         .archway {
             width: 100%; /* Full width of the floor plan */
@@ -68,6 +72,7 @@
             top: 0;
             left: 50%;
             pointer-events: none; /* Make it non-interactive */
+            transform: translateX(-50%); /* Center the archway */
         }
     </style>
 </head>
@@ -80,9 +85,11 @@
         <button onclick="addItem('bar.png', 100)">Add Bar and Stools</button>
         <button onclick="toggleHandles()">Toggle Handles</button>
     </div>
-    <div id="floor-plan">
-        <div class="archway">
-            <img src="archway.png" alt="Archway">
+    <div id="floor-plan-container">
+        <div id="floor-plan">
+            <div class="archway">
+                <img src="archway.png" alt="Archway">
+            </div>
         </div>
     </div>
     <script>
@@ -195,6 +202,21 @@
                 // Snap angle to nearest 45 degrees
                 const snappedAngle = Math.round(angle / 45) * 45;
                 block.style.transform = `rotate(${snappedAngle}deg)`;
+
+                // Recalculate boundaries after rotation
+                const rotatedRect = block.getBoundingClientRect();
+                if (rotatedRect.left < 0) {
+                    block.style.left = -rotatedRect.left + 'px';
+                }
+                if (rotatedRect.top < 0) {
+                    block.style.top = -rotatedRect.top + 'px';
+                }
+                if (rotatedRect.right > floorPlan.offsetWidth) {
+                    block.style.left = floorPlan.offsetWidth - rotatedRect.width + 'px';
+                }
+                if (rotatedRect.bottom > floorPlan.offsetHeight) {
+                    block.style.top = floorPlan.offsetHeight - rotatedRect.height + 'px';
+                }
             }
 
             document.addEventListener('mousemove', onMouseMove);
