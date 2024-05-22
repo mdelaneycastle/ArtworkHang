@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Floor Plan.</title>
+    <title>Floor Plan</title>
     <style>
         body {
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
             height: 100vh;
             margin: 0;
             background-color: #f0f0f0;
@@ -58,7 +59,7 @@
         .item img {
             width: 100%;
             height: auto; /* Maintain aspect ratio */
-            box-shadow: 10px 10px rgba(0, 0, 0, 0.3);
+            
         }
         .archway {
             width: 100%; /* Full width of the floor plan */
@@ -71,18 +72,18 @@
     </style>
 </head>
 <body>
+    <div id="controls">
+        <button onclick="addBlock()">Add Block</button>
+        <button onclick="addItem('coffee.png', 30)">Add Coffee Table</button>
+        <button onclick="addItem('settee.png', 50)">Add Sofa</button>
+        <button onclick="addItem('desk.png', 120)">Add Desk</button>
+        <button onclick="addItem('bar.png', 100)">Add Bar and Stools</button>
+        <button onclick="toggleHandles()">Toggle Handles</button>
+    </div>
     <div id="floor-plan">
         <div class="archway">
             <img src="archway.png" alt="Archway">
         </div>
-    </div>
-    <div id="controls">
-        <button onclick="addBlock()">Add Block</button>
-        <button onclick="addItem('coffee.png', 200)">Add Coffee Table</button>
-        <button onclick="addItem('settee.png', 300)">Add Sofa</button>
-        <button onclick="addItem('desk.png', 250)">Add Desk</button>
-        <button onclick="addItem('bar.png', 400)">Add Bar and Stools</button>
-        <button onclick="toggleHandles()">Toggle Handles</button>
     </div>
     <script>
         let blockCounter = 0;
