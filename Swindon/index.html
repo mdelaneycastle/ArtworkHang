@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Floor Plan.</title>
+    <title>Floor Plan</title>
     <style>
         body {
             display: flex;
@@ -17,7 +17,7 @@
             margin-bottom: 10px;
         }
         #floor-plan {
-            width: 1200px;
+            width: 800px;
             height: 400px;
             border: 2px solid #000;
             position: relative;
@@ -41,6 +41,13 @@
             max-width: 100%;
             max-height: 100%;
         }
+        .archway {
+            width: 10%; /* Example width, adjust as needed */
+            height: 100%;
+            position: absolute;
+            left: 45%;
+            top: 0;
+        }
     </style>
 </head>
 <body>
@@ -51,7 +58,11 @@
         <button onclick="addItem('desk.png')">Add Desk</button>
         <button onclick="addItem('bar.png')">Add Bar and Stools</button>
     </div>
-    <div id="floor-plan"></div>
+    <div id="floor-plan">
+        <div class="archway">
+            <img src="archway.png" alt="Archway">
+        </div>
+    </div>
     <script>
         let blockCounter = 0;
         const itemSizes = {
@@ -65,7 +76,7 @@
             const block = document.createElement('div');
             block.classList.add('block');
             block.style.width = '50px';
-            block.style.height = '30%';
+            block.style.height = '25.51%';
             block.style.left = '10px';
             block.style.top = '10px';
             block.id = 'block-' + blockCounter;
