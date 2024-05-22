@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Floor Plan</title>
+    <title>Floor Plan.</title>
     <style>
         body {
             display: flex;
@@ -61,8 +61,25 @@
             block.style.zIndex = 1000;
 
             function moveAt(pageX, pageY) {
-                block.style.left = pageX - shiftX + 'px';
-                block.style.top = pageY - shiftY + 'px';
+                let newLeft = pageX - shiftX;
+                let newTop = pageY - shiftY;
+
+                // Boundary conditions
+                if (newLeft < 0) {
+                    newLeft = 0;
+                }
+                if (newTop < 0) {
+                    newTop = 0;
+                }
+                if (newLeft + block.offsetWidth > floorPlan.offsetWidth) {
+                    newLeft = floorPlan.offsetWidth - block.offsetWidth;
+                }
+                if (newTop + block.offsetHeight > floorPlan.offsetHeight) {
+                    newTop = floorPlan.offsetHeight - block.offsetHeight;
+                }
+
+                block.style.left = newLeft + 'px';
+                block.style.top = newTop + 'px';
             }
 
             function onMouseMove(event) {
@@ -80,6 +97,8 @@
                 return false;
             };
         }
+
+        const floorPlan = document.getElementById('floor-plan');
     </script>
 </body>
 </html>
