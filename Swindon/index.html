@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Floor Plan.</title>
+    <title>Floor Plan</title>
     <style>
         body {
             display: flex;
@@ -23,7 +23,7 @@
             position: relative;
             background-color: #fff;
         }
-        .item {
+        .block, .item {
             position: absolute;
             cursor: move;
             transform-origin: center center;
@@ -48,6 +48,7 @@
             top: 0;
             left: 50%;
             transform: translateX(-50%); /* Center horizontally */
+            pointer-events: none; /* Make it non-interactive */
         }
     </style>
 </head>
@@ -75,9 +76,10 @@
 
         function addBlock() {
             const block = document.createElement('div');
-            block.classList.add('item');
+            block.classList.add('block');
             block.style.width = '50px';
-            block.style.height = '25.51%';
+            block.style.height = '50px'; /* Adjusted for better visibility */
+            block.style.backgroundColor = '#3498db'; /* Added color for visibility */
             block.style.left = '10px';
             block.style.top = '10px';
             block.id = 'block-' + blockCounter;
@@ -114,7 +116,7 @@
         }
 
         function startDrag(event) {
-            const block = event.target.closest('.item');
+            const block = event.target.closest('.block, .item');
             let shiftX = event.clientX - block.getBoundingClientRect().left;
             let shiftY = event.clientY - block.getBoundingClientRect().top;
 
@@ -162,7 +164,7 @@
 
         function startRotate(event) {
             event.stopPropagation();
-            const block = event.target.closest('.item');
+            const block = event.target.closest('.block, .item');
             const rect = block.getBoundingClientRect();
             const centerX = rect.left + rect.width / 2;
             const centerY = rect.top + rect.height / 2;
