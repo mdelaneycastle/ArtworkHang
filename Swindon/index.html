@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Floor Plan.</title>
+    <title>Floor Plan</title>
     <style>
         body {
             display: flex;
@@ -56,9 +56,6 @@
             const block = event.target;
             let shiftX = event.clientX - block.getBoundingClientRect().left;
             let shiftY = event.clientY - block.getBoundingClientRect().top;
-
-            block.style.position = 'absolute';
-            block.style.zIndex = 1000;
 
             function moveAt(pageX, pageY) {
                 let newLeft = pageX - shiftX;
