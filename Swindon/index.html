@@ -3,15 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Floor Plan</title>
+    <title>Floor Plan.</title>
     <style>
         body {
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
             height: 100vh;
             margin: 0;
             background-color: #f0f0f0;
+        }
+        #controls {
+            margin-bottom: 10px;
         }
         #floor-plan {
             width: 1200px;
@@ -20,10 +23,7 @@
             position: relative;
             background-color: #fff;
         }
-        .block {
-            width: 50px;
-            height: 30%; /* Percentage height based on the calculation */
-            background-color: #3498db;
+        .block, .item {
             position: absolute;
             cursor: move;
             transform-origin: center center;
@@ -37,23 +37,35 @@
             right: -15px;
             cursor: pointer;
         }
-        button {
-            position: absolute;
-            top: 10px;
-            left: 10px;
+        .item img {
+            max-width: 100%;
+            max-height: 100%;
         }
     </style>
 </head>
 <body>
-    <div id="floor-plan">
+    <div id="controls">
         <button onclick="addBlock()">Add Block</button>
+        <button onclick="addItem('coffee.png')">Add Coffee Table</button>
+        <button onclick="addItem('settee.png')">Add Sofa</button>
+        <button onclick="addItem('desk.png')">Add Desk</button>
+        <button onclick="addItem('bar.png')">Add Bar and Stools</button>
     </div>
+    <div id="floor-plan"></div>
     <script>
         let blockCounter = 0;
+        const itemSizes = {
+            'coffee.png': { width: '10%', height: '10%' },
+            'settee.png': { width: '20%', height: '10%' },
+            'desk.png': { width: '15%', height: '10%' },
+            'bar.png': { width: '25%', height: '10%' }
+        };
 
         function addBlock() {
             const block = document.createElement('div');
             block.classList.add('block');
+            block.style.width = '50px';
+            block.style.height = '30%';
             block.style.left = '10px';
             block.style.top = '10px';
             block.id = 'block-' + blockCounter;
@@ -68,8 +80,29 @@
             document.getElementById('floor-plan').appendChild(block);
         }
 
+        function addItem(imageSrc) {
+            const item = document.createElement('div');
+            item.classList.add('item');
+            item.style.width = itemSizes[imageSrc].width;
+            item.style.height = itemSizes[imageSrc].height;
+            item.style.left = '10px';
+            item.style.top = '10px';
+
+            const img = document.createElement('img');
+            img.src = imageSrc;
+            item.appendChild(img);
+
+            const rotateHandle = document.createElement('div');
+            rotateHandle.classList.add('rotate-handle');
+            item.appendChild(rotateHandle);
+
+            item.onmousedown = startDrag;
+            rotateHandle.onmousedown = startRotate;
+            document.getElementById('floor-plan').appendChild(item);
+        }
+
         function startDrag(event) {
-            const block = event.target.closest('.block');
+            const block = event.target.closest('.block, .item');
             let shiftX = event.clientX - block.getBoundingClientRect().left;
             let shiftY = event.clientY - block.getBoundingClientRect().top;
 
@@ -117,7 +150,7 @@
 
         function startRotate(event) {
             event.stopPropagation();
-            const block = event.target.closest('.block');
+            const block = event.target.closest('.block, .item');
             const rect = block.getBoundingClientRect();
             const centerX = rect.left + rect.width / 2;
             const centerY = rect.top + rect.height / 2;
