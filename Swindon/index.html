@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Floor Plan.</title>
+    <title>Floor Plan</title>
     <style>
         body {
             display: flex;
@@ -30,7 +30,7 @@
             transform-origin: center center; /* Rotate around the center */
         }
         .block {
-            width: 50px;
+            width: 30px;
             height: 30%; /* 30% of the floor plan height */
             background-color: #d8d1c5;
         }
@@ -43,11 +43,11 @@
             left: 50%;
             transform: translate(-50%, -50%); /* Center the handle */
             cursor: pointer;
-            display: block; /* Initially hidden */
+            display: block; /* Initially visible */
         }
         .item img {
             width: 100%;
-            height: 100%;
+            height: auto; /* Maintain aspect ratio */
         }
         .archway {
             width: 100%; /* Full width of the floor plan */
@@ -62,10 +62,10 @@
 <body>
     <div id="controls">
         <button onclick="addBlock()">Add Block</button>
-        <button onclick="addItem('coffee.png', 200, 100)">Add Coffee Table</button>
-        <button onclick="addItem('settee.png', 300, 150)">Add Sofa</button>
-        <button onclick="addItem('desk.png', 250, 125)">Add Desk</button>
-        <button onclick="addItem('bar.png', 400, 200)">Add Bar and Stools</button>
+        <button onclick="addItem('coffee.png', 50)">Add Coffee Table</button>
+        <button onclick="addItem('settee.png', 100)">Add Sofa</button>
+        <button onclick="addItem('desk.png', 1500)">Add Desk</button>
+        <button onclick="addItem('bar.png', 50)">Add Bar and Stools</button>
         <button onclick="toggleHandles()">Toggle Handles</button>
     </div>
     <div id="floor-plan">
@@ -93,16 +93,17 @@
             document.getElementById('floor-plan').appendChild(block);
         }
 
-        function addItem(imageSrc, width, height) {
+        function addItem(imageSrc, width) {
             const item = document.createElement('div');
             item.classList.add('item');
             item.style.width = width + 'px';
-            item.style.height = height + 'px';
             item.style.left = '10px';
             item.style.top = '10px';
 
             const img = document.createElement('img');
             img.src = imageSrc;
+            img.style.width = '100%';
+            img.style.height = 'auto'; // Maintain aspect ratio
             item.appendChild(img);
 
             const rotateHandle = document.createElement('div');
