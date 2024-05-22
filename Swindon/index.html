@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Floor Plan</title>
+    <title>Floor Plan.</title>
     <style>
         body {
             display: flex;
@@ -27,6 +27,15 @@
             position: absolute;
             cursor: move;
         }
+        .rotate-handle {
+            width: 10px;
+            height: 10px;
+            background-color: #e74c3c;
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            cursor: pointer;
+        }
         button {
             position: absolute;
             top: 10px;
@@ -48,12 +57,18 @@
             block.style.top = '10px';
             block.id = 'block-' + blockCounter;
             blockCounter++;
+
+            const rotateHandle = document.createElement('div');
+            rotateHandle.classList.add('rotate-handle');
+            block.appendChild(rotateHandle);
+
             block.onmousedown = startDrag;
+            rotateHandle.onmousedown = startRotate;
             document.getElementById('floor-plan').appendChild(block);
         }
 
         function startDrag(event) {
-            const block = event.target;
+            const block = event.target.closest('.block');
             let shiftX = event.clientX - block.getBoundingClientRect().left;
             let shiftY = event.clientY - block.getBoundingClientRect().top;
 
@@ -97,6 +112,30 @@
             block.ondragstart = function() {
                 return false;
             };
+        }
+
+        function startRotate(event) {
+            event.stopPropagation();
+            const block = event.target.closest('.block');
+            const rect = block.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+
+            function onMouseMove(event) {
+                const deltaX = event.clientX - centerX;
+                const deltaY = event.clientY - centerY;
+                const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
+                block.style.transform = `rotate(${angle}deg)`;
+            }
+
+            document.addEventListener('mousemove', onMouseMove);
+
+            function onMouseUp() {
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+            }
+
+            document.addEventListener('mouseup', onMouseUp, { once: true });
         }
 
         const floorPlan = document.getElementById('floor-plan');
