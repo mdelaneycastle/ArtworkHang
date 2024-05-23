@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Floor Plan</title>
+    <title>Floor Plan.</title>
     <style>
         body {
             display: flex;
@@ -23,11 +23,11 @@
             width: 100%;
         }
         #floor-plan {
-            width: 1500px;
-            height: 400px;
+            width: 1328px;
+            height: 420px;
             border: 2px solid #000;
             position: relative;
-            background: url('floor.png') no-repeat center center;
+            background: url('newfloormap.png') no-repeat center center;
             background-size: cover;
         }
         .block, .item {
@@ -65,32 +65,18 @@
             width: 100%;
             height: auto; /* Maintain aspect ratio */
         }
-        .archway {
-            width: 100%; /* Full width of the floor plan */
-            height: 100%; /* Full height of the floor plan */
-            position: absolute;
-            top: 0;
-            left: 50%;
-            pointer-events: none; /* Make it non-interactive */
-            
-        }
     </style>
 </head>
 <body>
     <div id="controls">
         <button onclick="addBlock()">Add Block</button>
-        <button onclick="addItem('coffee.png', 30)">Add Coffee Table</button>
-        <button onclick="addItem('settee.png', 50)">Add Sofa</button>
+        <button onclick="addItem('setteeandcoffee.png', 83)">Add Sofa + Coffee Table</button>
         <button onclick="addItem('desk.png', 120)">Add Desk</button>
-        <button onclick="addItem('bar.png', 100)">Add Bar and Stools</button>
+        <button onclick="addItem('bar.png', 119)">Add Bar and Stools</button>
         <button onclick="toggleHandles()">Toggle Handles</button>
     </div>
     <div id="floor-plan-container">
-        <div id="floor-plan">
-            <div class="archway">
-                <img src="archway.png" alt="Archway">
-            </div>
-        </div>
+        <div id="floor-plan"></div>
     </div>
     <script>
         let blockCounter = 0;
