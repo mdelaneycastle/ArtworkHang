@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Floor Plan</title>
+    <title>Floor Plan.</title>
     <style>
         body {
             display: flex;
@@ -259,11 +259,11 @@
         }
 
         function toggleHandles() {
-            const handles = document.querySelectorAll('.rotate-handle, .resize-handle');
-            handles.forEach(handle => {
-                handle.style.display = handle.style.display === 'none' ? 'block' : 'none';
-            });
-        }
+    const handles = document.querySelectorAll('.rotate-handle, .resize-handle, .height-label');
+    handles.forEach(handle => {
+        handle.style.display = handle.style.display === 'none' ? 'block' : 'none';
+    });
+}
 
         const floorPlan = document.getElementById('floor-plan');
     </script>
