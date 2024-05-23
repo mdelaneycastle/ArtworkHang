@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Floor Plan.</title>
+    <title>Floor Plan</title>
     <style>
         body {
             display: flex;
@@ -39,6 +39,11 @@
             width: 30px;
             height: 30%; /* 30% of the floor plan height */
             background-color: #d8d1c5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: black;
+            font-weight: bold;
         }
         .resize-handle {
             width: 10px;
@@ -82,6 +87,7 @@
     </div>
     <script>
         let blockCounter = 0;
+        const meterPerPixel = 7.84 / 420;
 
         function addBlock() {
             const block = document.createElement('div');
@@ -98,6 +104,11 @@
             const resizeHandle = document.createElement('div');
             resizeHandle.classList.add('resize-handle');
             block.appendChild(resizeHandle);
+
+            const heightLabel = document.createElement('div');
+            heightLabel.classList.add('height-label');
+            updateBlockHeight(block, heightLabel);
+            block.appendChild(heightLabel);
 
             block.onmousedown = startDrag;
             rotateHandle.onmousedown = startRotate;
@@ -126,6 +137,11 @@
             item.onmousedown = startDrag;
             rotateHandle.onmousedown = startRotate;
             document.getElementById('floor-plan').appendChild(item);
+        }
+
+        function updateBlockHeight(block, heightLabel) {
+            const heightInMeters = (block.offsetHeight * meterPerPixel).toFixed(2);
+            heightLabel.innerText = heightInMeters + 'm';
         }
 
         function startDrag(event) {
@@ -227,6 +243,8 @@
                 const newHeight = startHeight + (event.clientY - startY);
                 if (newHeight > 10 && newHeight < floorPlan.offsetHeight) { // Add some boundary conditions
                     block.style.height = newHeight + 'px';
+                    const heightLabel = block.querySelector('.height-label');
+                    updateBlockHeight(block, heightLabel);
                 }
             }
 
