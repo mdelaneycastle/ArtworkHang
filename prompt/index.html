@@ -4,7 +4,10 @@
     <h2>Image Parameters</h2>
     <p>Enter new image prompt:</p>
     <input type="text" id="promptInput" placeholder="Enter new prompt here" style="width: 80%;">
-    <button onclick="updateImage()">Go</button>
+    <button onclick="updatePrompt()">Enhance Prompt</button>
+    
+    <p>Enhanced Prompt:</p>
+    <textarea id="enhancedPromptOutput" style="width: 80%; height: 100px;"></textarea>
     
     <p>Width: 1024</p>
     <p>Height: 1024</p>
@@ -18,9 +21,17 @@
     />
     
     <script>
-      function updateImage() {
+      function enhancePrompt(prompt) {
+        // Add details to the prompt. You can customize this function as needed.
+        return prompt + ", in vivid colors, highly detailed, ultra-realistic, cinematic lighting, by a famous artist, 8K resolution";
+      }
+
+      function updatePrompt() {
         var prompt = document.getElementById("promptInput").value;
-        var encodedPrompt = encodeURIComponent("prompt: " + prompt + " --ar 3:2 --seed 293031 --style raw --s 150 --v 5.2");
+        var enhancedPrompt = enhancePrompt(prompt);
+        document.getElementById("enhancedPromptOutput").value = enhancedPrompt;
+
+        var encodedPrompt = encodeURIComponent("prompt: " + enhancedPrompt + " --ar 3:2 --seed 293031 --style raw --s 150 --v 5.2");
         var imageUrl = "https://image.pollinations.ai/prompt/" + encodedPrompt;
         document.getElementById("image").src = imageUrl;
       }
