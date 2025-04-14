@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixel Distance Measurement</title>
+    <title>Pixel Distance Measurement.</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixel Distance Measurement</title>
+    <title>Pixel Distance Measurement.</title>
     <style>
     body {
         font-family: Arial, sans-serif;
@@ -470,42 +470,61 @@
     const backgroundImage = new Image();
     backgroundImage.src = container.style.backgroundImage.replace('url("', '').replace('")', '');
 
-    // Load background image to get its dimensions
-    backgroundImage.onload = function() {
+    backgroundImage.onload = function () {
         const bgWidth = backgroundImage.width;
         const bgHeight = backgroundImage.height;
 
-        // Set canvas dimensions to match background image
         canvas.width = bgWidth;
         canvas.height = bgHeight;
 
-        // Draw background image
+        // Draw the background
         ctx.drawImage(backgroundImage, 0, 0, bgWidth, bgHeight);
 
-        // Draw overlay image at its current position relative to the container
         const square = document.getElementById('square');
         const overlayImage = new Image();
         overlayImage.src = square.style.backgroundImage.replace('url("', '').replace('")', '');
+
         const overlayRect = square.getBoundingClientRect();
-        
-        // Calculate scaling factors for width and height
+
         const scaleX = bgWidth / rect.width;
         const scaleY = bgHeight / rect.height;
 
-        // Calculate overlay position and size based on scaling factors
         const overlayX = (overlayRect.left - rect.left) * scaleX;
         const overlayY = (overlayRect.top - rect.top) * scaleY;
         const overlayWidth = parseFloat(square.style.width) * scaleX;
         const overlayHeight = parseFloat(square.style.height) * scaleY;
 
-        // Draw overlay image on canvas
-        ctx.drawImage(overlayImage, overlayX, overlayY, overlayWidth, overlayHeight);
+        const rotationDeg = parseFloat(document.getElementById('slider').value);
+        const rotationRad = (rotationDeg * Math.PI) / 180;
 
-        // Create download link
-        const link = document.createElement('a');
-        link.download = 'composite_image.png';
-        link.href = canvas.toDataURL('image/png');
-        link.click();
+        overlayImage.onload = function () {
+            // Save the canvas state
+            ctx.save();
+
+            // Move origin to the center of the overlay image
+            ctx.translate(overlayX + overlayWidth / 2, overlayY + overlayHeight / 2);
+
+            // Rotate canvas
+            ctx.rotate(rotationRad);
+
+            // Draw the image centered on the new origin
+            ctx.drawImage(
+                overlayImage,
+                -overlayWidth / 2,
+                -overlayHeight / 2,
+                overlayWidth,
+                overlayHeight
+            );
+
+            // Restore the canvas state
+            ctx.restore();
+
+            // Create download link
+            const link = document.createElement('a');
+            link.download = 'composite_image.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        };
     };
 }
 
