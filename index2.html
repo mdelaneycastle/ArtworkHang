@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixel Distance Measurement</title>
+    <title>Pixel Distance Measurement.</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixel Distance Measurement</title>
+    <title>Pixel Distance Measurement.</title>
     <style>
     body {
         font-family: Arial, sans-serif;
@@ -328,7 +328,7 @@
 
         slider.addEventListener('input', function() {
             const value = parseInt(this.value);
-            square.style.transform = `perspective(500px) rotateY(${value}deg)`;
+            square.style.transform = `rotate(${value}deg)`; // This is 2D, and canvas/html2canvas can see it
         });
 
         square.addEventListener('mousedown', startDrag);
