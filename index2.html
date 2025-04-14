@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixel Distance Measurement</title>
+    <title>Pixel Distance Measurement.</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixel Distance Measurement</title>
+    <title>Pixel Distance Measurement.</title>
     <style>
     body {
         font-family: Arial, sans-serif;
@@ -462,19 +462,24 @@
             document.getElementById('backButton').style.display = 'none';
         }
    function downloadCompositeImage() {
-    const container = document.getElementById('container');
+    const square = document.getElementById('square');
 
-    html2canvas(container, {
+    // Temporarily remove shadow or other effects if needed
+    square.style.boxShadow = 'none';
+
+    html2canvas(document.getElementById('container'), {
         useCORS: true,
-        backgroundColor: null // if you want transparent background, optional
+        backgroundColor: null
     }).then(canvas => {
+        // Reset styles
+        square.style.boxShadow = '0px 2px 5px rgba(0, 0, 0, 0.3)';
+
         const link = document.createElement('a');
         link.download = 'composite_image.png';
         link.href = canvas.toDataURL('image/png');
         link.click();
     });
 }
-
 
     </script>
 </body>
