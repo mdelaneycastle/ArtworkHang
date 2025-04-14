@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixel Distance Measurement.</title>
+    <title>Pixel Distance Measurement</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixel Distance Measurement.</title>
+    <title>Pixel Distance Measurement</title>
     <style>
     body {
         font-family: Arial, sans-serif;
@@ -165,6 +165,7 @@
         cursor: pointer;
     }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
 <body>
     <div id="container" onclick="handleContainerClick(event)">
@@ -462,70 +463,16 @@
         }
    function downloadCompositeImage() {
     const container = document.getElementById('container');
-    const rect = container.getBoundingClientRect();
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
 
-    // Get the background image
-    const backgroundImage = new Image();
-    backgroundImage.src = container.style.backgroundImage.replace('url("', '').replace('")', '');
-
-    backgroundImage.onload = function () {
-        const bgWidth = backgroundImage.width;
-        const bgHeight = backgroundImage.height;
-
-        canvas.width = bgWidth;
-        canvas.height = bgHeight;
-
-        // Draw the background
-        ctx.drawImage(backgroundImage, 0, 0, bgWidth, bgHeight);
-
-        const square = document.getElementById('square');
-        const overlayImage = new Image();
-        overlayImage.src = square.style.backgroundImage.replace('url("', '').replace('")', '');
-
-        const overlayRect = square.getBoundingClientRect();
-
-        const scaleX = bgWidth / rect.width;
-        const scaleY = bgHeight / rect.height;
-
-        const overlayX = (overlayRect.left - rect.left) * scaleX;
-        const overlayY = (overlayRect.top - rect.top) * scaleY;
-        const overlayWidth = parseFloat(square.style.width) * scaleX;
-        const overlayHeight = parseFloat(square.style.height) * scaleY;
-
-        const rotationDeg = parseFloat(document.getElementById('slider').value);
-        const rotationRad = (rotationDeg * Math.PI) / 180;
-
-        overlayImage.onload = function () {
-            // Save the canvas state
-            ctx.save();
-
-            // Move origin to the center of the overlay image
-            ctx.translate(overlayX + overlayWidth / 2, overlayY + overlayHeight / 2);
-
-            // Rotate canvas
-            ctx.rotate(rotationRad);
-
-            // Draw the image centered on the new origin
-            ctx.drawImage(
-                overlayImage,
-                -overlayWidth / 2,
-                -overlayHeight / 2,
-                overlayWidth,
-                overlayHeight
-            );
-
-            // Restore the canvas state
-            ctx.restore();
-
-            // Create download link
-            const link = document.createElement('a');
-            link.download = 'composite_image.png';
-            link.href = canvas.toDataURL('image/png');
-            link.click();
-        };
-    };
+    html2canvas(container, {
+        useCORS: true,
+        backgroundColor: null // if you want transparent background, optional
+    }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'composite_image.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+    });
 }
 
 
