@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixel Distance Measurement.</title>
+    <title>Pixel Distance Measurement</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixel Distance Measurement.</title>
+    <title>Pixel Distance Measurement</title>
     <style>
     body {
         font-family: Arial, sans-serif;
@@ -45,6 +45,9 @@
         background-repeat: no-repeat;
         background-position: center;
         box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+        transform-style: preserve-3d;
+        backface-visibility: hidden;
+        will-change: transform;
         
         top: 50%;
         left: 50%;
@@ -168,9 +171,11 @@
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
 <body>
+    <div id="captureArea">
     <div id="container" onclick="handleContainerClick(event)">
         <div id="square"></div>
     </div>
+</div>
 
     <div id="imageButtons"></div>
     
@@ -463,22 +468,35 @@
         }
    function downloadCompositeImage() {
     const square = document.getElementById('square');
+    const captureArea = document.getElementById('captureArea');
 
-    // Temporarily remove shadow or other effects if needed
+    // Optional: hide points temporarily
+    const pointEls = document.querySelectorAll('.point');
+    pointEls.forEach(p => p.style.visibility = 'hidden');
+
+    // Temporarily remove box shadow to keep screenshot clean
+    const oldBoxShadow = square.style.boxShadow;
     square.style.boxShadow = 'none';
 
-    html2canvas(document.getElementById('container'), {
-        useCORS: true,
-        backgroundColor: null
-    }).then(canvas => {
-        // Reset styles
-        square.style.boxShadow = '0px 2px 5px rgba(0, 0, 0, 0.3)';
+    // Give DOM time to apply all changes visually
+    setTimeout(() => {
+        html2canvas(captureArea, {
+            useCORS: true,
+            backgroundColor: null,
+            allowTaint: true,
+            scale: 2
+        }).then(canvas => {
+            // Restore styles
+            square.style.boxShadow = oldBoxShadow;
+            pointEls.forEach(p => p.style.visibility = 'visible');
 
-        const link = document.createElement('a');
-        link.download = 'composite_image.png';
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-    });
+            // Trigger download
+            const link = document.createElement('a');
+            link.download = 'composite_image.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        });
+    }, 100);
 }
 
     </script>
