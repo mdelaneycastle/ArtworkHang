@@ -4,189 +4,181 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pixel Distance Measurement</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixel Distance Measurement</title>
     <style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f0f0f0;
-        margin: 0;
-        padding: 0;
-    }
-        
-    #backButton {
-    display: block;
-    margin: 20px auto;
-    text-align: center;
-    } 
-    #container {
-        position: relative;
-        width: 500px;
-        height: 500px;
-        border: 1px solid #ddd;
-        background-size: cover;
-        background-position: center;
-        margin: 20px auto;
-        overflow: hidden;
-    }
-    .point {
-        position: absolute;
-        width: 10px;
-        height: 10px;
-        background-color: red;
-        border-radius: 50%;
-    }
-    #square {
-        position: absolute;
-        width: auto;
-        height: auto;
-        cursor: move;
-        background-repeat: no-repeat;
-        background-position: center;
-        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
-        transform-style: preserve-3d;
-        backface-visibility: hidden;
-        will-change: transform;
-        
-        top: 50%;
-        left: 50%;
-        /* Adjust the margins to center the square */
-        margin-top: -50px;
-        margin-left: -50px;
-    }
+        html, body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            overflow-x: hidden;
+        }
 
-    .thumbnail {
-        width: auto;
-        height: 100px; /* Adjust as needed */
-        cursor: pointer;
-        margin-right: 10px;        
-        transition: transform 0.3s ease;
-    }
+        #backButton {
+            display: block;
+            margin: 20px auto;
+            text-align: center;
+        }
 
-    .thumbnail:hover {
-        transform: scale(1.1);
-    }
+        #container {
+            position: relative;
+            width: 90vw;
+            height: 90vw;
+            max-width: 500px;
+            max-height: 500px;
+            border: 1px solid #ddd;
+            background-size: cover;
+            background-position: center;
+            margin: 20px auto;
+            overflow: hidden;
+        }
 
-    #imageButtons {
-        text-align: center;
-        margin-bottom: 20px;
-    }
+        .point {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: red;
+            border-radius: 50%;
+        }
 
-    #realSizeLabel {
-        display: block;
-        margin-bottom: 10px;
-        text-align: center;
-    }
+        #square {
+            position: absolute;
+            width: auto;
+            height: auto;
+            cursor: move;
+            background-repeat: no-repeat;
+            background-position: center;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+            transform-style: preserve-3d;
+            backface-visibility: hidden;
+            will-change: transform;
+            top: 50%;
+            left: 50%;
+            margin-top: -50px;
+            margin-left: -50px;
+        }
 
-    #realSize {
-        width: 100px;
-        padding: 5px;
-        border-radius: 5px;
-        border: 1px solid #ddd;
-        margin-bottom: 10px;
-        font-size: 14px;
-        display: block;
-        margin: 0 auto;
-    }
+        .thumbnail {
+            width: 20vw;
+            max-width: 100px;
+            height: auto;
+            max-height: 100px;
+            cursor: pointer;
+            margin: 5px;
+            transition: transform 0.3s ease;
+        }
 
-    #uploadBtn,
-    #pointsBtn,
-    #downloadBtn { /* Added the download button style */
-        display: block;
-        padding: 10px 20px;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 16px;
-        margin: 0 auto 20px;
-    }
+        .thumbnail:hover {
+            transform: scale(1.1);
+        }
 
-    #uploadBtn {
-        background-color: #4CAF50;
-        color: white;
-        border: none;
-    }
+        #imageButtons {
+            text-align: center;
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
 
-    #uploadBtn:hover {
-        background-color: #45a049;
-    }
+        #realSizeLabel {
+            display: block;
+            margin-bottom: 10px;
+            text-align: center;
+        }
 
-    #pointsBtn {
-        background-color: #f44336;
-        color: white;
-        border: none;
-    }
+        #realSize {
+            width: 100px;
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            margin: 0 auto 20px;
+            font-size: 14px;
+            display: block;
+        }
 
-    #pointsBtn:hover {
-        background-color: #d32f2f;
-        margin-bottom: 20px;
-    }
+        #uploadBtn,
+        #pointsBtn,
+        #downloadBtn {
+            display: block;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px auto;
+        }
 
-    #downloadBtn { /* Styling for the download button */
-        background-color: #2196F3;
-        color: white;
-        border: none;
-    }
+        #uploadBtn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+        }
 
-    #downloadBtn:hover {
-        background-color: #0b7dda;
-    }
+        #uploadBtn:hover {
+            background-color: #45a049;
+        }
 
-    .sliderContainer {
-        text-align: center;
-        margin-bottom: 20px;
-    }
+        #pointsBtn {
+            background-color: #f44336;
+            color: white;
+            border: none;
+        }
 
-    .slider {
-        width: 80%;
-        -webkit-appearance: none;
-        appearance: none;
-        height: 5px;
-        border-radius: 5px;
-        background: #ddd;
-        outline: none;
-        opacity: 0.7;
-        -webkit-transition: .2s;
-        transition: opacity .2s;
-    }
+        #pointsBtn:hover {
+            background-color: #d32f2f;
+        }
 
-    .slider::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 15px;
-        height: 15px;
-        border-radius: 50%;
-        background: #4CAF50;
-        cursor: pointer;
-    }
+        #downloadBtn {
+            background-color: #2196F3;
+            color: white;
+            border: none;
+        }
 
-    .slider::-moz-range-thumb {
-        width: 15px;
-        height: 15px;
-        border-radius: 50%;
-        background: #4CAF50;
-        cursor: pointer;
-    }
+        #downloadBtn:hover {
+            background-color: #0b7dda;
+        }
+
+        .sliderContainer {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .slider {
+            width: 80%;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 5px;
+            border-radius: 5px;
+            background: #ddd;
+            outline: none;
+            opacity: 0.7;
+            transition: opacity .2s;
+        }
+
+        .slider::-webkit-slider-thumb,
+        .slider::-moz-range-thumb {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #4CAF50;
+            cursor: pointer;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
 <body>
     <div id="captureArea">
-    <div id="container" onclick="handleContainerClick(event)">
-        <div id="square"></div>
+        <div id="container" onclick="handleContainerClick(event)">
+            <div id="square"></div>
+        </div>
     </div>
-</div>
 
     <div id="imageButtons"></div>
     
-    <!-- Add a back button -->
     <button id="backButton" style="display: none;" onclick="goBack()">Back to Artists</button>
 
     <label id="realSizeLabel" for="realSize">Real Size of the Line (cm):</label>
-    <input type="number" id="realSize" onchange="updateSquareSize()" step="any" min="0"><br>
+    <input type="number" id="realSize" onchange="updateSquareSize()" step="any" min="0">
 
     <button id="uploadBtn" onclick="document.getElementById('imageInput').click()">Upload Photo</button>
-
     <button id="pointsBtn" onclick="togglePoints()">-Toggle Points</button>
 
     <div class="sliderContainer">
@@ -195,47 +187,38 @@
 
     <button id="downloadBtn" onclick="downloadCompositeImage()">Download Composite Image</button>
 
+    <!--
     <label for="distance">Distance between points:</label>
-<input type="text" id="distance" readonly>
+    <input type="text" id="distance" readonly>
 
     <label for="pixelWidth">Pixel Width:</label>
-<input type="text" id="pixelWidth" readonly>
-
-    
-
+    <input type="text" id="pixelWidth" readonly>
+    -->
 
     <input type="file" id="imageInput" accept="image/*" capture="environment" style="display: none" onchange="setImageBackground(event)">
 
-
     <script>
-       let aspectRatio;
+        let aspectRatio;
         let points = [];
         let isDragging = false;
         let offsetX, offsetY;
-        let pointsVisible = true; // Define pointsVisible globally and initialize it to true
-        let data; // Define 'data' at a global scope
-        let initialSquareSize; // Define initialSquareSize globally
+        let pointsVisible = true;
+        let data;
+        let initialSquareSize;
 
         function handleContainerClick(event) {
-    if (!pointsVisible) return;
-    const container = document.getElementById('container');
-    const rect = container.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
+            if (!pointsVisible) return;
+            const container = document.getElementById('container');
+            const rect = container.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
 
-    points.push({ x, y });
+            points.push({ x, y });
 
-    if (points.length === 2) {
-        const distance = calculateDistance();
-        document.getElementById('distance').value = distance.toFixed(2); // Display distance with 2 decimal places
-    }
+            if (points.length > 2) points = points.slice(1);
+            drawPoint(x, y);
+        }
 
-    if (points.length > 2) {
-        points = points.slice(1);
-    }
-
-    drawPoint(x, y);
-}
         function drawPoint(x, y) {
             const container = document.getElementById('container');
             const point = document.createElement('div');
@@ -246,35 +229,20 @@
         }
 
         function updateSquareSize() {
-    const realSizeInput = parseFloat(document.getElementById('realSize').value);
-    if (!isNaN(realSizeInput) && realSizeInput > 0) {
-        const pixelDistance = calculateDistance();
-
-        const square = document.getElementById('square');
-        const imageUrl = square.style.backgroundImage.replace('url("', '').replace('")', ''); // Extract the image URL from the background image style
-        const imageData = data.find(image => image.images.some(img => img.name === imageUrl)); // Find the image data in the JSON
-
-        // Use the initialSize from the JSON data
-        const initialSize = imageData ? imageData.images.find(img => img.name === imageUrl).initialSize : 100; // Use the initialSize from the JSON data, default to 100 if not found
-
-        const aspectRatio = square.offsetHeight / square.offsetWidth;
-
-        // Calculate the new width based on the initial size from JSON divided by real size, multiplied by pixel distance
-        const newWidth = (initialSize / realSizeInput) * pixelDistance;
-
-        square.style.width = `${newWidth}px`;
-        square.style.height = `${newWidth * aspectRatio}px`;
-
-        // Display the pixel width
-        document.getElementById('pixelWidth').value = newWidth.toFixed(2);
-    }
-}
-
-
-
-
-
-
+            const realSizeInput = parseFloat(document.getElementById('realSize').value);
+            if (!isNaN(realSizeInput) && realSizeInput > 0) {
+                const pixelDistance = calculateDistance();
+                const square = document.getElementById('square');
+                const imageUrl = square.style.backgroundImage.replace('url("', '').replace('")', '');
+                const imageData = data.find(image => image.images.some(img => img.name === imageUrl));
+                const initialSize = imageData ? imageData.images.find(img => img.name === imageUrl).initialSize : 100;
+                const aspectRatio = square.offsetHeight / square.offsetWidth;
+                const newWidth = (initialSize / realSizeInput) * pixelDistance;
+                square.style.width = `${newWidth}px`;
+                square.style.height = `${newWidth * aspectRatio}px`;
+                // document.getElementById('pixelWidth').value = newWidth.toFixed(2);
+            }
+        }
 
         function calculateDistance() {
             if (points.length === 2) {
@@ -287,52 +255,42 @@
         }
 
         function setImage(imageUrl) {
-    const square = document.getElementById('square');
-    square.style.backgroundImage = `url(${imageUrl})`;
-    square.style.backgroundSize = 'contain';
-    square.style.backgroundRepeat = 'no-repeat';
-    square.style.backgroundPosition = 'center';
-    
-    // Find the image data in the JSON
-    const imageData = data.find(image => image.name === imageUrl);
-    if (imageData && imageData.initialSize) {
-        // Set the initial size of the square from the JSON data
-        initialSquareSize = imageData.initialSize; // Initialize initialSquareSize
-        square.style.width = `${initialSquareSize}px`;
-        square.style.height = `${initialSquareSize}px`;
-    } else {
-        // Set a default initial size based on the aspect ratio
-        const img = new Image();
-        img.onload = function() {
-            aspectRatio = this.width / this.height;
-            initialSquareSize = 100; // Set a default initial size
-            square.style.width = `${initialSquareSize}px`; // Set width based on initialSquareSize
-            square.style.height = `${initialSquareSize / aspectRatio}px`; // Calculate height based on aspect ratio
-        };
-        img.src = imageUrl;
-    }
-}
+            const square = document.getElementById('square');
+            square.style.backgroundImage = `url(${imageUrl})`;
+            square.style.backgroundSize = 'contain';
+            const imageData = data.find(image => image.name === imageUrl);
+            if (imageData && imageData.initialSize) {
+                initialSquareSize = imageData.initialSize;
+                square.style.width = `${initialSquareSize}px`;
+                square.style.height = `${initialSquareSize}px`;
+            } else {
+                const img = new Image();
+                img.onload = function () {
+                    aspectRatio = this.width / this.height;
+                    initialSquareSize = 100;
+                    square.style.width = `${initialSquareSize}px`;
+                    square.style.height = `${initialSquareSize / aspectRatio}px`;
+                };
+                img.src = imageUrl;
+            }
+        }
 
         function setImageBackground(event) {
             const file = event.target.files[0];
             const reader = new FileReader();
-            reader.onload = function(event) {
-                const imageData = event.target.result;
-                document.getElementById('container').style.backgroundImage = `url(${imageData})`;
+            reader.onload = function (event) {
+                document.getElementById('container').style.backgroundImage = `url(${event.target.result})`;
             };
             reader.readAsDataURL(file);
         }
 
-        const square = document.getElementById('square');
-        const slider = document.getElementById('slider');
-
-        slider.addEventListener('input', function() {
+        document.getElementById('slider').addEventListener('input', function () {
             const value = parseInt(this.value);
-            square.style.transform = `perspective(500px) rotateY(${value}deg)`;
+            document.getElementById('square').style.transform = `perspective(500px) rotateY(${value}deg)`;
         });
 
-        square.addEventListener('mousedown', startDrag);
-        square.addEventListener('touchstart', startDragTouch);
+        document.getElementById('square').addEventListener('mousedown', startDrag);
+        document.getElementById('square').addEventListener('touchstart', startDragTouch);
 
         function startDrag(event) {
             isDragging = true;
@@ -361,51 +319,29 @@
         }
 
         function drag(event) {
-            if (isDragging) {
-                const container = document.getElementById('container');
-                const square = document.getElementById('square');
-                const containerRect = container.getBoundingClientRect();
-
-                let newX = event.clientX - containerRect.left - offsetX;
-                let newY = event.clientY - containerRect.top - offsetY;
-
-                newX = Math.max(0, Math.min(newX, containerRect.width - square.offsetWidth));
-                newY = Math.max(0, Math.min(newY, containerRect.height - square.offsetHeight));
-
-                // Adjust newX and newY to ensure the square stays within the container bounds
-                newX = Math.min(newX, containerRect.width - square.offsetWidth);
-                newY = Math.min(newY, containerRect.height - square.offsetHeight);
-
-                square.style.left = `${newX}px`;
-                square.style.top = `${newY}px`;
-            }
+            if (isDragging) moveSquare(event.clientX, event.clientY);
         }
 
         function dragTouch(event) {
-            if (isDragging) {
-                const container = document.getElementById('container');
-                const square = document.getElementById('square');
-                const containerRect = container.getBoundingClientRect();
+            if (isDragging) moveSquare(event.touches[0].clientX, event.touches[0].clientY);
+        }
 
-                let newX = event.touches[0].clientX - containerRect.left - offsetX;
-                let newY = event.touches[0].clientY - containerRect.top - offsetY;
-
-                newX = Math.max(0, Math.min(newX, containerRect.width - square.offsetWidth));
-                newY = Math.max(0, Math.min(newY, containerRect.height - square.offsetHeight));
-
-                // Adjust newX and newY to ensure the square stays within the container bounds
-                newX = Math.min(newX, containerRect.width - square.offsetWidth);
-                newY = Math.min(newY, containerRect.height - square.offsetHeight);
-
-                square.style.left = `${newX}px`;
-                square.style.top = `${newY}px`;
-            }
+        function moveSquare(x, y) {
+            const container = document.getElementById('container');
+            const square = document.getElementById('square');
+            const rect = container.getBoundingClientRect();
+            let newX = x - rect.left - offsetX;
+            let newY = y - rect.top - offsetY;
+            newX = Math.max(0, Math.min(newX, rect.width - square.offsetWidth));
+            newY = Math.max(0, Math.min(newY, rect.height - square.offsetHeight));
+            square.style.left = `${newX}px`;
+            square.style.top = `${newY}px`;
         }
 
         function togglePoints() {
-            const points = document.getElementsByClassName('point');
-            for (let i = 0; i < points.length; i++) {
-                points[i].style.display = points[i].style.display === 'none' ? 'block' : 'none';
+            const pointsEls = document.getElementsByClassName('point');
+            for (let i = 0; i < pointsEls.length; i++) {
+                pointsEls[i].style.display = pointsEls[i].style.display === 'none' ? 'block' : 'none';
             }
             pointsVisible = !pointsVisible;
         }
@@ -413,92 +349,70 @@
         fetch('images.json')
             .then(response => response.json())
             .then(jsonData => {
-                data = jsonData; // Assign the fetched JSON data to the 'data' variable
-                const imageButtonsContainer = document.getElementById('imageButtons');
-
+                data = jsonData;
+                const container = document.getElementById('imageButtons');
                 data.forEach(artist => {
-                    const artistButton = document.createElement('button');
-                    artistButton.textContent = artist.artist;
-                    artistButton.onclick = () => displayArtistImages(artist.images);
-                    imageButtonsContainer.appendChild(artistButton);
+                    const btn = document.createElement('button');
+                    btn.textContent = artist.artist;
+                    btn.onclick = () => displayArtistImages(artist.images);
+                    container.appendChild(btn);
                 });
-            })
-            .catch(error => console.error('Error fetching images:', error));
-
-        function displayArtistImages(images) {
-            const imageButtonsContainer = document.getElementById('imageButtons');
-            imageButtonsContainer.innerHTML = ''; // Clear previous buttons
-
-            images.forEach(image => {
-                const imgElement = document.createElement('img');
-                imgElement.className = 'thumbnail';
-                imgElement.src = image.name;
-                imgElement.alt = image.title;
-                imgElement.onclick = () => setImage(image.name);
-                imageButtonsContainer.appendChild(imgElement);
             });
 
-            // Show the back button
+        function displayArtistImages(images) {
+            const container = document.getElementById('imageButtons');
+            container.innerHTML = '';
+            images.forEach(img => {
+                const imgEl = document.createElement('img');
+                imgEl.className = 'thumbnail';
+                imgEl.src = img.name;
+                imgEl.alt = img.title;
+                imgEl.onclick = () => setImage(img.name);
+                container.appendChild(imgEl);
+            });
             document.getElementById('backButton').style.display = 'block';
         }
 
         function goBack() {
-            // Clear the image display area
-            const imageButtonsContainer = document.getElementById('imageButtons');
-            imageButtonsContainer.innerHTML = '';
-
-            // Re-display the artist selection buttons
+            const container = document.getElementById('imageButtons');
+            container.innerHTML = '';
             fetch('images.json')
                 .then(response => response.json())
                 .then(jsonData => {
-                    data = jsonData; // Assign the fetched JSON data to the 'data' variable
-                    const imageButtonsContainer = document.getElementById('imageButtons');
-
+                    data = jsonData;
                     data.forEach(artist => {
-                        const artistButton = document.createElement('button');
-                        artistButton.textContent = artist.artist;
-                        artistButton.onclick = () => displayArtistImages(artist.images);
-                        imageButtonsContainer.appendChild(artistButton);
+                        const btn = document.createElement('button');
+                        btn.textContent = artist.artist;
+                        btn.onclick = () => displayArtistImages(artist.images);
+                        container.appendChild(btn);
                     });
-                })
-                .catch(error => console.error('Error fetching images:', error));
-
-            // Hide the back button again
+                });
             document.getElementById('backButton').style.display = 'none';
         }
-   function downloadCompositeImage() {
-    const square = document.getElementById('square');
-    const captureArea = document.getElementById('captureArea');
 
-    // Optional: hide points temporarily
-    const pointEls = document.querySelectorAll('.point');
-    pointEls.forEach(p => p.style.visibility = 'hidden');
-
-    // Temporarily remove box shadow to keep screenshot clean
-    const oldBoxShadow = square.style.boxShadow;
-    square.style.boxShadow = 'none';
-
-    // Give DOM time to apply all changes visually
-    setTimeout(() => {
-        html2canvas(captureArea, {
-            useCORS: true,
-            backgroundColor: null,
-            allowTaint: true,
-            scale: 2
-        }).then(canvas => {
-            // Restore styles
-            square.style.boxShadow = oldBoxShadow;
-            pointEls.forEach(p => p.style.visibility = 'visible');
-
-            // Trigger download
-            const link = document.createElement('a');
-            link.download = 'composite_image.png';
-            link.href = canvas.toDataURL('image/png');
-            link.click();
-        });
-    }, 100);
-}
-
+        function downloadCompositeImage() {
+            const square = document.getElementById('square');
+            const captureArea = document.getElementById('captureArea');
+            const pointEls = document.querySelectorAll('.point');
+            pointEls.forEach(p => p.style.visibility = 'hidden');
+            const oldBoxShadow = square.style.boxShadow;
+            square.style.boxShadow = 'none';
+            setTimeout(() => {
+                html2canvas(captureArea, {
+                    useCORS: true,
+                    backgroundColor: null,
+                    allowTaint: true,
+                    scale: 2
+                }).then(canvas => {
+                    square.style.boxShadow = oldBoxShadow;
+                    pointEls.forEach(p => p.style.visibility = 'visible');
+                    const link = document.createElement('a');
+                    link.download = 'composite_image.png';
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                });
+            }, 100);
+        }
     </script>
 </body>
 </html>
