@@ -179,6 +179,8 @@
     <input type="number" id="realSize" onchange="updateSquareSize()" step="any" min="0">
 
     <button id="uploadBtn" onclick="document.getElementById('imageInput').click()">Upload Photo</button>
+    <input type="text" id="artUrl" placeholder="Or paste Castle Fine Art URL" style="width: 90%; margin: 10px auto; display: block;">
+<button onclick="fetchArtworkDetails()">Load Artwork</button>
     <button id="pointsBtn" onclick="togglePoints()">-Toggle Points</button>
 
     <div class="sliderContainer">
@@ -394,6 +396,41 @@
                 });
             document.getElementById('backButton').style.display = 'none';
         }
+
+        async function fetchArtworkDetails() {
+    const url = document.getElementById("artUrl").value;
+    if (!url) return alert("Please paste a valid URL.");
+
+    try {
+        const response = await fetch("https://api.allorigins.win/get?url=" + encodeURIComponent(url));
+        const data = await response.json();
+        const html = data.contents;
+
+        // Extract dimensions like "87.4cm x 127.8cm"
+        const match = html.match(/(\d{2,3}\.\d)cm\s+x\s+(\d{2,3}\.\d)cm/);
+        if (match) {
+            const heightCm = parseFloat(match[1]);
+            const widthCm = parseFloat(match[2]);
+
+            // Set the initial size globally so updateSquareSize can use it
+            initialSquareSize = heightCm;
+
+            // Also preload the image using the first .jpg from the page
+            const imgMatch = html.match(/https:\/\/www\.castlefineart\.com\/assets\/img\/jpg\/thumbnail[^"]+\.jpg/);
+            if (imgMatch) {
+                setImage(imgMatch[0]);
+            }
+
+            alert(`Artwork loaded. Framed Height: ${heightCm}cm`);
+        } else {
+            alert("Could not find artwork dimensions.");
+        }
+    } catch (err) {
+        console.error(err);
+        alert("Failed to load artwork details.");
+    }
+}
+        
 
         function downloadCompositeImage() {
             const square = document.getElementById('square');
