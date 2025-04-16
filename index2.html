@@ -166,6 +166,9 @@
 </head>
 <body>
     <div id="captureArea">
+        <div id="loading" style="display:none; text-align:center; font-size:18px; margin: 10px;">
+    🔄 Loading artwork, please wait...
+    </div>
         <div id="container" onclick="handleContainerClick(event)">
             <div id="square"></div>
         </div>
@@ -401,24 +404,26 @@
     const url = document.getElementById("artUrl").value;
     if (!url) return alert("Please paste a valid URL.");
 
-    try {
-        const response = await fetch("https://api.allorigins.win/get?url=" + encodeURIComponent(url));
-        const data = await response.json();
-        const html = data.contents;
+    const loading = document.getElementById("loading");
+    loading.style.display = 'block';
 
-        // Extract dimensions like "87.4cm x 127.8cm"
+    try {
+        const response = await fetch("https://corsproxy.io/?" + encodeURIComponent(url));
+        const html = await response.text();
+
+        // Extract cm dimensions like "87.4cm x 127.8cm"
         const match = html.match(/(\d{2,3}\.\d)cm\s+x\s+(\d{2,3}\.\d)cm/);
         if (match) {
             const heightCm = parseFloat(match[1]);
             const widthCm = parseFloat(match[2]);
 
-            // Set the initial size globally so updateSquareSize can use it
-            initialSquareSize = heightCm;
+            initialSquareSize = heightCm; // Use this later for sizing
 
-            // Also preload the image using the first .jpg from the page
+            // Get image URL
             const imgMatch = html.match(/https:\/\/www\.castlefineart\.com\/assets\/img\/jpg\/thumbnail[^"]+\.jpg/);
             if (imgMatch) {
                 setImage(imgMatch[0]);
+                goBack(); // Show artist list again
             }
 
             alert(`Artwork loaded. Framed Height: ${heightCm}cm`);
@@ -428,6 +433,8 @@
     } catch (err) {
         console.error(err);
         alert("Failed to load artwork details.");
+    } finally {
+        loading.style.display = 'none';
     }
 }
         
