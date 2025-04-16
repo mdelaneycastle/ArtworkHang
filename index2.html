@@ -360,18 +360,23 @@
             });
 
         function displayArtistImages(images) {
-            const container = document.getElementById('imageButtons');
-            container.innerHTML = '';
-            images.forEach(img => {
-                const imgEl = document.createElement('img');
-                imgEl.className = 'thumbnail';
-                imgEl.src = img.name;
-                imgEl.alt = img.title;
-                imgEl.onclick = () => setImage(img.name);
-                container.appendChild(imgEl);
-            });
-            document.getElementById('backButton').style.display = 'block';
-        }
+    const imageButtonsContainer = document.getElementById('imageButtons');
+    imageButtonsContainer.innerHTML = ''; // Clear previous buttons
+
+    images.forEach(image => {
+        const imgElement = document.createElement('img');
+        imgElement.className = 'thumbnail';
+        imgElement.src = image.name;
+        imgElement.alt = image.title;
+        imgElement.onclick = () => {
+            setImage(image.name);  // Set the image
+            goBack();              // Return to artist list
+        };
+        imageButtonsContainer.appendChild(imgElement);
+    });
+
+    document.getElementById('backButton').style.display = 'block';
+}
 
         function goBack() {
             const container = document.getElementById('imageButtons');
