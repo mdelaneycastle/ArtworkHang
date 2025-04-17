@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixel Distance Measurement.</title>
+    <title>Pixel Distance Measurement</title>
     <style>
         html, body {
             margin: 0;
@@ -410,7 +410,13 @@
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const data = imageData.data;
 
-        const isGrey = (r, g, b) => r === 218 && g === 218 && b === 218;
+        const isGrey = (r, g, b, threshold = 5) => {
+    return (
+        Math.abs(r - 218) <= threshold &&
+        Math.abs(g - 218) <= threshold &&
+        Math.abs(b - 218) <= threshold
+    );
+};
 
         let top = 0, bottom = canvas.height, left = 0, right = canvas.width;
 
