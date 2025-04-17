@@ -262,7 +262,7 @@
         function setImage(imageUrl) {
             const square = document.getElementById('square');
             square.style.backgroundImage = `url(${imageUrl})`;
-            square.style.backgroundSize = 'contain';
+            square.style.backgroundSize = '120% auto';
             const imageData = data.find(image => image.name === imageUrl);
             if (imageData && imageData.initialSize) {
                 initialSquareSize = imageData.initialSize;
