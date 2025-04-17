@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixel Distance Measurement.</title>
+    <title>Pixel Distance Measurement</title>
     <style>
         html, body {
             margin: 0;
@@ -261,20 +261,34 @@
 
         function setImage(imageUrl) {
     const square = document.getElementById('square');
-
     const isCastle = imageUrl.includes("castlefineart.com");
-    
-    if (isCastle) {
-        trimGreyBorder(imageUrl, (croppedUrl) => {
-            square.style.backgroundImage = `url(${croppedUrl})`;
-            square.style.backgroundSize = 'contain';
-        });
-    } else {
-        square.style.backgroundImage = `url(${imageUrl})`;
-        square.style.backgroundSize = 'contain';
-    }
 
-    // continue with size/aspect logic as before...
+    const applyImage = (finalUrl) => {
+        square.style.backgroundImage = `url(${finalUrl})`;
+        square.style.backgroundSize = 'contain';
+
+        const imageData = data.find(image => image.name === imageUrl);
+        if (imageData && imageData.initialSize) {
+            initialSquareSize = imageData.initialSize;
+            square.style.width = `${initialSquareSize}px`;
+            square.style.height = `${initialSquareSize}px`;
+        } else {
+            const img = new Image();
+            img.onload = function () {
+                aspectRatio = this.width / this.height;
+                initialSquareSize = 100;
+                square.style.width = `${initialSquareSize}px`;
+                square.style.height = `${initialSquareSize / aspectRatio}px`;
+            };
+            img.src = finalUrl;
+        }
+    };
+
+    if (isCastle) {
+        trimGreyBorder(imageUrl, applyImage);
+    } else {
+        applyImage(imageUrl);
+    }
 }
 
         function setImageBackground(event) {
