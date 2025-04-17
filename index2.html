@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixel Distance Measurement</title>
+    <title>Pixel Distance Measurement.</title>
     <style>
         html, body {
             margin: 0;
@@ -263,6 +263,8 @@
     const square = document.getElementById('square');
     const isCastle = imageUrl.includes("castlefineart.com");
 
+    const proxyBase = "https://b28b29fd-32ff-4863-a03d-38405e4cc0f0-00-3xic8byfh5ek.worf.replit.dev/img?url=";
+
     const applyImage = (finalUrl) => {
         square.style.backgroundImage = `url(${finalUrl})`;
         square.style.backgroundSize = 'contain';
@@ -285,7 +287,8 @@
     };
 
     if (isCastle) {
-        trimGreyBorder(imageUrl, applyImage);
+        const proxiedUrl = proxyBase + encodeURIComponent(imageUrl);
+        trimGreyBorder(proxiedUrl, applyImage);
     } else {
         applyImage(imageUrl);
     }
