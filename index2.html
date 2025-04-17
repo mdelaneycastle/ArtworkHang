@@ -261,27 +261,20 @@
 
         function setImage(imageUrl) {
     const square = document.getElementById('square');
-    square.style.backgroundImage = `url(${imageUrl})`;
 
-    const isExternalCastleImage = imageUrl.includes('castlefineart.com');
-
-    square.style.backgroundSize = isExternalCastleImage ? '120% auto' : 'contain';
-
-    const imageData = data.find(image => image.name === imageUrl);
-    if (imageData && imageData.initialSize) {
-        initialSquareSize = imageData.initialSize;
-        square.style.width = `${initialSquareSize}px`;
-        square.style.height = `${initialSquareSize}px`;
+    const isCastle = imageUrl.includes("castlefineart.com");
+    
+    if (isCastle) {
+        trimGreyBorder(imageUrl, (croppedUrl) => {
+            square.style.backgroundImage = `url(${croppedUrl})`;
+            square.style.backgroundSize = 'contain';
+        });
     } else {
-        const img = new Image();
-        img.onload = function () {
-            aspectRatio = this.width / this.height;
-            initialSquareSize = 100;
-            square.style.width = `${initialSquareSize}px`;
-            square.style.height = `${initialSquareSize / aspectRatio}px`;
-        };
-        img.src = imageUrl;
+        square.style.backgroundImage = `url(${imageUrl})`;
+        square.style.backgroundSize = 'contain';
     }
+
+    // continue with size/aspect logic as before...
 }
 
         function setImageBackground(event) {
@@ -385,6 +378,95 @@
     });
 
     document.getElementById('backButton').style.display = 'block';
+}
+
+        function trimGreyBorder(imageUrl, callback) {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = function () {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imageData.data;
+
+        const isGrey = (r, g, b) => r === 218 && g === 218 && b === 218;
+
+        let top = 0, bottom = canvas.height, left = 0, right = canvas.width;
+
+        // Top
+        for (let y = 0; y < canvas.height; y++) {
+            let found = false;
+            for (let x = 0; x < canvas.width; x++) {
+                const i = (y * canvas.width + x) * 4;
+                if (!isGrey(data[i], data[i + 1], data[i + 2])) {
+                    found = true;
+                    break;
+                }
+            }
+            if (found) break;
+            top++;
+        }
+
+        // Bottom
+        for (let y = canvas.height - 1; y >= 0; y--) {
+            let found = false;
+            for (let x = 0; x < canvas.width; x++) {
+                const i = (y * canvas.width + x) * 4;
+                if (!isGrey(data[i], data[i + 1], data[i + 2])) {
+                    found = true;
+                    break;
+                }
+            }
+            if (found) break;
+            bottom--;
+        }
+
+        // Left
+        for (let x = 0; x < canvas.width; x++) {
+            let found = false;
+            for (let y = 0; y < canvas.height; y++) {
+                const i = (y * canvas.width + x) * 4;
+                if (!isGrey(data[i], data[i + 1], data[i + 2])) {
+                    found = true;
+                    break;
+                }
+            }
+            if (found) break;
+            left++;
+        }
+
+        // Right
+        for (let x = canvas.width - 1; x >= 0; x--) {
+            let found = false;
+            for (let y = 0; y < canvas.height; y++) {
+                const i = (y * canvas.width + x) * 4;
+                if (!isGrey(data[i], data[i + 1], data[i + 2])) {
+                    found = true;
+                    break;
+                }
+            }
+            if (found) break;
+            right--;
+        }
+
+        const cropWidth = right - left;
+        const cropHeight = bottom - top;
+
+        const trimmedCanvas = document.createElement("canvas");
+        trimmedCanvas.width = cropWidth;
+        trimmedCanvas.height = cropHeight;
+        const trimmedCtx = trimmedCanvas.getContext("2d");
+        trimmedCtx.drawImage(canvas, left, top, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
+
+        const newImageUrl = trimmedCanvas.toDataURL();
+        callback(newImageUrl);
+    };
+
+    img.src = imageUrl;
 }
 
         function goBack() {
