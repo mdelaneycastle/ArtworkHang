@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixel Distance Measurement</title>
+    <title>Pixel Distance Measurement.</title>
     <style>
         html, body {
             margin: 0;
@@ -260,25 +260,29 @@
         }
 
         function setImage(imageUrl) {
-            const square = document.getElementById('square');
-            square.style.backgroundImage = `url(${imageUrl})`;
-            square.style.backgroundSize = '130% auto';
-            const imageData = data.find(image => image.name === imageUrl);
-            if (imageData && imageData.initialSize) {
-                initialSquareSize = imageData.initialSize;
-                square.style.width = `${initialSquareSize}px`;
-                square.style.height = `${initialSquareSize}px`;
-            } else {
-                const img = new Image();
-                img.onload = function () {
-                    aspectRatio = this.width / this.height;
-                    initialSquareSize = 100;
-                    square.style.width = `${initialSquareSize}px`;
-                    square.style.height = `${initialSquareSize / aspectRatio}px`;
-                };
-                img.src = imageUrl;
-            }
-        }
+    const square = document.getElementById('square');
+    square.style.backgroundImage = `url(${imageUrl})`;
+
+    const isExternalCastleImage = imageUrl.includes('castlefineart.com');
+
+    square.style.backgroundSize = isExternalCastleImage ? '120% auto' : 'contain';
+
+    const imageData = data.find(image => image.name === imageUrl);
+    if (imageData && imageData.initialSize) {
+        initialSquareSize = imageData.initialSize;
+        square.style.width = `${initialSquareSize}px`;
+        square.style.height = `${initialSquareSize}px`;
+    } else {
+        const img = new Image();
+        img.onload = function () {
+            aspectRatio = this.width / this.height;
+            initialSquareSize = 100;
+            square.style.width = `${initialSquareSize}px`;
+            square.style.height = `${initialSquareSize / aspectRatio}px`;
+        };
+        img.src = imageUrl;
+    }
+}
 
         function setImageBackground(event) {
             const file = event.target.files[0];
