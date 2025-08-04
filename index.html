@@ -3,42 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perspective Slider</title>
-    <style>
-        .container {
-            position: relative;
-            width: 300px;
-            margin: 50px auto;
-            text-align: center; /* Center the square and slider */
-        }
-
-        .square {
-            width: 100px;
-            height: 100px;
-            background-color: blue;
-            display: inline-block; /* Display square inline */
-            margin-bottom: 20px; /* Add some space between square and slider */
-            transform: translate(-50%, -50%) perspective(500px) rotateY(0deg);
-        }
-
-        .slider {
-            width: 100%;
-        }
-    </style>
+    <title>ArtHang - Visualize Artwork on Your Wall</title>
+    <meta name="description" content="See how artwork will look on your wall at real size before you buy">
 </head>
 <body>
-    <div class="container">
-        <div class="square" id="square"></div>
-        <input type="range" min="-45" max="45" value="0" class="slider" id="slider">
-    </div>
-    <script>
-        const slider = document.getElementById('slider');
-        const square = document.getElementById('square');
-
-        slider.addEventListener('input', function() {
-            const value = parseInt(this.value);
-            square.style.transform = `translate(-50%, -50%) perspective(500px) rotateY(${value}deg)`;
-        });
-    </script>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
 </body>
 </html>
